@@ -21,7 +21,7 @@ rgbLumNormCndAll = [];
 subjNumTag = [];
 
 for i = 1:length(subjNumAll)
-    [wvInFocusCell, defocusAt550cell, defocusAt875cell, optDistCnd, rgbLumNormCnd] = ARCnlz_mainExpSortColorVisStrehl(subjNumAll(i)+10);
+    [wvInFocusCell, defocusAt550cell, defocusAt875cell, optDistCnd, rgbLumNormCnd] = ARCnlz_mainExpSortColor(subjNumAll(i)+10);
     wvInFocusCellAll = [wvInFocusCellAll wvInFocusCell];
     defocusAt550cellAll = [defocusAt550cellAll defocusAt550cell];
     defocusAt875cellAll = [defocusAt875cellAll defocusAt875cell];
@@ -32,7 +32,7 @@ end
 
 %%
 
-save('/Users/benjaminchin/Documents/allExp1DataRGBvisStrehl.mat','wvInFocusCellAll','defocusAt550cellAll','defocusAt875cellAll','optDistCndAll','rgbLumNormCndAll','subjNumTag');
+save('/Users/benjaminchin/Documents/allExp1DataRGB.mat','wvInFocusCellAll','defocusAt550cellAll','defocusAt875cellAll','optDistCndAll','rgbLumNormCndAll','subjNumTag');
 
 %%
 
