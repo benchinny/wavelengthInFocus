@@ -12,6 +12,8 @@ elseif strcmp(getenv("USER"),'benjaminchin')
    dataDirectory = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/ARC/'; 
 elseif strcmp(getenv("USER"),'emily')
    dataDirectory = '/Users/emily/Library/CloudStorage/GoogleDrive-emilyacooper@gmail.com/Shared drives/ARChroma/Analysis/';
+elseif strcmp(getenv('username'),'bmccis')
+   dataDirectory = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\ARC\';
 end
 if subj==1
     % filenames = {
@@ -258,7 +260,7 @@ if bPLOT
 end
 for rgbAcuCnd = 1:3
     for i = 1:length(unqFocDst)
-        indAnalysis = focStmOptDstIncr==unqFocDst(i) & indAcuRB==rgbAcuCnd;
+        indAnalysis = abs(focStmOptDstIncr-unqFocDst(i))<0.001 & indAcuRB==rgbAcuCnd;
     %    PC(i) = sum(rspAcu(focStmOptDstIncr==unqFocDst(i) & meanFocstmOptDst==meanFocInt)==stimOrientation(focStmOptDstIncr==unqFocDst(i) & meanFocstmOptDst==meanFocInt))./sum(focStmOptDstIncr==unqFocDst(i) & meanFocstmOptDst==meanFocInt); 
          PC(i) = sum(rspAcu(indAnalysis)==stimOrientation(indAnalysis))./sum(indAnalysis);
          PCci(:,i) = binoinv([0.025 0.975],sum(focStmOptDstIncr==unqFocDst(i) & indAcuRB==rgbAcuCnd),PC(i))./sum(focStmOptDstIncr==unqFocDst(i) & indAcuRB==rgbAcuCnd);

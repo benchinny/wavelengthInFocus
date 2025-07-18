@@ -6,6 +6,8 @@ if strcmp(getenv("USER"),'ben')
    dataFolder= '/home/ben/Documents/ARchroma/FIAT/csvFiles/';
 elseif strcmp(getenv("USER"),'benchin')
    dataFolder = '/Users/benchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/csvFiles/';
+elseif strcmp(getenv("username"),'bmccis')
+   dataFolder = '\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\csvFiles\';
 else
    dataFolder = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/csvFiles/';
 end

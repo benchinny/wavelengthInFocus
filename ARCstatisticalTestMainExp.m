@@ -1,6 +1,6 @@
 %%
 
-load('/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/ARChroma/Meetings/meeting_Sept25/allExp1DataRGB.mat');
+load("C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\PresavedFigureData\allExp1DataRGB.mat");
 
 %%
 
