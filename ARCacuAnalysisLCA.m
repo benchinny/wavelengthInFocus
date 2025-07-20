@@ -248,17 +248,17 @@ else
                    1111 493 560 420];
 end
 
-unqFocDst = unique(focStmOptDstIncr);
 scaleFac = 0.816;
 % meanFocInt = 5;
 defocusLCAmeasured = [];
-dprimeFitAll = [];
+dprimeFitAll = {};
 
 if bPLOT
     figure;
     % set(gcf,'Position',[149 495 1277 420]);
 end
 for rgbAcuCnd = 1:3
+    unqFocDst = unique(focStmOptDstIncr(indAcuRB==rgbAcuCnd));
     for i = 1:length(unqFocDst)
         indAnalysis = abs(focStmOptDstIncr-unqFocDst(i))<0.001 & indAcuRB==rgbAcuCnd;
     %    PC(i) = sum(rspAcu(focStmOptDstIncr==unqFocDst(i) & meanFocstmOptDst==meanFocInt)==stimOrientation(focStmOptDstIncr==unqFocDst(i) & meanFocstmOptDst==meanFocInt))./sum(focStmOptDstIncr==unqFocDst(i) & meanFocstmOptDst==meanFocInt); 
@@ -313,7 +313,7 @@ for rgbAcuCnd = 1:3
     end
     epsilonPC = 0.999;
     PCfit(PCfit>epsilonPC) = epsilonPC;
-    dprimeFitAll(rgbAcuCnd,:) = 2*norminv(PCfit);
+    dprimeFitAll{rgbAcuCnd} = 2*norminv(PCfit);
 end
 
 filePathSave = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/ARChroma/Meetings/meeting_Sept25/';
