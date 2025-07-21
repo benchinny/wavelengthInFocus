@@ -9,6 +9,8 @@ elseif strcmp(getenv("USER"),'benjaminchin')
    dataDirectory = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/ARC/'; 
 elseif strcmp(getenv("USER"),'emily')
    dataDirectory = '/Users/emily/Library/CloudStorage/GoogleDrive-emilyacooper@gmail.com/Shared drives/ARChroma/Analysis/';
+elseif strcmp(getenv('USERNAME'),'bmccis')
+   dataDirectory = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\ARC\';
 end
 
 if subjNum==3
