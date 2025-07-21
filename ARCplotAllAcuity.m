@@ -17,11 +17,11 @@ for k = 1:nRepeat
     
         subjNum = subjNumAll(j);
         
-        load(['/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/acuityModeling/' fileStr 'S' num2str(subjNum) '.mat']);
+        load(['C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\acuityModeling\' fileStr 'S' num2str(subjNum) '.mat']);
         
         if bRandomize
             subjNumAllRand = subjNumAll(randperm(length(subjNumAll)));
-            load(['/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/acuityModeling/' fileStr 'S' ...
+            load(['C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\acuityModeling\' fileStr 'S' ...
                   num2str(subjNumAllRand(j)) '.mat'],'dprimeMetric','defocusForStim');
         end
     
