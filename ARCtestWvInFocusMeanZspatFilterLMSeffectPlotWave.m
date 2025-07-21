@@ -1,8 +1,14 @@
 function [aic, pFit, wvMeanAll, wvPredAll] = ARCtestWvInFocusMeanZspatFilterLMSeffectPlotWave(subjNum,modelType)
 
-coneWeightsFolder = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/coneWeightsErrorSpatFilter/colorMechPredictions/';
 objFunc = 'RMS';
-modelCompFolder = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/AICmodelComparisons/';
+
+if strcmp(getenv('USERNAME'),'bmccis')
+   coneWeightsFolder = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\coneWeightsErrorSpatFilter\colorMechPredictions\';
+   modelCompFolder = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\AICmodelComparisons\';
+else
+   coneWeightsFolder = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/coneWeightsErrorSpatFilter/colorMechPredictions/';
+   modelCompFolder = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/AICmodelComparisons/';
+end
 
 if strcmp(modelType,'LMS')
     wS = -1;

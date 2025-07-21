@@ -1,7 +1,7 @@
 function ARCnlz_psf
 
-bSave = true;
-filePath = '/Users/benjaminchin/Documents/ARchromaScraps/meeting_Sept25/';
+% bSave = true;
+% filePath = '/Users/benjaminchin/Documents/ARchromaScraps/meeting_Sept25/';
 
 if strcmp(getenv('username'),'bankslab')
    foldername = 'H:\Shared drives\CIVO_BVAMS\data\ARC\';
@@ -9,6 +9,8 @@ elseif strcmp(getenv("USER"),'benchin')
    foldername = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/ARC/';
 elseif strcmp(getenv("USER"),'benjaminchin')
    foldername = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/ARC/';
+elseif strcmp(getenv('USERNAME'),'bmccis')
+   foldername = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\ARC\';   
 end
 
 subjNum = 30;
@@ -221,8 +223,8 @@ if strcmp(fitType,'weibull')
     end
 end
 
-if bSave
-    saveas(gcf,[filePath 'psf/S' num2str(subjNum) 'psf'],'epsc');
-end
+% if bSave
+%     saveas(gcf,[filePath 'psf/S' num2str(subjNum) 'psf'],'epsc');
+% end
 
 end

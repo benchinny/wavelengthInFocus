@@ -2,7 +2,7 @@ function wvInFocus = ARCwvInFocusConesMeanZspatFilter(subjNum,stimNum,wLMS)
 
 wave = 380:4:780;
 nFocus = length(wave);
-foldernameCones = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/coneImages/';
+foldernameCones = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\coneImages\';
 
 % USE THE SAME ORIGINAL (PRE-OPTICS) IMAGE EACH TIME--THIS ONE HAPPENS TO
 % LIVE IN THE FOLDER FOR SUBJECT 10, BUT IT REALLY DOESN'T MATTER SINCE ALL
@@ -13,7 +13,7 @@ absorptionsOrig = absorptionsOrig.absorptions;
 coneImgOrig = sum(absorptionsOrig,3);
 
 % LOAD SPATIAL FILTER
-load('/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/modelParams/freqFilterARC.mat');
+load('C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\modelParams\freqFilterARC.mat');
 
 coneImgOrigFFT = fftshift(fft2(coneImgOrig));
 coneImgOrigFilteredFFT = coneImgOrigFFT.*freqFilterARC;
