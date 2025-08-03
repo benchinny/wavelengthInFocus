@@ -1,6 +1,13 @@
 %%
 
-load("C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\PresavedFigureData\allExp1DataRGB.mat");
+dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
+if ispc
+    slash = '\';
+else
+    slash = '/';
+end
+
+load([dataPath 'data' slash 'PresavedFigureData' slash 'allExp1DataRGB.mat']);
 
 %%
 

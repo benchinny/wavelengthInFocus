@@ -1,6 +1,6 @@
 %% LOAD MAIN EXPERIMENT FILES
 
-function [wvInFocusCell, defocusAt550cell, defocusAt875cell, optDistCnd, rgbLumNormCnd] = ARCnlz_mainExpSortColor(subjNum)
+function [wvInFocusCell, defocusAt550cell, defocusAt875cell, optDistCnd, rgbLumNormCnd] = ARCnlz_mainExpSortColor(subjNum,dataPath)
 
 % NOTE SUBJECT NUMBER CONVENTION: SUBTRACT 10 FROM subjNum TO GET ACTUAL
 % SUBJECT NUMBER. subjNum VALUES <=10 WERE INTENTIONALLY NOT USED FOR
@@ -18,7 +18,6 @@ function [wvInFocusCell, defocusAt550cell, defocusAt875cell, optDistCnd, rgbLumN
 % raw traces of every coefficient on each of the 65 Zernike terms. 
 
 bSave = false;
-filePath = '/Users/benjaminchin/Documents/ARchromaScraps/meeting_Sept25/';
 
 if subjNum==11
    % blockNums = 2:7;
@@ -98,9 +97,9 @@ c4all = {};
 for i = 1:length(blockNums)
     blockNumTmp = blockNums(i);
     trialNumsTmp = trialNums{i};
-    AFCp = ARCloadFileBVAMS(subjNum,blockNumTmp);
+    AFCp = ARCloadFileBVAMS(subjNum,blockNumTmp,dataPath);
     for j = 1:length(trialNumsTmp)
-        [ZernikeTable, ~, ~, ~] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumsTmp(j),0);
+        [ZernikeTable, ~, ~, ~] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumsTmp(j),0,dataPath);
         NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
         c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65.
         indBadPupil = table2array(ZernikeTable(:,5))==0;

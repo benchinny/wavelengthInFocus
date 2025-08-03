@@ -1,16 +1,12 @@
-function AFCp = ARCloadFileBVAMS(subjNum,blockNum)
+function AFCp = ARCloadFileBVAMS(subjNum,blockNum,dataPath)
 
 AFCp = [];
-
-if strcmp(getenv("USER"),'ben')
-   dataFolder= '/home/ben/Documents/ARchroma/FIAT/ARC/';
-elseif strcmp(getenv("USER"),'benchin')
-   dataFolder = '/Users/benchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/ARC/';
-elseif strcmp(getenv("username"),'bmccis')
-   dataFolder = '\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\ARC\';
+if ispc
+    slash = '\';
 else
-   dataFolder = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/ARC/';
+    slash = '/';
 end
+dataFolder = [dataPath 'data' slash 'ARC' slash];
 
 load([dataFolder 'AFCflsR']);
 

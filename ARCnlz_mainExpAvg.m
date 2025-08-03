@@ -2,6 +2,8 @@
 
 clear;
 
+dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
+
 %% LOADING DATA FROM SUBJECTS AND CONCATENATING
 
 bLCAest = true;
@@ -21,7 +23,7 @@ rgbLumNormCndAll = [];
 subjNumTag = [];
 
 for i = 1:length(subjNumAll)
-    [wvInFocusCell, defocusAt550cell, defocusAt875cell, optDistCnd, rgbLumNormCnd] = ARCnlz_mainExpSortColor(subjNumAll(i)+10);
+    [wvInFocusCell, defocusAt550cell, defocusAt875cell, optDistCnd, rgbLumNormCnd] = ARCnlz_mainExpSortColor(subjNumAll(i)+10,dataPath);
     wvInFocusCellAll = [wvInFocusCellAll wvInFocusCell];
     defocusAt550cellAll = [defocusAt550cellAll defocusAt550cell];
     defocusAt875cellAll = [defocusAt875cellAll defocusAt875cell];

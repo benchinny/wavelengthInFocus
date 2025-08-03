@@ -1,11 +1,17 @@
 %% LOADED DATA GENERATED WITH FIRST PART OF ARCnlz_mainExpAvg
 
 bLCAest = true;
+dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
+if ispc
+    slash = '\';
+else
+    slash = '/';
+end
 
 if bLCAest
-   load("C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\PresavedFigureData\allExp1DataRGB.mat");
+   load([dataPath 'data' slash 'PresavedFigureData' slash 'allExp1DataRGB.mat']);
 else
-   load("C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\PresavedFigureData\allExp1DataRGBunscreened.mat");
+   load([dataPath 'data' slash 'PresavedFigureData' slash 'allExp1DataRGBunscreened.mat']);
 end
 
 %% GENERATE FIGURE 3 (ANNOYINGLY SPLIT INTO 3 FIGURES)
