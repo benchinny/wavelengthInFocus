@@ -1,17 +1,12 @@
 %%
-function [unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport,bestDist,bestDistCI] = ARCacuAnalysisSubjective(subjNum,bPLOT)
-% filePath = 'G:\My Drive\exp_bvams\code_repo\ARC\';
-filePath = 'H:\Shared drives\CIVO_BVAMS\data\ARC\';
+function [unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport,bestDist,bestDistCI] = ARCacuAnalysisSubjective(subjNum,bPLOT,dataPath)
 
-if strcmp(getenv('username'),'bankslab')
-   dataDirectory = [filePath];
-elseif strcmp(getenv("USER"),'benjaminchin')
-   dataDirectory = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/ARC/'; 
-elseif strcmp(getenv("USER"),'emily')
-   dataDirectory = '/Users/emily/Library/CloudStorage/GoogleDrive-emilyacooper@gmail.com/Shared drives/ARChroma/Analysis/';
-elseif strcmp(getenv('USERNAME'),'bmccis')
-   dataDirectory = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\ARC\';
+if ispc
+    slash = '\';
+else
+    slash = '/';
 end
+dataDirectory = [dataPath 'data' slash 'ARC' slash];
 
 if subjNum==3
     filenames = {

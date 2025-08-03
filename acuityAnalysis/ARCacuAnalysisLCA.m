@@ -1,20 +1,16 @@
 %%
 
-function [defocusLCAmeasured, q1best, q2best, q3best,defocusLCAmeasuredBoots,Dgreen,dprimeFitAll,PCfitSupport] = ARCacuAnalysisLCA(subj,bPLOT,nBoots)
-% filePath = 'G:\My Drive\exp_bvams\code_repo\ARC\';
-filePath = 'H:\Shared drives\CIVO_BVAMS\data\ARC\';
+function [defocusLCAmeasured, q1best, q2best, q3best,defocusLCAmeasuredBoots,Dgreen,dprimeFitAll,PCfitSupport] = ARCacuAnalysisLCA(subj,bPLOT,nBoots,dataPath)
+
+if ispc
+    slash = '\';
+else
+    slash = '/';
+end
+dataDirectory = [dataPath 'data' slash 'ARC' slash];
 
 bSave = 0;
 
-if strcmp(getenv('username'),'bankslab')
-   dataDirectory = [filePath];
-elseif strcmp(getenv("USER"),'benjaminchin')
-   dataDirectory = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/ARC/'; 
-elseif strcmp(getenv("USER"),'emily')
-   dataDirectory = '/Users/emily/Library/CloudStorage/GoogleDrive-emilyacooper@gmail.com/Shared drives/ARChroma/Analysis/';
-elseif strcmp(getenv('username'),'bmccis')
-   dataDirectory = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\ARC\';
-end
 if subj==1
     % filenames = {
     %              [dataDirectory 'S1001V12_AFC_RightACL0_2408161637.mat'] ...

@@ -1,6 +1,7 @@
 %% LOAD DATA
 
 subjNum = 20;
+dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 
 % % PARAMETERS OF WAVEFRONT ANALYSIS
 % PARAMS.PupilSize = 7; %default values - will be replaced depending on choices below
@@ -32,7 +33,7 @@ subjNum = 20;
 % defocusOrig = meanC(4);
 % defocusOrigScaled = defocusOrig/defocusScaleFactor;
 
-[unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport] = ARCacuAnalysisSubjective(subjNum,0);
+[unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport] = ARCacuAnalysisSubjective(subjNum,0,dataPath);
 scaleFac = 0.8;
 
 % load('C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\PresavedFigureData\allExp1DataRGB.mat');

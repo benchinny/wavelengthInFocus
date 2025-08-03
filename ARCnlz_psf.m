@@ -1,19 +1,16 @@
-function ARCnlz_psf
+function ARCnlz_psf(subjNum,dataPath)
+
+% example of dataPath: 
+%  dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 
 % bSave = true;
-% filePath = '/Users/benjaminchin/Documents/ARchromaScraps/meeting_Sept25/';
-
-if strcmp(getenv('username'),'bankslab')
-   foldername = 'H:\Shared drives\CIVO_BVAMS\data\ARC\';
-elseif strcmp(getenv("USER"),'benchin')
-   foldername = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/ARC/';
-elseif strcmp(getenv("USER"),'benjaminchin')
-   foldername = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/ARC/';
-elseif strcmp(getenv('USERNAME'),'bmccis')
-   foldername = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\ARC\';   
+if ispc
+    slash = '\';
+else
+    slash = '/';
 end
+foldername = [dataPath 'data' slash 'ARC' slash];
 
-subjNum = 30;
 fitType = 'weibull';
 
 if subjNum==18

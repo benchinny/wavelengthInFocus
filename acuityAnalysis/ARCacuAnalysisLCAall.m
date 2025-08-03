@@ -1,6 +1,7 @@
 %% SCRIPT FOR ANALYZING LCA DATA OF ALL PARTICIPANTS WHO PASSED SCREENING
 
 clear;
+dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 
 %%
 
@@ -14,7 +15,7 @@ D0all = [];
 defocusLCAmeasuredBootsAll = [];
 
 for i = 1:length(subjNumAll)
-    [defocusLCAmeasured, q1best, q2best, q3best,defocusLCAmeasuredBoots,D0] = ARCacuAnalysisLCA(subjNumAll(i),0,100);
+    [defocusLCAmeasured, q1best, q2best, q3best,defocusLCAmeasuredBoots,D0] = ARCacuAnalysisLCA(subjNumAll(i),0,100,dataPath);
     defocusLCAmeasuredAll(i,:) = defocusLCAmeasured;
     q1bestAll(i) = q1best;
     q2bestAll(i) = q2best;
