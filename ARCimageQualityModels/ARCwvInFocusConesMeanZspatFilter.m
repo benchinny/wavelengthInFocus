@@ -1,19 +1,25 @@
-function wvInFocus = ARCwvInFocusConesMeanZspatFilter(subjNum,stimNum,wLMS)
+function wvInFocus = ARCwvInFocusConesMeanZspatFilter(subjNum,stimNum,wLMS,dataPath)
+
+if ispc
+    slash = '\';
+else
+    slash = '/';
+end
+foldernameCones = [dataPath 'data' slash 'coneImages' slash];
 
 wave = 380:4:780;
 nFocus = length(wave);
-foldernameCones = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\coneImages\';
 
 % USE THE SAME ORIGINAL (PRE-OPTICS) IMAGE EACH TIME--THIS ONE HAPPENS TO
 % LIVE IN THE FOLDER FOR SUBJECT 10, BUT IT REALLY DOESN'T MATTER SINCE ALL
 % SUBJECTS SAW THE SAME ON-SCREEN STIMULUS
 fnameConeRspNoLCA = ['subj10block3stimulus1' 'focusInd1noLCA'];
-absorptionsOrig = load([foldernameCones 'S10/' fnameConeRspNoLCA]);
+absorptionsOrig = load([foldernameCones 'S10' slash fnameConeRspNoLCA]);
 absorptionsOrig = absorptionsOrig.absorptions;
 coneImgOrig = sum(absorptionsOrig,3);
 
 % LOAD SPATIAL FILTER
-load('C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\modelParams\freqFilterARC.mat');
+load([dataPath 'data' slash 'modelParams' slash 'freqFilterARC.mat']);
 
 coneImgOrigFFT = fftshift(fft2(coneImgOrig));
 coneImgOrigFilteredFFT = coneImgOrigFFT.*freqFilterARC;
@@ -33,7 +39,7 @@ coneImgOrigFiltered2 = real(ifftshift(ifft2(coneImgOrigFilteredFFT2)));
 peakCorr = [];
 for i = 1:nFocus
     fnameConeRsp = ['subj' num2str(subjNum) 'stimulus' num2str(stimNum) 'focusInd' num2str(i)];
-    load([foldernameCones 'S' num2str(subjNum) '/' fnameConeRsp]);
+    load([foldernameCones 'S' num2str(subjNum) slash fnameConeRsp]);
     absorptions(:,:,1) = absorptions(:,:,1).*wLMS(1);
     absorptions(:,:,2) = absorptions(:,:,2).*wLMS(2);
     absorptions(:,:,3) = absorptions(:,:,3).*wLMS(3);

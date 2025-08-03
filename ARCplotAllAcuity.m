@@ -8,7 +8,14 @@ peakLocModelPredictionAll = [];
 nRepeat = 1;
 corrShuffle = [];
 subjNumInclude = [1:8];
+dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 fileStr = 'acuityModelingPrediction';
+
+if ispc
+    slash = '\';
+else
+    slash = '/';
+end
 
 figure;
 set(gcf,'Position',[176 273 1309 669]);
@@ -17,11 +24,11 @@ for k = 1:nRepeat
     
         subjNum = subjNumAll(j);
         
-        load(['C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\acuityModeling\' fileStr 'S' num2str(subjNum) '.mat']);
+        load([dataPath 'data' slash 'acuityModeling' slash fileStr 'S' num2str(subjNum) '.mat']);
         
         if bRandomize
             subjNumAllRand = subjNumAll(randperm(length(subjNumAll)));
-            load(['C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\acuityModeling\' fileStr 'S' ...
+            load([dataPath 'data' slash 'acuityModeling' slash fileStr 'S' ...
                   num2str(subjNumAllRand(j)) '.mat'],'dprimeMetric','defocusForStim');
         end
     

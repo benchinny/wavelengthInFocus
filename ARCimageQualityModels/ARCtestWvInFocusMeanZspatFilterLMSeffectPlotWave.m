@@ -1,14 +1,14 @@
-function [aic, pFit, wvMeanAll, wvPredAll] = ARCtestWvInFocusMeanZspatFilterLMSeffectPlotWave(subjNum,modelType)
+function [aic, pFit, wvMeanAll, wvPredAll] = ARCtestWvInFocusMeanZspatFilterLMSeffectPlotWave(subjNum,modelType,dataPath)
+
+if ispc
+    slash = '\';
+else
+    slash = '/';
+end
+coneWeightsFolder = [dataPath 'data' slash 'coneWeightsErrorSpatFilter' slash 'colorMechPredictions' slash];
+modelCompFolder = [dataPath 'data' slash 'AICmodelComparisons' slash];
 
 objFunc = 'RMS';
-
-if strcmp(getenv('USERNAME'),'bmccis')
-   coneWeightsFolder = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\coneWeightsErrorSpatFilter\colorMechPredictions\';
-   modelCompFolder = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\data\AICmodelComparisons\';
-else
-   coneWeightsFolder = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/coneWeightsErrorSpatFilter/colorMechPredictions/';
-   modelCompFolder = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/AICmodelComparisons/';
-end
 
 if strcmp(modelType,'LMS')
     wS = -1;
@@ -101,12 +101,12 @@ optDistAll = [];
 rgbAll = [];
 
 for k = 1:length(blockNumAll)
-    AFCp = ARCloadFileBVAMS(subjNum+10,blockNumAll(k));
+    AFCp = ARCloadFileBVAMS(subjNum+10,blockNumAll(k),dataPath);
     optDistAll = [optDistAll; AFCp.meanv00./1.2255];
     rgbAll = [rgbAll; AFCp.rgb100];
     for l = 1:length(trialNumAll)
         % LOAD ZERNIKE TABLE AND TIMESTAMPS
-        [ZernikeTable, ~, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumAll(k),trialNumAll(l),0);
+        [ZernikeTable, ~, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumAll(k),trialNumAll(l),0,dataPath);
 
         NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
         c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65. 

@@ -1,11 +1,11 @@
-function [RMSE, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZspatFilterPlotHelper(subjNum,defocus875,rgbAll,optDistAll,w)
+function [RMSE, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZspatFilterPlotHelper(subjNum,defocus875,rgbAll,optDistAll,w,dataPath)
 
 bFitMeans = true;
 
 rgbUnq = unique(rgbAll,'rows');
 wvInFocus = zeros([size(rgbUnq,1) 1]);
 for l = 1:size(rgbUnq,1)
-    wvInFocus(l,:) = ARCwvInFocusConesMeanZspatFilter(subjNum,l,w);
+    wvInFocus(l,:) = ARCwvInFocusConesMeanZspatFilter(subjNum,l,w,dataPath);
     if wvInFocus(l,:)<400 || wvInFocus(l,:)>720
         wvInFocus(l,:) = NaN;
     end
