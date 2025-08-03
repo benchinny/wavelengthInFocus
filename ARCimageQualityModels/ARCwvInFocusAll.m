@@ -12,7 +12,15 @@ end
 
 %%
 
-load('/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/ARChroma/Meetings/Meeting_April_23/wvMeanAndPred.mat');
+dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
+if ispc
+    slash = '\';
+else
+    slash = '/';
+end
+foldername = [dataPath 'data' slash 'PresavedFigureData' slash];
+
+load([foldername 'wvMeanAndPred.mat']);
 
 symbDist = 'sod';
 conditionsOrderedNorm = [0.25 0.00 1.00; ...
