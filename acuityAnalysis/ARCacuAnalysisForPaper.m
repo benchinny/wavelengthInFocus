@@ -76,7 +76,7 @@ dprimeMax = max(dprimeFitAll);
 dprime0 = interp1(PCfitSupport,dprimeFitAll,0);
 dprimeRatio = dprime0/dprimeMax;
 
-%%
+%% FIGURE 5C IN MANUSCRIPT
 
 dprimeRatioAll = [2.41 1.000 1.000 1.41 1.000 1.98 1.76 1.023];
 

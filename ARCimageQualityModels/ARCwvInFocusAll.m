@@ -1,4 +1,4 @@
-%%
+%% GENERATE MODEL PREDICTIONS TOGETHER WITH ACTUAL DATA
 
 subjNum = [1 3 5 10 16 17 18 20];
 wvMeanAll = [];
@@ -10,7 +10,7 @@ for i = 1:length(subjNum)
     wvPredAll(:,:,i) = wvPred;
 end 
 
-%%
+%% MAKE FIGURE 4B IN THE PAPER
 
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 if ispc

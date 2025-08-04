@@ -1,4 +1,8 @@
-% %%
+%% SPECIFY PATH TO DATA FOLDER
+
+dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
+
+%% GENERATING AIC VALUES
 % 
 % subjNumAll = [1 3 5 10 16 17 18 20];
 % 
@@ -63,7 +67,7 @@
 % 
 % save('/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/AICmodelComparisons/aicSpatFilterLM.mat','aicSpatFilterLM');
 % 
-%%
+%
 
 subjNumAll = [1 3 5 10 16 17 18 20];
 
@@ -102,16 +106,23 @@ save('/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/S
 % 
 % save('/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/AICmodelComparisons/aicStrehlLminusM.mat','aicStrehlLminusM');
 
-%%
+%% LOADING AIC VALUES AND USING THEM TO MAKE PLOTS
 
-load('/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/AICmodelComparisons/aicDeltaPass2.mat')
-load('/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/AICmodelComparisons/aicDeltaPass4.mat')
-load('/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/AICmodelComparisons/aicSpatFilterLM.mat')
-load('/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/AICmodelComparisons/aicSpatFilterLminusM.mat')
-load('/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/AICmodelComparisons/aicSpatFilterLMS.mat')
-load('/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/AICmodelComparisons/aicStrehlLMS.mat')
-load('/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/AICmodelComparisons/aicStrehlLminusM.mat')
-load('/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/AICmodelComparisons/aicStrehlLM.mat')
+if ispc
+    slash = '\';
+else
+    slash = '/';
+end
+foldername = [dataPath 'data' slash 'AICmodelComparisons' slash];
+
+load([foldername 'aicDeltaPass2.mat'])
+load([foldername 'aicDeltaPass4.mat'])
+load([foldername 'aicSpatFilterLM.mat'])
+load([foldername 'aicSpatFilterLminusM.mat'])
+load([foldername 'aicSpatFilterLMS.mat'])
+load([foldername 'aicStrehlLMS.mat'])
+load([foldername 'aicStrehlLminusM.mat'])
+load([foldername 'aicStrehlLM.mat'])
 
 barWidth = 0.1;
 
@@ -156,7 +167,7 @@ set(gca,'FontSize',15);
 ylabel('AIC');
 legend('L+M-S','L-M','L-M Strehl','L+M-S Strehl','L+M 2cpd','L+M','Location','NorthEastOutside');
 
-%%
+%% FIGURE 4C WITH EXTRA COMPARISON
 
 figure; 
 hold on;
@@ -167,7 +178,7 @@ ylim([-25 95]);
 set(gca,'YTick',[-23.0259 0 23.0259 46.0517 69.0776 92.1034]);
 set(gca,'YTickLabel',{'10^-10' '1' '10^10' '10^20' '10^30' '10^40'});
 
-%%
+%% FIGURE 4C WITH ONLY BEST COMPARISON
 
 figure; 
 hold on;

@@ -3,7 +3,7 @@
 clear;
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 
-%%
+%% MAKE FIGURE 7E
 
 % subjNumAll = [1 3 5 9 10 16 17 18 20];
 subjNumAll = [1 3 5 10 16 17 18 20];

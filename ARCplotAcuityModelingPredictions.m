@@ -1,25 +1,33 @@
-%%
+%% MAKE FIGURE 5D
 
 bRandomize = false;
-bPlot = true;
+bPlot = false;
 subjNumAll = [1 3 5 10 16 17 18 20];
 % subjNumAllRand = subjNumAll;
 peakLocModelPredictionAll = [];
 nRepeat = 1;
 corrShuffle = [];
 subjNumInclude = [1:8];
-fileStr = 'acuityModelingPredictionDiffLim';
+dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
+fileStr = 'acuityModelingPrediction';
+
+if ispc
+    slash = '\';
+else
+    slash = '/';
+end
+dataFolder = [dataPath 'data' slash 'acuityModeling' slash];
 
 for k = 1:nRepeat
     for j = 1:length(subjNumAll)
     
         subjNum = subjNumAll(j);
         
-        load(['/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/acuityModeling/' fileStr 'S' num2str(subjNum) '.mat']);
+        load([dataFolder fileStr 'S' num2str(subjNum) '.mat']);
         
         if bRandomize
             subjNumAllRand = subjNumAll(randperm(length(subjNumAll)));
-            load(['/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/acuityModeling/' fileStr 'S' ...
+            load([dataFolder fileStr 'S' ...
                   num2str(subjNumAllRand(j)) '.mat'],'dprimeMetric','defocusForStim');
         end
     
@@ -85,31 +93,30 @@ for k = 1:nRepeat
         peakLocModelPredictionAll(j) = peakLocModelPrediction;
     end
     
-    %%
+    %
     
     % peakLocModelPredictionAll = [1.84 2.07 2.39 2.19 2.23 1.92 1.97 2.14];
     peakLocActualAll = [1.8635 1.9435 2.6335 2.1235 2.6435 1.9035 1.8935 2.3235];
     peakLocLBall = [1.6835 1.8135 1.5935 1.9435 2.2535 1.7935 1.5035 2.2635];
     peakLocUBall = [3.0935 3.1835 3.5635 3.1035 2.7735 2.0535 2.4535 2.4235];
     
-    if mod(k,20)==0
-        figure;
-        hold on;
-        plot(peakLocModelPredictionAll(subjNumInclude),peakLocActualAll(subjNumInclude),'ko','MarkerFaceColor',[0.56 0 1],'MarkerSize',15);
-        % errorbar(peakLocModelPredictionAll(subjNumInclude), ...
-        %          peakLocActualAll(subjNumInclude), ...
-        %          peakLocActualAll(subjNumInclude)-peakLocLBall(subjNumInclude), ...
-        %          peakLocUBall(subjNumInclude)-peakLocActualAll(subjNumInclude), ...
-        %          'ko','MarkerFaceColor',[0.56 0 1],'MarkerSize',15);
-        axis square;
-        set(gca,'FontSize',15);
-        xlim([1.5 2.8]);
-        ylim([1.5 2.8]);
-        plot([1.5 2.8],[1.5 2.8],'k--','LineWidth',1);
-        xlabel(['Predicted Peak Location (D)']);
-        ylabel(['Actual Peak Location (D)']);
-        title(['Correlation = ' num2str(corr(peakLocModelPredictionAll(subjNumInclude)',peakLocActualAll(subjNumInclude)'),3)]);
-    end
+    figure;
+    hold on;
+    plot(peakLocModelPredictionAll(subjNumInclude),peakLocActualAll(subjNumInclude),'ko','MarkerFaceColor',[0.56 0 1],'MarkerSize',15);
+    % errorbar(peakLocModelPredictionAll(subjNumInclude), ...
+    %          peakLocActualAll(subjNumInclude), ...
+    %          peakLocActualAll(subjNumInclude)-peakLocLBall(subjNumInclude), ...
+    %          peakLocUBall(subjNumInclude)-peakLocActualAll(subjNumInclude), ...
+    %          'ko','MarkerFaceColor',[0.56 0 1],'MarkerSize',15);
+    axis square;
+    set(gca,'FontSize',15);
+    xlim([1.5 2.8]);
+    ylim([1.5 2.8]);
+    plot([1.5 2.8],[1.5 2.8],'k--','LineWidth',1);
+    xlabel(['Predicted Peak Location (D)']);
+    ylabel(['Actual Peak Location (D)']);
+    title(['Correlation = ' num2str(corr(peakLocModelPredictionAll(subjNumInclude)',peakLocActualAll(subjNumInclude)'),3)]);
+
     corrShuffle(k) = corr(peakLocModelPredictionAll',peakLocActualAll');
     display(['Iteration ' num2str(k)]);
 end
