@@ -111,12 +111,14 @@ for k = 1:length(blockNumAll)
         NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
         c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65. 
         PARAMS = struct;
-        PARAMS.PupilSize=mean(table2array(ZernikeTable(:,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)
-        PARAMS.PupilFitSize=mean(table2array(ZernikeTable(:,5))); 
+                indBadPupil = table2array(ZernikeTable(:,5))==0;
+        PARAMS.PupilSize=mean(table2array(ZernikeTable(~indBadPupil,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)
+        PARAMS.PupilFitSize=mean(table2array(ZernikeTable(~indBadPupil,5))); 
         PARAMS.PupilFieldSize=PARAMS.PupilSize*2; %automatically compute the field size
         c(:,3:NumCoeffs)=table2array(ZernikeTable(:,11:width(ZernikeTable)));
         indBad = c(:,4)==0;
-        meanC = mean(c(~indBad,:),1); % TAKE MEAN OF COEFFICIENTS  
+        c(indBad,4) = mean(c(~indBad,4));
+        meanC = mean(c(1:end,:),1); % TAKE MEAN OF COEFFICIENTS  
         defocusCorrectionFactor = (1e6/(4*sqrt(3)))*((PARAMS.PupilSize/2000)^2);
         defocus875(end+1,:) = meanC(4)./defocusCorrectionFactor;
     end
@@ -164,7 +166,7 @@ wvPredAll = zeros([10 3]);
 
 for l = 1:length(wL)
     for k = 1:length(wM)
-        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZspatFilterPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL(l) wM(k) wS]);
+        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZspatFilterPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL(l) wM(k) wS],dataPath);
         optDistTag = imresize(optDistUnq',size(defocus875mean),'nearest');
         [pFit,RMSE(k)] = ARCfitLagLead(defocus875predTmp(:),defocus875mean(:),optDistTag(:),true,objFunc);
         

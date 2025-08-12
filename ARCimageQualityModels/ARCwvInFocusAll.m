@@ -1,11 +1,12 @@
 %% GENERATE MODEL PREDICTIONS TOGETHER WITH ACTUAL DATA
 
+dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 subjNum = [1 3 5 10 16 17 18 20];
 wvMeanAll = [];
 wvPredAll = [];
 
 for i = 1:length(subjNum)
-    [aic, pFit, wvMean, wvPred] = ARCtestWvInFocusMeanZspatFilterLMSeffectPlotWave(subjNum(i),'LminusM');
+    [aic, pFit, wvMean, wvPred] = ARCtestWvInFocusMeanZspatFilterLMSeffectPlotWave(subjNum(i),'LMS',dataPath);
     wvMeanAll(:,:,i) = wvMean;
     wvPredAll(:,:,i) = wvPred;
 end 

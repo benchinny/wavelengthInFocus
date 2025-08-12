@@ -1,4 +1,4 @@
-function [dprimeMetric, dprime, dprimeCI] = ARCacuityModelingPrediction(subjNum)
+function [dprimeMetric, dprime, dprimeCI] = ARCacuityModelingPrediction(subjNum, dataPath)
 
 % MAKE SURE LENS TRANSMITTANCE IN ISETBIO IS SET TO 1 EVERYWHERE!
 
@@ -7,7 +7,13 @@ ieInit;
 
 %% Set up display struct and build Ben's stimulus
 
-saveFolder = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/acuityModeling/';
+if ispc
+    slash = '\';
+else
+    slash = '/';
+end
+
+saveFolder = [dataPath 'data' slash 'acuityModeling' slash];
 
 % Setting up display properties
 d = displayCreate('OLED-Samsung');
@@ -18,7 +24,7 @@ d = displaySet(d,'dpi',378); % simulated screen distance
 bUseBVAMScal = 1; % if using BVAMS calibration data
 
 if bUseBVAMScal
-    drivePath = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/BVAMS_calibration_files/Ben_calibration_July_6_2024/';
+    drivePath = [dataPath 'BVAMS_calibration_files' slash 'Ben_calibration_July_6_2024' slash];
     load([drivePath 'redPrimaryJuly0624_initialPositionFocus3_100.mat']);
     d.spd(:,1) = energy;
     load([drivePath 'greenPrimaryJuly0624_initialPositionFocus3_100.mat']);
@@ -112,16 +118,20 @@ PARAMS.PupilSize = 7; %default values - will be replaced depending on choices be
 PARAMS.PupilFieldSize =6; %default values - will be replaced depending on choices below
 PARAMS.PupilFitSize = 7; %default values - will be replaced depending on choices below
 
-wvfFiles = ARCacuAnalysisWvfSubj(subjNum);
+[cAcc, ~, ~] = ARCnlz_mainExpSortColorAbb(subjNum+10,dataPath);
 
-dataFolder = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/csvFiles/SUBJ/';
+indBad = cAcc(:,4)==0 | cAcc(:,4)<-10;
+meanCacc = mean(cAcc(~indBad,:),1); % TAKE MEAN OF COEFFICIENTS
+
+dataFolder = [dataPath 'data' slash 'csvFiles' slash 'SUBJ' slash];
 
 cAll = [];
 
 % HARD CODED MODEL PREDICTIONS FROM ARCtestWvInFocusMeanZspatFilterLMSeffectFitOnly
-% modelPrediction875nmPurpleAt2pt5all = [1.36 1.756 1.864 1.633 1.463 1.815 1.355 1.603];
-modelPrediction875nmPurpleAt2pt5all = [1.461 1.851 1.957 1.892 1.216 1.837 1.511 1.561];
+modelPrediction875nmPurpleAt2pt5all = [1.36 1.756 1.864 1.633 1.463 1.815 1.355 1.603];
+% modelPrediction875nmPurpleAt2pt5all = [1.461 1.851 1.957 1.892 1.216 1.837 1.511 1.561];
 
+wvfFiles = ARCacuAnalysisWvfSubj(subjNum, dataPath);
 for i = 1:length(wvfFiles)
     ZernikeTable = readtable([dataFolder wvfFiles{i}]);
     NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
@@ -134,8 +144,9 @@ for i = 1:length(wvfFiles)
     cAll = [cAll; c];
 end
 
-indBad = cAll(:,4)==0 | cAll(:,4)<-10;
-meanC = mean(cAll(~indBad,:),1); % TAKE MEAN OF COEFFICIENTS
+% indBad = cAll(:,4)==0 | cAll(:,4)<-10;
+% meanC = mean(cAll(~indBad,:),1); % TAKE MEAN OF COEFFICIENTS
+meanC = meanCacc;
 
 dprimeMetric = [];
 defocusScaleFactor = 0.5774;
@@ -239,7 +250,7 @@ parfor i = 1:length(defocusForStim)
 end
 %%
 
-[unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport] = ARCacuAnalysisSubjective(subjNum,0);
+[unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport] = ARCacuAnalysisSubjective(subjNum,0,dataPath);
 
 figure;
 set(gcf,'Position',[342 460 1052 440]);
@@ -259,7 +270,7 @@ xlabel('Wavelength in focus (nm)');
 ylabel('D-prime metric');
 set(gca,'FontSize',15);
 
-save([saveFolder 'acuityModelingPredictionLumS' num2str(subjNum)],'dprimeMetric','defocusForStim', ...
+save([saveFolder 'acuityModelingPredictionS' num2str(subjNum)],'dprimeMetric','defocusForStim', ...
     'modelPrediction875nmPurpleAt2pt5','dprime','dprimeCI','unqFocDst','wvInFocusForStim');
 
 end
