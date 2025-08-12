@@ -50,8 +50,9 @@ for k = 1:length(blockNumAll)
         NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
         c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65. 
         PARAMS = struct;
-        PARAMS.PupilSize=mean(table2array(ZernikeTable(:,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)
-        PARAMS.PupilFitSize=mean(table2array(ZernikeTable(:,5))); 
+        indBadPupil = table2array(ZernikeTable(:,5))==0;
+        PARAMS.PupilSize=mean(table2array(ZernikeTable(~indBadPupil,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)
+        PARAMS.PupilFitSize=mean(table2array(ZernikeTable(~indBadPupil,5))); 
         PARAMS.PupilFieldSize=PARAMS.PupilSize*2; %automatically compute the field size
         c(:,3:NumCoeffs)=table2array(ZernikeTable(:,11:width(ZernikeTable)));
         indBad = c(:,4)==0;
@@ -67,7 +68,13 @@ rgbUnq = unique(rgbAll,'rows');
 
 wLM = 0.4:0.05:1.4; % ratio of (L+M) to S
 wLprop = 0.25:(0.1/3):0.85; % ratio of L to M
-coneWeightsFolder = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/coneWeightsErrorSpatFilter/colorMechPredictions/';
+
+if ispc
+    slash = '\';
+else
+    slash = '/';
+end
+coneWeightsFolder = [dataPath 'data' slash 'coneWeightsErrorSpatFilter' slash 'colorMechPredictions' slash];
 
 rgbLumNorm = [];
 rgbLumNorm(:,1) = (rgbUnq(:,1).^2.5)./0.2442;
