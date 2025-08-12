@@ -1,12 +1,12 @@
-function filenameCell = ARCacuAnalysisWvfSubj(subjNum)
+function filenameCell = ARCacuAnalysisWvfSubj(subjNum,dataPath)
 
-if strcmp(getenv("USER"),'ben')
-   dataFolder= '/home/ben/Documents/ARchroma/FIAT/csvFiles/SUBJ/';
-elseif strcmp(getenv("USER"),'benchin')
-   dataFolder = '/Users/benchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/csvFiles/SUBJ/';
+if ispc
+    slash = '\';
 else
-   dataFolder = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/csvFiles/SUBJ/';
+    slash = '/';
 end
+
+dataFolder = [dataPath 'data' slash 'csvFiles' slash 'SUBJ' slash];
 
 dirAll = dir(dataFolder);
 
