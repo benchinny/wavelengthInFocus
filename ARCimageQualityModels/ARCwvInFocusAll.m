@@ -4,11 +4,15 @@ dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\'
 subjNum = [1 3 5 10 16 17 18 20];
 wvMeanAll = [];
 wvPredAll = [];
+aicAll = [];
+dfPredPurpleAll = [];
 
 for i = 1:length(subjNum)
-    [aic, pFit, wvMean, wvPred] = ARCtestWvInFocusMeanZspatFilterLMSeffectPlotWave(subjNum(i),'LMS',dataPath);
+    [aic, pFit, wvMean, wvPred, dfPredPurple] = ARCtestWvInFocusMeanZspatFilterLMSeffectPlotWave(subjNum(i),'LMS',dataPath);
     wvMeanAll(:,:,i) = wvMean;
     wvPredAll(:,:,i) = wvPred;
+    aicAll(i) = aic;
+    dfPredPurpleAll(i) = dfPredPurple;
 end 
 
 %% MAKE FIGURE 4B IN THE PAPER
@@ -21,7 +25,7 @@ else
 end
 foldername = [dataPath 'data' slash 'PresavedFigureData' slash];
 
-load([foldername 'wvMeanAndPred.mat']);
+load([foldername 'wvMeanAndPredNew.mat']);
 
 symbDist = 'sod';
 conditionsOrderedNorm = [0.25 0.00 1.00; ...

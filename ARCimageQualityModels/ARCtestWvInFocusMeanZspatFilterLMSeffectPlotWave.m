@@ -1,4 +1,4 @@
-function [aic, pFit, wvMeanAll, wvPredAll] = ARCtestWvInFocusMeanZspatFilterLMSeffectPlotWave(subjNum,modelType,dataPath)
+function [aic, pFit, wvMeanAll, wvPredAll, dfPredPurple] = ARCtestWvInFocusMeanZspatFilterLMSeffectPlotWave(subjNum,modelType,dataPath)
 
 if ispc
     slash = '\';
@@ -187,7 +187,10 @@ for l = 1:length(wL)
             dfPred1to5 = -(defocus875predTmp(ind(1:5),i)-optDistUnq(i)*pFit(1)-pFit(2));
             wvPred1to5 = humanWaveDefocusInvertARC(875,-(dfPred1to5+optDistUnq(i)),subjNum);
             dfMean1to5 = -defocus875mean(ind(1:5),i);
-            wvMean1to5 = humanWaveDefocusInvertARC(875,-(dfMean1to5+optDistUnq(i)),subjNum);     
+            wvMean1to5 = humanWaveDefocusInvertARC(875,-(dfMean1to5+optDistUnq(i)),subjNum);
+            if i==2
+               dfPredPurple = dfPred1to5(3);
+            end
             plot(1:5,wvPred1to5,'k-');
             % plot(1:length(ind),defocus875mean(ind,i),'k-');
             for j = 1:5
