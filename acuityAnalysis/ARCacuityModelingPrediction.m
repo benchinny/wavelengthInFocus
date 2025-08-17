@@ -46,15 +46,17 @@ rVal = 0.56;
 bVal = 1.00;
 gVal = 0.00;
 
-% GABOR
+% GABOR PARAMETERS
 frqCpd = 15;
 contrast = 1.0;
 rgbAll = [rVal gVal bVal];
 k0 = 1;
+% GAMMA (BASED ON BVAMS CALIBRATION)
 gammaR = 2.5;
 gammaG = 2.7;
 gammaB = 2.3;
 
+% MODEL ACUITY STIMULUS FOR +15 DEG ORIENTATION
 acuStimOrig1 = ARC2Dgabor(smpPos(260,390),[],0,0,[frqCpd 3*frqCpd 5*frqCpd 7*frqCpd], ...
                [contrast contrast/3 contrast/5 contrast/7],15,90,0.2,0.2, ...
                [rgbAll(k0,1)^gammaR rgbAll(k0,2)^gammaG rgbAll(k0,3)^gammaB],1,1,0,0);
@@ -64,6 +66,7 @@ acuStimOrig1(:,:,2) = acuStimOrig1(:,:,2).^(1/gammaG);
 acuStimOrig1(:,:,3) = acuStimOrig1(:,:,3).^(1/gammaB);
 I1 = acuStimOrig1;
 
+% MODEL ACUITY STIMULUS FOR -15 DEG ORIENTATION
 acuStimOrig2 = ARC2Dgabor(smpPos(260,390),[],0,0,[frqCpd 3*frqCpd 5*frqCpd 7*frqCpd], ...
                [contrast contrast/3 contrast/5 contrast/7],-15,90,0.2,0.2, ...
                [rgbAll(k0,1)^gammaR rgbAll(k0,2)^gammaG rgbAll(k0,3)^gammaB],1,1,0,0);
@@ -118,9 +121,10 @@ PARAMS.PupilSize = 7; %default values - will be replaced depending on choices be
 PARAMS.PupilFieldSize =6; %default values - will be replaced depending on choices below
 PARAMS.PupilFitSize = 7; %default values - will be replaced depending on choices below
 
+% GET ZERNIKE COEFFICIENTS FOR PARTICIPANT
 [cAcc, ~, ~] = ARCnlz_mainExpSortColorAbb(subjNum+10,dataPath);
 
-indBad = cAcc(:,4)==0 | cAcc(:,4)<-10;
+indBad = cAcc(:,4)==0 | cAcc(:,4)<-10; % REMOVE BLINKS
 meanCacc = mean(cAcc(~indBad,:),1); % TAKE MEAN OF COEFFICIENTS
 
 dataFolder = [dataPath 'data' slash 'csvFiles' slash 'SUBJ' slash];
@@ -128,10 +132,14 @@ dataFolder = [dataPath 'data' slash 'csvFiles' slash 'SUBJ' slash];
 cAll = [];
 
 % HARD CODED MODEL PREDICTIONS FROM ARCtestWvInFocusMeanZspatFilterLMSeffectFitOnly
+% OLD BLUE-YELLOW MODEL
 % modelPrediction875nmPurpleAt2pt5all = [1.36 1.756 1.864 1.633 1.463 1.815 1.355 1.603];
+% OLD LUMINANCE MODEL
 % modelPrediction875nmPurpleAt2pt5all = [1.461 1.851 1.957 1.892 1.216 1.837 1.511 1.561];
+% FOR CURRENT BLUE-YELLOW MODEL
 modelPrediction875nmPurpleAt2pt5all = [1.29 1.66 1.79 1.55 1.41 1.71 1.27 1.52];
 
+% ---THIS BLOCK IS UNUSUED (USES MEASURED RATHER THAN PREDICTED DEFOCUS---
 wvfFiles = ARCacuAnalysisWvfSubj(subjNum, dataPath);
 for i = 1:length(wvfFiles)
     ZernikeTable = readtable([dataFolder wvfFiles{i}]);
@@ -144,17 +152,15 @@ for i = 1:length(wvfFiles)
     c(:,3:NumCoeffs)=table2array(ZernikeTable(:,11:width(ZernikeTable)));
     cAll = [cAll; c];
 end
-
+% ------- END UNUSED BLOCK -----------------
 % indBad = cAll(:,4)==0 | cAll(:,4)<-10;
 % meanC = mean(cAll(~indBad,:),1); % TAKE MEAN OF COEFFICIENTS
 meanC = meanCacc;
 
 dprimeMetric = [];
-defocusScaleFactor = 0.5774;
+defocusScaleFactor = 0.5774; % FOR 4MM PUPIL SIZE
 
-defocusOrig = meanC(4);
-defocusOrigScaled = defocusOrig/defocusScaleFactor;
-
+% GET HARD-CODED PREDICTIONS
 if subjNum==1
     modelPrediction875nmPurpleAt2pt5 = modelPrediction875nmPurpleAt2pt5all(1);
 elseif subjNum==3
@@ -175,7 +181,9 @@ else
     error('ARCacuityModelingPrediction: invalid subject number!');
 end
 
+% MODEL ACUITY STIMULUS AT DIFFERENT DISTANCES
 defocusForStim = [0.6:0.1:4.4]-modelPrediction875nmPurpleAt2pt5;
+% CONVERT TO WAVELENGTH-IN-FOCUS
 wvInFocusForStim = humanWaveDefocusInvertARC(875,-defocusForStim,subjNum);
 
 parfor i = 1:length(defocusForStim)
@@ -210,6 +218,7 @@ parfor i = 1:length(defocusForStim)
     % Convert to siData format as well as wavefront object
     [siPSFData, wvfP] = wvf2SiPsfARC(wvfP,'showBar',false,'nPSFSamples',size(I1,2),'umPerSample',1.1512); % 1.1512
     oi = wvf2oi(wvfP); % CONVERT TO OPTICS OBJECT
+    % PADDING TO MAKE EVERYTHING SAME SIZE
     paddingXCpsf = round((size(siPSFData.psf,2)-size(s1.data.photons,2))/2);
     paddingYRpsf = round((size(siPSFData.psf,1)-size(s1.data.photons,1))/2); 
     indNotPadded = {(paddingYRpsf+1):(size(siPSFData.psf,1)-paddingYRpsf) ...
@@ -220,17 +229,20 @@ parfor i = 1:length(defocusForStim)
     end
     oig1 = oiCompute(oi, s1); % compute optical image of stimulus
     oig2 = oiCompute(oi, s2); % compute optical image of stimulus
-
+    
+    % CONVERT FROM PHOTONS TO ENERGY TO LUMINANCE
     photonsXW1 = RGB2XWFormat(oig1.data.photons); % FORMATTING
     energyXW1 = Quanta2Energy(wave,photonsXW1);
     lumImgXW1 = sum(bsxfun(@times,energyXW1,squeeze(T_sensorXYZ(2,:))),2);
     lumImgXY1 = reshape(lumImgXW1,[size(oig1.data.photons,1) size(oig1.data.photons,2)]);
 
+    % CONVERT FROM PHOTONS TO ENERGY TO LUMINANCE
     photonsXW2 = RGB2XWFormat(oig2.data.photons); % FORMATTING
     energyXW2 = Quanta2Energy(wave,photonsXW2);
     lumImgXW2 = sum(bsxfun(@times,energyXW2,squeeze(T_sensorXYZ(2,:))),2);
     lumImgXY2 = reshape(lumImgXW2,[size(oig2.data.photons,1) size(oig2.data.photons,2)]);
-
+    
+    % CONVERT TO D-PRIME
     % dprimeMetric(i) = sqrt(sum((lumImgXW2-lumImgXW1).^2));
     dprimeMetricDenom = sqrt(sum(sum((lumImgXW2+lumImgXW1).*log(lumImgXW2./lumImgXW1).^2)));
     dprimeMetricNumer = sum(sum((lumImgXW2-lumImgXW1).*log(lumImgXW2./lumImgXW1)));
@@ -249,7 +261,7 @@ parfor i = 1:length(defocusForStim)
     colormap gray;
     display(['D-prime iteration ' num2str(i)]);
 end
-%%
+%% PREDICTIONS WITHOUT THE FUDGE DEPTH-OF-FOCUS FREE PARAMETER
 
 [unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport] = ARCacuAnalysisSubjective(subjNum,0,dataPath);
 

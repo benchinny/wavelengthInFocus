@@ -1,6 +1,5 @@
 %% LOADED DATA GENERATED WITH FIRST PART OF ARCnlz_mainExpAvg
 
-bLCAest = true;
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 if ispc
     slash = '\';
@@ -8,14 +7,11 @@ else
     slash = '/';
 end
 
-if bLCAest
-   load([dataPath 'data' slash 'PresavedFigureData' slash 'allExp1DataRGB.mat']);
-else
-   load([dataPath 'data' slash 'PresavedFigureData' slash 'allExp1DataRGBunscreened.mat']);
-end
+load([dataPath 'data' slash 'PresavedFigureData' slash 'allExp1DataRGB.mat']);
 
-%% GENERATE FIGURE 3 (ANNOYINGLY SPLIT INTO 3 FIGURES)
+%% GENERATE FIGURE 3
 
+% UNIQUE COLOR CONDITIONS IN TERMS OF PROPORTION OF MAX LUMINANCE
 rgbLumNormCndUnq = [0.2500         0    1.0000; ...
                     0.5000         0    1.0000; ...
                     1.0000         0    1.0000; ...
@@ -32,16 +28,12 @@ nBoots = 1000;
 
 defocusAt875objDistCenteredCell = {};
 wvInFocusSortedCell = {};
-optDistUnq = [1.5 2.5 3.5];
-if bLCAest
-   subjSymbols = 'sd+x^><v';
-else
-   subjSymbols = 'sd+x*^><vph.-';
-end
+optDistUnq = [1.5 2.5 3.5]; % UNIQUE OPTICAL DISTANCES
+subjSymbols = 'sd+x^><v';
 
 for k = 1:length(optDistUnq)
     for i = 1:size(rgbLumNormCndUnq,1)
-        % GET ALL CELL INDICES WITH UNIQUE COLOR
+        % GET ALL CELL INDICES WITH UNIQUE COLOR AND DISTANCE
         indRgbLumNormCnd = find(abs(rgbLumNormCndAll(:,1)-rgbLumNormCndUnq(i,1))<0.001 & ...
                                 abs(rgbLumNormCndAll(:,2)-rgbLumNormCndUnq(i,2))<0.001 & ...
                                 abs(rgbLumNormCndAll(:,3)-rgbLumNormCndUnq(i,3))<0.001 & ...
@@ -51,13 +43,18 @@ for k = 1:length(optDistUnq)
         subjNumTagInd = subjNumTag(indRgbLumNormCnd);
         subjNumTagTmp = [];
         for j = 1:length(indRgbLumNormCnd)
+            % DEFOCUS AT 875NM RELATIVE TO OBJECT DISTANCE
             defocusAt875objDistCentered = [defocusAt875objDistCentered; defocusAt875cellAll{indRgbLumNormCnd(j)}-optDistCndAll(indRgbLumNormCnd(j))];
+            % SORTING WAVELENGTH-IN-FOCUS VALUES FROM PRE-SAVED DATA
             wvInFocusSorted = [wvInFocusSorted; wvInFocusCellAll{indRgbLumNormCnd(j)}];
+            % SORTING DATA BY PARTICIPANT
             subjNumTagTmp = [subjNumTagTmp; subjNumTagInd(j).*ones(size(defocusAt875cellAll{indRgbLumNormCnd(j)}))];
         end
         subjNumTagUnq = unique(subjNumTagTmp);
         defocusAt875objDistCenteredAvg = [];
         wvInFocusAvg = [];
+        % AVERAGING DEFOCUS AND WAVELENGTH-IN-FOCUS ACROSS TRIALS FOR EACH
+        % PARTICIPANT
         for j = 1:length(subjNumTagUnq)
             defocusAt875objDistCenteredAvg(j) = mean(defocusAt875objDistCentered(subjNumTagTmp==subjNumTagUnq(j)));
             wvInFocusAvg(j) = mean(wvInFocusSorted(subjNumTagTmp==subjNumTagUnq(j)));
