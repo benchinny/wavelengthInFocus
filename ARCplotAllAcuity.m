@@ -24,6 +24,7 @@ for k = 1:nRepeat
     
         subjNum = subjNumAll(j);
         
+        % LOAD PRE-GENERATED DATA
         load([dataPath 'data' slash 'acuityModeling' slash fileStr 'S' num2str(subjNum) '.mat']);
         
         if bRandomize
@@ -38,8 +39,11 @@ for k = 1:nRepeat
         % % dprimeScale = max(dprime(:)./max(dprimeMetric));
         % dprimeScale = dprime2regress\dprime';
         
+        % 'DEPTH-OF-FOCUS' PARAMETER
         shiftVals = -0.25:0.05:0.25;
         
+        % SHIFTING PREDICTED D-PRIME CURVE AND REGRESSING AGAINST ACTUAL
+        % D-PRIME VALUES TO GET THE BEST FIT
         for i = 1:length(shiftVals)
             dprime2regressTmp = interp1(defocusForStim+modelPrediction875nmPurpleAt2pt5+shiftVals(i),dprimeMetric,2.5+unqFocDst.*scaleFac);
             dprimeScaleTmp(i) = dprime2regressTmp\dprime';

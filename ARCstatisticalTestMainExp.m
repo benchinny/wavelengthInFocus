@@ -1,4 +1,4 @@
-%%
+%% JUST SETTING UP PATHS TO PRE-SAVED DATA
 
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 if ispc
@@ -9,7 +9,7 @@ end
 
 load([dataPath 'data' slash 'PresavedFigureData' slash 'allExp1DataRGB.mat']);
 
-%%
+%% CREATE COLUMNS FOR TABLE FOR LINEAR MODEL
 
 % CODING EACH PARTICIPANT NUMBER AS A LETTER SO MATLAB DOESN'T INTERPRET
 % PARTICIPANT NUMBERS AS CONTINUOUS NUMERIC DATA

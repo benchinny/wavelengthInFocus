@@ -1,5 +1,7 @@
 %% MAKE FIGURE 5D
 
+% A LOT OF THESE PARAMETERS ARE HOLDOVERS FROM WHEN WE DID THE 'SHUFFLE'
+% ANALYSIS
 bRandomize = false;
 bPlot = false;
 subjNumAll = [1 3 5 10 16 17 18 20];
@@ -23,22 +25,26 @@ for k = 1:nRepeat
     
         subjNum = subjNumAll(j);
         
+        % LOAD PRE-GENERATED D-PRIME DATA FOR ACUITY TASK
         load([dataFolder fileStr 'S' num2str(subjNum) '.mat']);
         
-        if bRandomize
+        if bRandomize % IF SHUFFLING
             subjNumAllRand = subjNumAll(randperm(length(subjNumAll)));
             load([dataFolder fileStr 'S' ...
                   num2str(subjNumAllRand(j)) '.mat'],'dprimeMetric','defocusForStim');
         end
     
-        scaleFac = 0.8;
+        scaleFac = 0.8; % ACCOUNTING FOR PROPERTIES OF BVAMS
         % dprime2regress = interp1(defocusForStim+modelPrediction875nmPurpleAt2pt5,dprimeMetric,2.5+unqFocDst.*scaleFac);
         % 
         % % dprimeScale = max(dprime(:)./max(dprimeMetric));
         % dprimeScale = dprime2regress\dprime';
         
+        % 'DEPTH-OF-FOCUS' PARAMETER
         shiftVals = -0.25:0.05:0.25;
         
+        % SHIFT PREDICTED D-PRIME CURVES AND REGRESS AGAINST ACTUAL DATA TO
+        % FIT 'DEPTH-OF-FOCUS' PARAMETER
         for i = 1:length(shiftVals)
             dprime2regressTmp = interp1(defocusForStim+modelPrediction875nmPurpleAt2pt5+shiftVals(i),dprimeMetric,2.5+unqFocDst.*scaleFac);
             dprimeScaleTmp(i) = dprime2regressTmp\dprime';
@@ -96,6 +102,7 @@ for k = 1:nRepeat
     %
     
     % peakLocModelPredictionAll = [1.84 2.07 2.39 2.19 2.23 1.92 1.97 2.14];
+    % HARD-CODED ACTUAL PEAK LOCATIONS AND UPPER/LOWER BOUNDS
     peakLocActualAll = [1.8635 1.9435 2.6335 2.1235 2.6435 1.9035 1.8935 2.3235];
     peakLocLBall = [1.6835 1.8135 1.5935 1.9435 2.2535 1.7935 1.5035 2.2635];
     peakLocUBall = [3.0935 3.1835 3.5635 3.1035 2.7735 2.0535 2.4535 2.4235];
@@ -117,7 +124,7 @@ for k = 1:nRepeat
     ylabel(['Actual Peak Location (D)']);
     title(['Correlation = ' num2str(corr(peakLocModelPredictionAll(subjNumInclude)',peakLocActualAll(subjNumInclude)'),3)]);
 
-    corrShuffle(k) = corr(peakLocModelPredictionAll',peakLocActualAll');
+    % corrShuffle(k) = corr(peakLocModelPredictionAll',peakLocActualAll');
     display(['Iteration ' num2str(k)]);
 end
 

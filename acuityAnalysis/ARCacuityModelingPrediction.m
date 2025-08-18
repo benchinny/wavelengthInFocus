@@ -138,6 +138,8 @@ cAll = [];
 % modelPrediction875nmPurpleAt2pt5all = [1.461 1.851 1.957 1.892 1.216 1.837 1.511 1.561];
 % FOR CURRENT BLUE-YELLOW MODEL
 modelPrediction875nmPurpleAt2pt5all = [1.29 1.66 1.79 1.55 1.41 1.71 1.27 1.52];
+% FOR CURRENT LUMINANCE MODEL
+% modelPrediction875nmPurpleAt2pt5all = [1.39 1.76 1.88 1.81 1.16 1.74 1.39 1.49];
 
 % ---THIS BLOCK IS UNUSUED (USES MEASURED RATHER THAN PREDICTED DEFOCUS---
 wvfFiles = ARCacuAnalysisWvfSubj(subjNum, dataPath);

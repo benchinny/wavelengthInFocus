@@ -102,7 +102,7 @@ for i = 1:length(blockNums)
         [ZernikeTable, ~, ~, ~] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumsTmp(j),0,dataPath);
         NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
         c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65.
-        indBadPupil = table2array(ZernikeTable(:,5))==0;
+        indBadPupil = table2array(ZernikeTable(:,5))==0; % GET RID OF BLINKS IN PUPIL SIZE VECTOR!
         PARAMS.PupilSize=mean(table2array(ZernikeTable(~indBadPupil,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)
         PARAMS.PupilFitSize=mean(table2array(ZernikeTable(~indBadPupil,5))); 
         PARAMS.PupilFieldSize=PARAMS.PupilSize*2; %automatically compute the field size
@@ -117,13 +117,13 @@ for i = 1:length(blockNums)
     meanv00all = [meanv00all; AFCp.meanv00(trialNumsTmp)./1.2255];
 end
 
-% GETTING DEFOCUS AT 550NM
+% GETTING DEFOCUS AT 550NM and 875NM (875NM IS WHAT WAS MEASURED)
 defocusCorrectionFactor = (1e6/(4*sqrt(3)))*((PARAMS.PupilSize/2000)^2);
 defocusAt550 = humanWaveDefocusARC(550,875,subjNum-10)+meanC(:,4)./defocusCorrectionFactor;
 defocusAt875 = meanC(:,4)./defocusCorrectionFactor;
 
 % SORTING CONDITIONS BY COLOR
-lumScaleRGB = [4.0888 9.6669 1];
+lumScaleRGB = [4.0888 9.6669 1]; % SCALE FACTOR FOR NORMALIZING RGB TO 1
 
 gammaRGB = [2.5 2.7 2.3];
 
@@ -155,12 +155,14 @@ for j = 1:length(optDistToCheckAll)
     optDistToCheck = optDistToCheckAll(j);
     indDist = abs(meanv00all-optDistToCheck)<0.01;
     for i = 1:size(conditionsOrderedNorm,1)
+        % GET ALL TRIALS FOR EACH COMBINATION OF COLOR AND DISTANCE
         ind = abs(rgbLumNorm(:,1)-conditionsOrderedNorm(i,1))<0.01 & ...
               abs(rgbLumNorm(:,2)-conditionsOrderedNorm(i,2))<0.01 & ...
               abs(rgbLumNorm(:,3)-conditionsOrderedNorm(i,3))<0.01 & ...
               abs(meanv00all-optDistToCheck)<0.01;
         defocusAt550tmp = defocusAt550(ind);
         defocusAt875tmp = defocusAt875(ind);
+        % DEFOCUS RELATIVE TO OPTICAL DISTANCE
         diffFromOptDist = defocusAt550tmp-meanv00all(ind);
         % EXCLUDE DATA FOR WHICH PARTICIPANT WAS ACCOMMODATING OUTSIDE OF
         % VISIBLE RANGE

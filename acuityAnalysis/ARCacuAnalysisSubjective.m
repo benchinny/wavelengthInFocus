@@ -256,6 +256,7 @@ focStmOptDstIncr = [];
 rspAcu = [];
 stimOrientation = [];
 
+% SORTING DATA
 for i = 1:length(filenames)
     load(filenames{i});
     rgb = [rgb; AFCp.rgb];
@@ -281,6 +282,7 @@ for i = 1:length(unqFocDst)
      PCci(:,i) = binoinv([0.025 0.975],sum(focStmOptDstIncr==unqFocDst(i)),PC(i))./sum(focStmOptDstIncr==unqFocDst(i));
 end
 
+% FITTING SPLINE
 PCfitSupport = min(unqFocDst.*scaleFac):0.01:max(unqFocDst.*scaleFac);
 PCfit = spline(unqFocDst.*scaleFac,PC,PCfitSupport);
 [~,indBest] = max(PCfit);
@@ -288,7 +290,7 @@ bestDist = PCfitSupport(indBest);
 
 nBoots = 500;
 if nBoots>0
-    for j = 1:nBoots
+    for j = 1:nBoots % BOOTSTRAPPING
         for i = 1:length(unqFocDst)
             indAnalysis = focStmOptDstIncr==unqFocDst(i);
             indBoots = randsample(find(indAnalysis),sum(indAnalysis),'true');
@@ -302,6 +304,7 @@ if nBoots>0
 end
 bestDistCI = quantile(defocusMeasuredBoots,[0.025 0.975]);
 
+% CONVERTING TO D-PRIME
 epsilonPC = 0.99;
 PCfitDP = PCfit;
 PCfitDP(PCfitDP>epsilonPC) = epsilonPC;

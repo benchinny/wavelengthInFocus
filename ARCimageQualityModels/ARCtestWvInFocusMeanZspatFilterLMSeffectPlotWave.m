@@ -10,7 +10,8 @@ modelCompFolder = [dataPath 'data' slash 'AICmodelComparisons' slash];
 
 objFunc = 'RMS';
 
-if strcmp(modelType,'LMS')
+% LOAD CONE WEIGHTS
+if strcmp(modelType,'LMS') % IF BLUE-YELLOW OPPONENT MODEL
     wS = -1;
     if subjNum==20
         wS = -0.25;
@@ -30,7 +31,7 @@ if strcmp(modelType,'LMS')
     nParams = 4;
 end
 
-if strcmp(modelType,'LM')
+if strcmp(modelType,'LM') % IF LUMINANCE MODEL WITH FREE WEIGHTS
     wS = 0;
     load([coneWeightsFolder 'S' num2str(subjNum) 'wvInFocusModelResults' num2str(round(-wS*10)) '.mat'],'RMSEall','wS','wLM','wLprop');
     
@@ -44,7 +45,7 @@ if strcmp(modelType,'LM')
     nParams = 3;
 end
 
-if strcmp(modelType,'LminusM')
+if strcmp(modelType,'LminusM') % IF RED-GREEN OPPONENT MODEL
     wS = 0;
     load([coneWeightsFolder 'S' num2str(subjNum) 'wvInFocusModelResultsLminusM.mat'],'RMSEall','wLM','wLprop');
     
@@ -58,7 +59,7 @@ if strcmp(modelType,'LminusM')
     nParams = 3;
 end
 
-if strcmp(modelType,'Lum')
+if strcmp(modelType,'Lum') % IF LUMINANCE MODEL WITH V-LAMBDA
     wL = 0.72;
     wM = 0.28;
     wS = 0;
@@ -100,6 +101,7 @@ defocus875 = [];
 optDistAll = [];
 rgbAll = [];
 
+% LOADING EMPIRCAL DATA TO PLOT WITH PREDICTIONS
 for k = 1:length(blockNumAll)
     AFCp = ARCloadFileBVAMS(subjNum+10,blockNumAll(k),dataPath);
     optDistAll = [optDistAll; AFCp.meanv00./1.2255];
@@ -126,6 +128,7 @@ end
 
 rgbUnq = unique(rgbAll,'rows');
 
+% NORMALIZE RGB VALUES SO MAX LUMINANCE IS 1
 rgbLumNorm = [];
 rgbLumNorm(:,1) = (rgbUnq(:,1).^2.5)./0.2442;
 rgbLumNorm(:,2) = (rgbUnq(:,2).^2.7)./0.1037;
@@ -166,8 +169,11 @@ wvPredAll = zeros([10 3]);
 
 for l = 1:length(wL)
     for k = 1:length(wM)
+        % IMPORTANT THINGS HAPPENING IN HELPER FUNCTION: GENERATE
+        % PREDICTIONS OF DEFOCUS FOR EACH CONDITION
         [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZspatFilterPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL(l) wM(k) wS],dataPath);
         optDistTag = imresize(optDistUnq',size(defocus875mean),'nearest');
+        % FIT LAGS AND LEADS
         [pFit,RMSE(k)] = ARCfitLagLead(defocus875predTmp(:),defocus875mean(:),optDistTag(:),true,objFunc);
         
         if k==1
@@ -176,12 +182,14 @@ for l = 1:length(wL)
             RMSElum = min(RMSE0.RMSEall(1,:));
         end
         
+        % SORTING DATA FOR PLOTTING
         defocus875pred = [];
         defocus875mean2fit = [];
         figure;
         set(gcf,'Position',[437 314 729 420]);
         subplot(1,2,1);
         hold on;
+        % 'NO GREEN' CONDITIONS ARE INDICES 1 TO 5
         for i = 1:size(defocus875predTmp,2)
             hold on;
             dfPred1to5 = -(defocus875predTmp(ind(1:5),i)-optDistUnq(i)*pFit(1)-pFit(2));
@@ -210,6 +218,7 @@ for l = 1:length(wL)
         xlim([0 6]);
 
         subplot(1,2,2);
+        % 'GREEN CONDITIONS ARE INDICES 6 TO 10
         for i = 1:size(defocus875predTmp,2)
             hold on;
             dfPred6to10 = -(defocus875predTmp(ind(6:10),i)-optDistUnq(i)*pFit(1)-pFit(2));

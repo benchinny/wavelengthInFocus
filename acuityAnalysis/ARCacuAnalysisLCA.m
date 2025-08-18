@@ -11,6 +11,7 @@ dataDirectory = [dataPath 'data' slash 'ARC' slash];
 
 bSave = 0;
 
+% DATA TO LOAD
 if subj==1
     % filenames = {
     %              [dataDirectory 'S1001V12_AFC_RightACL0_2408161637.mat'] ...
@@ -244,7 +245,7 @@ else
                    1111 493 560 420];
 end
 
-scaleFac = 0.816;
+scaleFac = 0.816; % ACCOUNT FOR OPTICAL PROPERTIES OF BVAMS
 % meanFocInt = 5;
 defocusLCAmeasured = [];
 dprimeFitAll = {};
@@ -253,7 +254,7 @@ if bPLOT
     figure;
     % set(gcf,'Position',[149 495 1277 420]);
 end
-for rgbAcuCnd = 1:3
+for rgbAcuCnd = 1:3 % SORT DATA BY COLOR
     unqFocDst = unique(focStmOptDstIncr(indAcuRB==rgbAcuCnd));
     for i = 1:length(unqFocDst)
         indAnalysis = abs(focStmOptDstIncr-unqFocDst(i))<0.001 & indAcuRB==rgbAcuCnd;
@@ -263,7 +264,7 @@ for rgbAcuCnd = 1:3
     end
     
     if nBoots>0
-        for j = 1:nBoots
+        for j = 1:nBoots % BOOTSTRAPPING
             for i = 1:length(unqFocDst)
                 indAnalysis = focStmOptDstIncr==unqFocDst(i) & indAcuRB==rgbAcuCnd;
                 indBoots = randsample(find(indAnalysis),sum(indAnalysis),'true');
@@ -283,6 +284,7 @@ for rgbAcuCnd = 1:3
         end
     end
 
+    % FITTING SPLINE TO DATA
     PCfitSupport = min(unqFocDst.*scaleFac):0.01:max(unqFocDst.*scaleFac);
     PCfit = spline(unqFocDst.*scaleFac,PC,PCfitSupport);
     [~,indLCA] = max(PCfit);
@@ -324,6 +326,7 @@ q1all = [];
 q2all = [];
 q3all = [];
 errAll = [];
+% REPEATING FIT OF LCA FUNCTION TO ACCOUNT FOR INSTABILITIES
 for i = 1:nRepeatFit
    [q1,q2,q3,err] = ARC_LCAfit(wavePlotPrimaries,-defocusLCAmeasured);
    q1all(i) = q1;

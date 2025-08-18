@@ -39,6 +39,7 @@ defocus875 = [];
 optDistAll = [];
 rgbAll = [];
 
+% LOAD PARTICIPANTS' DATA TO FIT
 for k = 1:length(blockNumAll)
     AFCp = ARCloadFileBVAMS(subjNum+10,blockNumAll(k),dataPath);
     optDistAll = [optDistAll; AFCp.meanv00./1.2255];
@@ -66,6 +67,7 @@ rgbUnq = unique(rgbAll,'rows');
 
 %% SEARCH INDIVIDUAL CONE WEIGHTS
 
+% WEIGHTS FOR GRID SEARCH
 wLM = [0.5 1];
 wLprop = 0:0.025:1;
 
@@ -76,6 +78,7 @@ else
 end
 coneWeightsFolder = [dataPath 'data' slash 'coneWeightsErrorSpatFilter' slash 'colorMechPredictions' slash];
 
+% NORMALIZE RGB VALUES SO MAX LUMINANCE IS 1
 rgbLumNorm = [];
 rgbLumNorm(:,1) = (rgbUnq(:,1).^2.5)./0.2442;
 rgbLumNorm(:,2) = (rgbUnq(:,2).^2.7)./0.1037;
@@ -107,8 +110,10 @@ for l = 1:length(wLM)
         wL = wLM(l)*wLprop(k);
         wM = -(wLM(l)-wL);
         wS = 0;
+        % USE HELPER FUNCTION TO GENERATE PREDICTIONS OF DEFOCUS
         [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZspatFilterPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL wM wS],dataPath);
         optDistTag = imresize(optDistUnq',size(defocus875mean),'nearest');
+        % FIT LAGS AND LEADS FREE PARAMETERS
         [pFit,RMSE(k)] = ARCfitLagLead(defocus875predTmp(:),defocus875mean(:),optDistTag(:),true,objFunc);
         if k==1
             [pFitFlat,RMSEflat(k)] = ARCfitLagLead(optDistTag(:),defocus875mean(:),optDistTag(:),true,objFunc);

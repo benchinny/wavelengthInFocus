@@ -7,17 +7,20 @@ dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\'
 
 % subjNumAll = [1 3 5 9 10 16 17 18 20];
 subjNumAll = [1 3 5 10 16 17 18 20];
+% MEASURED DEFOCUS VALUES FOR EACH DISPLAY PRIMARY
 defocusLCAmeasuredAll = [];
 % FITTED LCA FUNCTION PARAMETERS
 q1bestAll = []; 
 q2bestAll = [];
 q3bestAll = [];
-% NEED THIS VARIABLE FOR ALIGNING LCA CURVES. THIS IS THE EMPIRICALLY-MEASURED
-% DEFOCUS AT THE PEAK FOR THE GREEN PRIMARY (533nm). I USE IT TO SHIFT THE
-% LCA CURVES VERTICALLY SO THEY ARE ALL ALIGNED. THEY WAY I DID IT IS QUITE
-% CONVOLUTED AND I SHOULD CLEAN THIS UP EVENTUALLY. BUT I'M QUITE SURE IT'S
-% CORRECT. 
+% NEED THIS VARIABLE FOR ALIGNING LCA CURVES. THIS IS THE DEFOCUS AT THE 
+% PEAK FOR THE GREEN PRIMARY (533nm) SPECIFIED BY THE FITTED LCA CURVE. 
+% I USE IT TO SHIFT THE LCA CURVES VERTICALLY SO THEY ARE ALL ALIGNED AT 0, 
+% THEN I SHIFT THEM AGAIN SO THEY ARE ALIGNED AT -2D. THEY WAY I DID IT IS 
+% QUITE CONVOLUTED AND I SHOULD CLEAN THIS UP EVENTUALLY. BUT I'M SURE 
+% IT'S CORRECT. 
 D0all = []; 
+% STORE BOOTSTRAPPED DEFOCUS VALUES FOR EACH DISPLAY PRIMARY
 defocusLCAmeasuredBootsAll = [];
 
 for i = 1:length(subjNumAll)
@@ -43,7 +46,7 @@ standardLCAfit = standardLCAfit-val532;
 
 displacementLambda = -4:4; % JITTER DATA POINTS FOR EACH PARTICIPANT FOR VISIBILITY
 wavePlot = 380:5:875; % SUPPORT OVER LCA FUNCTION
-defocusAt875centered550 = [];
+defocusAt875centered550 = []; % POORLY-NAMED VARIABLE
 
 figure;
 hold on;
@@ -51,9 +54,8 @@ hold on;
 % PLOT CONTINUOUS LCA CURVES
 for i = 1:size(defocusLCAmeasuredAll,1)
     set(gca,'ColorOrderIndex',i);
-    % THE '550' IN THIS VARIABLE NAME SHOULD REALLY BE '533'--THAT WAS A
-    % MISTAKE ON MY PART AS I MISREMEMBERED THE PEAK OF THE GREEN PRIMARY.
-    % DOESN'T AFFECT ANYTHING, THOUGH
+    % THE NAME OF THIS VARIABLE NO LONGER REFLECTS WHAT IT IS--I'LL COME
+    % BACK TO RENAME THIS
     defocusAt875centered550(i) = humanWaveDefocusARC(533,wavePlot(end),subjNumAll(i)) + D0all(i)+defocusLCAmeasuredAll(i,2);
     plot(wavePlot,(-2-defocusAt875centered550(i))+humanWaveDefocusARC(533,wavePlot,subjNumAll(i))+D0all(i)+defocusLCAmeasuredAll(i,2),'-','LineWidth',1.5);
     defocus875to620(i,:) = humanWaveDefocusARC(533,wavePlot([48 100]),subjNumAll(i))+D0all(i)+defocusLCAmeasuredAll(i,2);
