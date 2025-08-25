@@ -1,6 +1,6 @@
 %% LOAD MAIN EXPERIMENT FILES
 
-function [wvInFocusCell, defocusAt550cell, defocusAt875cell, optDistCnd, rgbLumNormCnd] = ARCnlz_packageData(subjNum,dataPath)
+function [zCoeffCell,rgb1all,meanv00all] = ARCnlz_packageData(subjNum,dataPath)
 
 % NOTE SUBJECT NUMBER CONVENTION: SUBTRACT 10 FROM subjNum TO GET ACTUAL
 % SUBJECT NUMBER. subjNum VALUES <=10 WERE INTENTIONALLY NOT USED FOR
@@ -93,6 +93,8 @@ meanv00all = []; % OPTOTUNE VALUE (TO GET STIMULUS DISTANCE, DIVIDE BY 1.2255)
 nIndBadTracker = [];
 c4all = {};
 
+zCoeffCell = {};
+
 % GRABBING ZERNIKE VALUES FROM DATA REPOSITORY
 for i = 1:length(blockNums)
     blockNumTmp = blockNums(i);
@@ -112,6 +114,7 @@ for i = 1:length(blockNums)
         c(indBad,4) = mean(c(~indBad,4));
         meanC(end+1,:) = mean(c(1:end,:),1); % TAKE MEAN OF COEFFICIENTS    
         c4all{end+1} = c(:,4); % COEFFICIENTS ON DEFOCUS TERM
+        zCoeffCell{end+1} = c;
     end
     rgb1all = [rgb1all; AFCp.rgb100(trialNumsTmp,:)];
     meanv00all = [meanv00all; AFCp.meanv00(trialNumsTmp)./1.2255];

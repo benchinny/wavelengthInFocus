@@ -1,4 +1,4 @@
-function [aic, pFit, wvMeanAll, wvPredAll, dfPredPurple] = ARCtestWvInFocusMeanZspatFilterLMSeffectPlotWave(subjNum,modelType,dataPath)
+function [aic, pFit, wvMeanAll, wvPredAll, dfPredPurple, wLMmin, wLpropMin] = ARCtestWvInFocusMeanZspatFilterLMSeffectPlotWave(subjNum,modelType,dataPath)
 
 if ispc
     slash = '\';

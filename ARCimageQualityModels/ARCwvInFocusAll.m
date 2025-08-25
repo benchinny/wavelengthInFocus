@@ -6,13 +6,17 @@ wvMeanAll = [];
 wvPredAll = [];
 aicAll = [];
 dfPredPurpleAll = [];
+wLMminAll = [];
+wLpropMinAll = [];
 
 for i = 1:length(subjNum)
-    [aic, pFit, wvMean, wvPred, dfPredPurple] = ARCtestWvInFocusMeanZspatFilterLMSeffectPlotWave(subjNum(i),'LMS',dataPath);
+    [aic, pFit, wvMean, wvPred, dfPredPurple, wLMmin, wLpropMin] = ARCtestWvInFocusMeanZspatFilterLMSeffectPlotWave(subjNum(i),'LminusM',dataPath);
     wvMeanAll(:,:,i) = wvMean;
     wvPredAll(:,:,i) = wvPred;
     aicAll(i) = aic;
     dfPredPurpleAll(i) = dfPredPurple;
+    wLMminAll(i) = wLMmin;
+    wLpropMinAll(i) = wLpropMin;
 end 
 
 %% MAKE FIGURE 4B IN THE PAPER
