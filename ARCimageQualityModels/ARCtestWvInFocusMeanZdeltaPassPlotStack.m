@@ -1,4 +1,4 @@
-function aic = ARCtestWvInFocusMeanZdeltaPassPlotStack(subjNum,modelType,frqCpd)
+function aic = ARCtestWvInFocusMeanZdeltaPassPlotStack(subjNum,modelType,frqCpd,dataPath)
 
 coneWeightsFolder = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/coneWeightsErrorSpatFilter/colorMechPredictions/';
 modelCompFolder = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/AICmodelComparisons/';
@@ -96,18 +96,19 @@ optDistAll = [];
 rgbAll = [];
 
 for k = 1:length(blockNumAll)
-    AFCp = ARCloadFileBVAMS(subjNum+10,blockNumAll(k));
+    AFCp = ARCloadFileBVAMS(subjNum+10,blockNumAll(k),dataPath);
     optDistAll = [optDistAll; AFCp.meanv00./1.2255];
     rgbAll = [rgbAll; AFCp.rgb100];
     for l = 1:length(trialNumAll)
         % LOAD ZERNIKE TABLE AND TIMESTAMPS
-        [ZernikeTable, ~, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumAll(k),trialNumAll(l),0);
+        [ZernikeTable, ~, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumAll(k),trialNumAll(l),0,dataPath);
 
         NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
         c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65. 
         PARAMS = struct;
-        PARAMS.PupilSize=mean(table2array(ZernikeTable(:,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)
-        PARAMS.PupilFitSize=mean(table2array(ZernikeTable(:,5))); 
+        indBadPupil = table2array(ZernikeTable(:,5))==0;
+        PARAMS.PupilSize=mean(table2array(ZernikeTable(~indBadPupil,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)
+        PARAMS.PupilFitSize=mean(table2array(ZernikeTable(~indBadPupil,5))); 
         PARAMS.PupilFieldSize=PARAMS.PupilSize*2; %automatically compute the field size
         c(:,3:NumCoeffs)=table2array(ZernikeTable(:,11:width(ZernikeTable)));
         indBad = c(:,4)==0;
@@ -148,7 +149,7 @@ markerPlotSpeed = 'sod';
 
 for l = 1:length(wL)
     for k = 1:length(wM)
-        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZdeltaPassPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL(l) wM(k) wS],frqCpd);
+        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZdeltaPassPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL(l) wM(k) wS],frqCpd,dataPath);
         optDistTag = imresize(optDistUnq',size(defocus875mean),'nearest');
         [pFit,RMSE(k)] = ARCfitLagLead(defocus875predTmp(:),defocus875mean(:),optDistTag(:),true,objFunc);
         

@@ -1,30 +1,28 @@
-function wvInFocus = ARCwvInFocusConesMeanZdeltaPass(subjNum,rgb,wLMS,frqCpd)
+function wvInFocus = ARCwvInFocusConesMeanZdeltaPass(subjNum,rgb,wLMS,frqCpd,dataPath)
 
 if mod(frqCpd,1)~=0
     error('ARCwvInFocusConesMeanZdeltaPass: frqCpd has to be integer for now');
 end
 
+if ispc
+    slash = '\';
+else
+    slash = '/';
+end
+
 % DEFINING WAVELENGTH
 wave = 380:4:780;
 nFocus = length(wave);
-foldernameCones = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/coneImages/';
+foldernameCones = [dataPath 'data' slash 'coneImages' slash];
 
 % Setting up display properties
 d = struct;
 
 bUseBVAMScal = 1; % if using BVAMS calibration data
 
-if strcmp(getenv('USER'),'benjaminchin')
-    calPath = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/BVAMS_calibration_files/Ben_calibration_July_6_2024/';
-     stimPath = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/stimuli/';
-     savePath = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/coneImages/S';
-end
-
-if strcmp(getenv('USER'),'benchin')
-    calPath = '/Users/benchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/ARChroma/BVAMS_calibration_files/Ben_calibration_July_6_2024/';
-    stimPath = '/Users/benchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/stimuli/';
-    savePath = '/Users/benchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/coneImages/S';
-end
+calPath = [dataPath 'BVAMS_calibration_files' slash 'Ben_calibration_July_6_2024' slash];
+stimPath = [dataPath 'stimuli' slash];
+savePath = [dataPath 'data' slash 'coneImages' slash 'S' slash];
 
 if bUseBVAMScal
     load([calPath 'redPrimaryJuly0624_initialPositionFocus3_100.mat']);
@@ -40,9 +38,10 @@ rgbGammaCorrected = rgb.^[2.5 2.7 2.3];
 stimSPD = d.spd(:,1).*rgbGammaCorrected(1)+d.spd(:,2).*rgbGammaCorrected(2)+d.spd(:,3).*rgbGammaCorrected(3);
 
 % LOAD CONE QUANTAL EFFICIENCIES
-load('/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/helperFiles/sQE.mat');
+helperPath = [dataPath 'data' slash 'helperFiles' slash];
+load([helperPath 'sQE.mat']);
 % LOAD TRANSMITTANCE VALUES
-load('/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/helperFiles/transmittance.mat');
+load([helperPath 'transmittance.mat']);
 
 % CALCULATE ENERGY THAT ACTUALLY GETS THROUGH THE LENS
 stimSPD = reshape(stimSPD,[1 1 length(wave)]);
