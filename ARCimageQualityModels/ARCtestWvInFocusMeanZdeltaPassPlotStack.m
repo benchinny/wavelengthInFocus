@@ -1,7 +1,13 @@
 function aic = ARCtestWvInFocusMeanZdeltaPassPlotStack(subjNum,modelType,frqCpd,dataPath)
 
-coneWeightsFolder = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/coneWeightsErrorSpatFilter/colorMechPredictions/';
-modelCompFolder = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/AICmodelComparisons/';
+if ispc
+    slash = '\';
+else
+    slash = '/';
+end
+
+coneWeightsFolder = [dataPath 'data' slash 'coneWeightsErrorSpatFilter' slash 'colorMechPredictions' slash];
+modelCompFolder = [dataPath 'data' slash 'AICmodelComparisons' slash];
 
 objFunc = 'RMS';
 
@@ -208,7 +214,7 @@ for l = 1:length(wL)
     end
 end
 
-saveas(gcf,[modelCompFolder 'fitStackDeltaPassS' num2str(subjNum) 'Frq' num2str(frqCpd)],'png');
+% saveas(gcf,[modelCompFolder 'fitStackDeltaPassS' num2str(subjNum) 'Frq' num2str(frqCpd)],'png');
 
 errorIndividual = defocus875mean2fit(:)-defocus875pred(:);
 for i = 1:200
