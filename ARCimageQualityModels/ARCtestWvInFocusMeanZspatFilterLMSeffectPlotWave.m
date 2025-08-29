@@ -255,7 +255,7 @@ for l = 1:length(wL)
     end
 end
 
-saveas(gcf,[modelCompFolder 'fitStackSpatFilter' modelType num2str(subjNum)],'png');
+% saveas(gcf,[modelCompFolder 'fitStackSpatFilter' modelType num2str(subjNum)],'png');
 
 errorIndividual = defocus875mean2fit(:)-defocus875pred(:);
 for i = 1:200
