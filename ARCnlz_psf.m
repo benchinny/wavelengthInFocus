@@ -1,5 +1,6 @@
 function ARCnlz_psf(subjNum,dataPath)
 
+% use subjNums 1, 3, 5, 10, 16, 17, 18, 20
 % example of dataPath: 
 %  dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 
@@ -12,6 +13,8 @@ end
 foldername = [dataPath 'data' slash 'ARC' slash];
 
 fitType = 'weibull';
+
+subjNum = subjNum+10;
 
 if subjNum==18
     filenames = {
