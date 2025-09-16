@@ -8,7 +8,6 @@ subjNumAll = [1 3 5 10 16 17 18 20];
 % subjNumAllRand = subjNumAll;
 peakLocModelPredictionAll = [];
 nRepeat = 1;
-corrShuffle = [];
 subjNumInclude = [1:8];
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 fileStr = 'acuityModelingPrediction';
