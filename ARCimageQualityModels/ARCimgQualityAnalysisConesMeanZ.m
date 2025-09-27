@@ -1,4 +1,4 @@
-function oi = ARCimgQualityAnalysisConesMeanZ(subjNum)
+function oi = ARCimgQualityAnalysisConesMeanZ(subjNum,dataPath)
 
 % NOTE SUBJECT NUMBER CONVENTION: SUBTRACT 10 FROM subjNum TO GET ACTUAL
 % SUBJECT NUMBER. subjNum VALUES <=10 WERE INTENTIONALLY NOT USED FOR
@@ -25,17 +25,15 @@ d = displaySet(d,'dpi',378); % simulated screen distance
 
 bUseBVAMScal = 1; % if using BVAMS calibration data
 
-if strcmp(getenv('USER'),'benjaminchin')
-    calPath = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/BVAMS_calibration_files/Ben_calibration_July_6_2024/';
-     stimPath = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/stimuli/';
-     savePath = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/coneImages/S';
+if ispc
+    slash = '\';
+else
+    slash = '/';
 end
 
-if strcmp(getenv('USER'),'benchin')
-    calPath = '/Users/benchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/ARChroma/BVAMS_calibration_files/Ben_calibration_July_6_2024/';
-    stimPath = '/Users/benchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/stimuli/';
-    savePath = '/Users/benchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/coneImages/S';
-end
+calPath = [dataPath 'BVAMS_calibration_files' slash 'Ben_calibration_July_6_2024' slash];
+stimPath = [dataPath 'stimuli' slash];
+savePath = [dataPath 'data' slash 'coneImages' slash 'S'];
 
 if bUseBVAMScal
     load([calPath 'redPrimaryJuly0624_initialPositionFocus3_100.mat']);
@@ -121,13 +119,13 @@ rgbAll = [];
 for l = 1:length(blockNums) % LOOP OVER BLOCK
     blockNumInd = l;
     blockNumTmp = blockNums(blockNumInd);
-    AFCp = ARCloadFileBVAMS(subjNumEncode,blockNumTmp); % LOAD BVAMS DATA
+    AFCp = ARCloadFileBVAMS(subjNumEncode,blockNumTmp,dataPath); % LOAD BVAMS DATA
     rgbAll = [rgbAll; AFCp.rgb100];
     for k = 1:36 % LOOP OVER TRIAL
         trialNumTmp = trialNums(k,blockNumInd);
         
         % LOAD ZERNIKE TABLE AND TIMESTAMPS
-        [ZernikeTable, ~, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumTmp,0);
+        [ZernikeTable, ~, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumTmp,0,dataPath);
 
         NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
         c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65. 
