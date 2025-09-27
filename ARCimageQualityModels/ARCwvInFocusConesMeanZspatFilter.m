@@ -36,13 +36,17 @@ coneImgOrigFiltered2 = real(ifftshift(ifft2(coneImgOrigFilteredFFT2)));
 % % Then invert and put the image center in  the center of the matrix
 % filteredIMG = abs(ifftshift(ifft2(otf .* imgFFT)));
 
+[SconeMaskSupportXX, SconeMaskSupportYY] = meshgrid(-90:91,-90:91);
+SconeMask = ones(size(SconeMaskSupportXX));
+SconeMask(sqrt(SconeMaskSupportXX.^2 + SconeMaskSupportYY.^2)<22.5) = 0;
+
 peakCorr = [];
 for i = 1:nFocus
     fnameConeRsp = ['subj' num2str(subjNum) 'stimulus' num2str(stimNum) 'focusInd' num2str(i)];
     load([foldernameCones 'S' num2str(subjNum) slash fnameConeRsp]);
     absorptions(:,:,1) = absorptions(:,:,1).*wLMS(1);
     absorptions(:,:,2) = absorptions(:,:,2).*wLMS(2);
-    absorptions(:,:,3) = absorptions(:,:,3).*wLMS(3);
+    absorptions(:,:,3) = SconeMask.*absorptions(:,:,3).*wLMS(3);
     coneImg = sum(absorptions,3);
 
     coneImgFFT = fftshift(fft2(coneImg));
