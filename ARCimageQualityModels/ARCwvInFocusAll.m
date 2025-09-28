@@ -30,7 +30,7 @@ else
 end
 foldername = [dataPath 'data' slash 'PresavedFigureData' slash];
 
-load([foldername 'wvMeanAndPredNew.mat']);
+load([foldername 'wvMeanAndPredSfree.mat']);
 
 symbDist = 'sod';
 conditionsOrderedNorm = [0.25 0.00 1.00; ...
