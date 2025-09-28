@@ -68,7 +68,12 @@ rgbUnq = unique(rgbAll,'rows');
 
 wLM = 0.4:0.05:1.4;
 wLprop = 0.25:(0.1/3):0.85;
-coneWeightsFolder = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/coneWeightsErrorSpatFilter/colorMechPredictions/';
+if ispc
+   slash = '\';
+else
+   slash = '/';
+end
+coneWeightsFolder = [dataPath 'data' slash 'coneWeightsErrorSpatFilter' slash 'colorMechPredictions' slash];
 
 rgbLumNorm = [];
 rgbLumNorm(:,1) = (rgbUnq(:,1).^2.5)./0.2442;
@@ -100,7 +105,7 @@ for l = 1:length(wLM)
     parfor k = 1:length(wLprop)
         wL = wLM(l)*wLprop(k);
         wM = wLM(l)-wL;
-        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZstrehlPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL wM wS]);
+        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZstrehlPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL wM wS],dataPath);
         optDistTag = imresize(optDistUnq',size(defocus875mean),'nearest');
         [pFit,RMSE(k)] = ARCfitLagLead(defocus875predTmp(:),defocus875mean(:),optDistTag(:),true,objFunc);
         if k==1
