@@ -1,4 +1,4 @@
-function [aic, pFit] = ARCtestWvInFocusMeanZstrehlLMSeffectPlotStack(subjNum,modelType,dataPath)
+function [aic, pFit, wvMeanAll, wvPredAll, dfPredPurple, wLMmin, wLpropMin] = ARCtestWvInFocusMeanZstrehlLMSeffectPlotStack(subjNum,modelType,dataPath)
 
 if ispc
    slash = '\';
