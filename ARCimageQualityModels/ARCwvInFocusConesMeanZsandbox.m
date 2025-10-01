@@ -1,10 +1,16 @@
-function [wvInFocus, coneImgFilteredEg, coneImgOrigFilteredEg, wvInFocus2, wave, peakCorr, absorptionsReturn] = ARCwvInFocusConesMeanZsandbox(subjNum,stimNum,wLMS,waveInd)
+function [wvInFocus, coneImgFilteredEg, coneImgOrigFilteredEg, wvInFocus2, wave, peakCorr, absorptionsReturn] = ARCwvInFocusConesMeanZsandbox(subjNum,stimNum,wLMS,waveInd,dataPath)
 
 % [wvInFocus, LminusMmechImg, coneImgOrigFiltered] = ARCwvInFocusConesMeanZsandbox(3,8,[0.375 -0.125 0]);
 
+if ispc
+   slash = '\';
+else
+   slash = '/';
+end
+
 wave = 380:4:780;
 nFocus = length(wave);
-foldernameCones = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/coneImages/';
+foldernameCones = [dataPath 'data' slash 'coneImages' slash];
 
 % USE THE SAME ORIGINAL (PRE-OPTICS) IMAGE EACH TIME--THIS ONE HAPPENS TO
 % LIVE IN THE FOLDER FOR SUBJECT 10, BUT IT REALLY DOESN'T MATTER SINCE ALL
@@ -15,7 +21,7 @@ absorptionsOrig = absorptionsOrig.absorptions;
 coneImgOrig = sum(absorptionsOrig,3);
 
 % LOAD SPATIAL FILTER
-load('/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/modelParams/freqFilterARC.mat');
+load([dataPath 'data' slash 'modelParams' slash 'freqFilterARC.mat']);
 
 coneImgOrigFFT = fftshift(fft2(coneImgOrig));
 coneImgOrigFilteredFFT = coneImgOrigFFT.*freqFilterARC;

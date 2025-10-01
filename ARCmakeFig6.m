@@ -42,13 +42,13 @@ absorptionsLM_LMS = [];
 for i = 1:length(stimInd)
     for j = 1:length(wv2vis)
         [wvInFocus, coneImgFilteredEg, coneImgOrigFilteredEg, wvInFocus2, wave, peakCorr, absorptions] = ...
-         ARCwvInFocusConesMeanZsandbox(3,stimInd(i),LMSweights(2,:),find(wave==wv2vis(j)));
+         ARCwvInFocusConesMeanZsandbox(3,stimInd(i),LMSweights(2,:),find(wave==wv2vis(j)),dataPath);
          coneImgFilteredEgLMS(:,:,i,j) = coneImgFilteredEg;
          absorptionsS_LMS(:,:,i,j) = absorptions(:,:,3);
          absorptionsLM_LMS(:,:,i,j) = absorptions(:,:,1)+absorptions(:,:,2);
 
         [wvInFocus, coneImgFilteredEg, coneImgOrigFilteredEg, wvInFocus2, wave, peakCorr, absorptions] = ...
-         ARCwvInFocusConesMeanZsandbox(3,stimInd(i),[LMSweights(2,1) LMSweights(2,2) 0],find(wave==wv2vis(j))); 
+         ARCwvInFocusConesMeanZsandbox(3,stimInd(i),[LMSweights(2,1) LMSweights(2,2) 0],find(wave==wv2vis(j)),dataPath); 
         coneImgFilteredEgLM(:,:,i,j) = coneImgFilteredEg;
     end
 end
