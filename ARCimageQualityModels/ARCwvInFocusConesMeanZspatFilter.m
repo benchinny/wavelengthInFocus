@@ -39,6 +39,15 @@ coneImgOrigFiltered2 = real(ifftshift(ifft2(coneImgOrigFilteredFFT2)));
 [SconeMaskSupportXX, SconeMaskSupportYY] = meshgrid(-90:91,-90:91);
 SconeMask = ones(size(SconeMaskSupportXX));
 SconeMask(sqrt(SconeMaskSupportXX.^2 + SconeMaskSupportYY.^2)<22.5) = 0;
+[softEdgeSupportXX, softEdgeKernSupportYY] = meshgrid(linspace(-1,1,9));
+softEdgeKernCol = mvnpdf([softEdgeSupportXX(:) softEdgeKernSupportYY(:)],[0 0],[0.3^2 0; 0 0.3^2]); 
+softEdgeKern = reshape(softEdgeKernCol,size(softEdgeSupportXX))./sum(softEdgeKernCol(:));
+SconeMaskSoft = conv2(SconeMask,softEdgeKern);
+SconeMask = SconeMaskSoft(5:186,5:186);
+SconeMask(:,1:5) = 1;
+SconeMask(:,178:182) = 1;
+SconeMask(1:5,:) = 1;
+SconeMask(178:182,:) = 1;
 
 peakCorr = [];
 for i = 1:nFocus
