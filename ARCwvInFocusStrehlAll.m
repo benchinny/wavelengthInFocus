@@ -11,7 +11,7 @@ wLMminAll = [];
 wLpropMinAll = [];
 
 for i = 1:length(subjNum)
-    [aic, pFit, wvMean, wvPred, dfPredPurple, wLMmin, wLpropMin] = ARCtestWvInFocusMeanZstrehlLMSeffectPlotStack(subjNum(i),'LMS',dataPath);
+    [aic, pFit, wvMean, wvPred, dfPredPurple, wLMmin, wLpropMin] = ARCtestWvInFocusMeanZstrehlLMSeffectPlotStack(subjNum(i),'LM',dataPath);
     wvMeanAll(:,:,i) = wvMean;
     wvPredAll(:,:,i) = wvPred;
     aicAll(i) = aic;
@@ -30,7 +30,7 @@ else
 end
 foldername = [dataPath 'data' slash 'PresavedFigureData' slash];
 
-load([foldername 'wvMeanAndPredStrehlLMS.mat']);
+load([foldername 'wvMeanAndPredStrehlLM.mat']);
 
 symbDist = 'sod';
 conditionsOrderedNorm = [0.25 0.00 1.00; ...
