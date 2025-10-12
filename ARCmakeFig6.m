@@ -1,9 +1,11 @@
 %% RECORD OF BEST FIT CONE WEIGHTS
 
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
+subjNumInd = 2;
+subjNumAll = [1 3 5 10 16 17 18 20];
 
 LMSweights = [0.5467    0.2533   -1.0000; ...
-              0.4725    0.5775   -1.0000; ...
+              0.6875    0.5625   -1.0000; ...
               0.7650    0.1350   -0.5000; ...
               1.1475    0.2025   -1.0000; ...
               0.2267    0.5733   -1.0000; ...
@@ -39,18 +41,28 @@ coneImgFilteredEgLM = [];
 absorptionsS_LMS = [];
 absorptionsLM_LMS = [];
 
+peakCorrAll = [];
 for i = 1:length(stimInd)
     for j = 1:length(wv2vis)
         [wvInFocus, coneImgFilteredEg, coneImgOrigFilteredEg, wvInFocus2, wave, peakCorr, absorptions] = ...
-         ARCwvInFocusConesMeanZsandbox(3,stimInd(i),LMSweights(2,:),find(wave==wv2vis(j)),dataPath);
+         ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),LMSweights(2,:),find(wave==wv2vis(j)),dataPath);
          coneImgFilteredEgLMS(:,:,i,j) = coneImgFilteredEg;
          absorptionsS_LMS(:,:,i,j) = absorptions(:,:,3);
          absorptionsLM_LMS(:,:,i,j) = absorptions(:,:,1)+absorptions(:,:,2);
 
         [wvInFocus, coneImgFilteredEg, coneImgOrigFilteredEg, wvInFocus2, wave, peakCorr, absorptions] = ...
-         ARCwvInFocusConesMeanZsandbox(3,stimInd(i),[LMSweights(2,1) LMSweights(2,2) 0],find(wave==wv2vis(j)),dataPath); 
+         ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),[LMSweights(2,1) LMSweights(2,2) 0],find(wave==wv2vis(j)),dataPath); 
         coneImgFilteredEgLM(:,:,i,j) = coneImgFilteredEg;
     end
+    [~, ~, ~, ~, wave, peakCorr, ~] = ...
+    ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),[LMSweights(subjNumAll(subjNumInd),1) LMSweights(subjNumAll(subjNumInd),2) LMSweights(subjNumAll(subjNumInd),3)],1:101,dataPath);
+    peakCorrAll(:,end+1) = peakCorr;
+    [~, ~, ~, ~, wave, peakCorr, ~] = ...
+    ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),[LMweights(subjNumAll(subjNumInd),1) LMweights(subjNumAll(subjNumInd),2) LMweights(subjNumAll(subjNumInd),3)],1:101,dataPath);
+    peakCorrAll(:,end+1) = peakCorr;
+    [~, ~, ~, ~, wave, peakCorr, ~] = ...
+    ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),[LminusMweights(subjNumAll(subjNumInd),1) LminusMweights(subjNumAll(subjNumInd),2) LminusMweights(subjNumAll(subjNumInd),3)],1:101,dataPath);
+    peakCorrAll(:,end+1) = peakCorr;
 end
 
 %% PLOT DIFFERENT CONE IMAGES FOR BUILDING MODEL INTUITIONS
@@ -71,7 +83,7 @@ for i = 1:length(wv2vis)
     set(gca,'YTick',[]);
     set(gca,'LineWidth',2);
     colormap(redblue); 
-    xlim([50 120]); 
+    xlim([50 120]+62); 
     ylim([55 125]); 
     if i==1 && bColorBar
        colorbar;
@@ -87,7 +99,7 @@ for i = 1:length(wv2vis)
     set(gca,'XTick',[]);
     set(gca,'YTick',[]); 
     set(gca,'LineWidth',2);
-    xlim([50 120]); 
+    xlim([50 120]+62); 
     ylim([55 125]); 
     % colorbar; 
     clim(axisLims(2).*[-1 1]);
@@ -101,7 +113,7 @@ for i = 1:length(wv2vis)
     set(gca,'YTick',[]); 
     set(gca,'LineWidth',2);
     colormap(redblue); 
-    xlim([50 120]); 
+    xlim([50 120]+62); 
     ylim([55 125]); 
     % colorbar; 
     clim(axisLims(2).*[-1 1]);
@@ -120,7 +132,7 @@ for i = 1:length(wv2vis)
     set(gca,'YTick',[]);
     set(gca,'LineWidth',2);
     colormap(redblue); 
-    xlim([50 120]); 
+    xlim([50 120]+62); 
     ylim([55 125]); 
     if i==1 && bColorBar
        colorbar;
@@ -136,7 +148,7 @@ for i = 1:length(wv2vis)
     set(gca,'XTick',[]);
     set(gca,'YTick',[]); 
     set(gca,'LineWidth',2);
-    xlim([50 120]); 
+    xlim([50 120]+62); 
     ylim([55 125]); 
     % colorbar; 
     clim(axisLims(2).*[-1 1]);  
@@ -150,7 +162,7 @@ for i = 1:length(wv2vis)
     set(gca,'YTick',[]); 
     set(gca,'LineWidth',2);
     colormap(redblue); 
-    xlim([50 120]); 
+    xlim([50 120]+62); 
     ylim([55 125]); 
     % colorbar; 
     clim(axisLims(2).*[-1 1]);

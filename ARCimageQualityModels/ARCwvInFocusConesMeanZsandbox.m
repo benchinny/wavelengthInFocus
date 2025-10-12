@@ -23,6 +23,25 @@ coneImgOrig = sum(absorptionsOrig,3);
 % LOAD SPATIAL FILTER
 load([dataPath 'data' slash 'modelParams' slash 'freqFilterARC.mat']);
 
+[SconeMaskSupportXX, SconeMaskSupportYY] = meshgrid(-90:91,-90:91);
+SconeMask = ones(size(SconeMaskSupportXX));
+SconeMask(sqrt(SconeMaskSupportXX.^2 + SconeMaskSupportYY.^2)<22.5) = 0;
+[softEdgeSupportXX, softEdgeKernSupportYY] = meshgrid(linspace(-1,1,9));
+softEdgeKernCol = mvnpdf([softEdgeSupportXX(:) softEdgeKernSupportYY(:)],[0 0],[0.3^2 0; 0 0.3^2]); 
+softEdgeKern = reshape(softEdgeKernCol,size(softEdgeSupportXX))./sum(softEdgeKernCol(:));
+SconeMaskSoft = conv2(SconeMask,softEdgeKern);
+SconeMask = SconeMaskSoft(5:186,5:186);
+SconeMask(:,1:5) = 1;
+SconeMask(:,178:182) = 1;
+SconeMask(1:5,:) = 1;
+SconeMask(178:182,:) = 1;
+
+if wLMS(3) == 0
+    SconeMask = ones(size(SconeMask));
+end
+
+% coneImgOrig = coneImgOrig.*SconeMask;
+
 coneImgOrigFFT = fftshift(fft2(coneImgOrig));
 coneImgOrigFilteredFFT = coneImgOrigFFT.*freqFilterARC;
 coneImgOrigFiltered = real(ifft2(ifftshift(coneImgOrigFilteredFFT)));
@@ -53,9 +72,9 @@ end
 for i = waveInd2examine
     fnameConeRsp = ['subj' num2str(subjNum) 'stimulus' num2str(stimNum) 'focusInd' num2str(i)];
     load([foldernameCones 'S' num2str(subjNum) '/' fnameConeRsp]);
-    absorptions(:,:,1) = absorptions(:,:,1).*wLMS(1);
-    absorptions(:,:,2) = absorptions(:,:,2).*wLMS(2);
-    absorptions(:,:,3) = absorptions(:,:,3).*wLMS(3);
+    absorptions(:,:,1) = SconeMask.*absorptions(:,:,1).*wLMS(1);
+    absorptions(:,:,2) = SconeMask.*absorptions(:,:,2).*wLMS(2);
+    absorptions(:,:,3) = SconeMask.*absorptions(:,:,3).*wLMS(3);
     coneImg = sum(absorptions,3);
 
     coneImgFFT = fftshift(fft2(coneImg));
