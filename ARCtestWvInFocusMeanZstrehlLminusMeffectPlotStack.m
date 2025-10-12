@@ -17,7 +17,7 @@ if strcmp(modelType,'LMS')
     if subjNum==5
         wS = -0.5;
     end
-    load([coneWeightsFolder 'S' num2str(subjNum) 'wvInFocusModelResultsStrehl' num2str(round(-wS*10)) '.mat'],'RMSEall','wS','wLM','wLprop');
+    load([coneWeightsFolder 'S' num2str(subjNum) 'wvInFocusModelResultsLminusMstrehl.mat'],'RMSEall','wS','wLM','wLprop');
     
     [wLpropGrid,wLMgrid] = meshgrid(wLprop,wLM);
     
@@ -142,6 +142,15 @@ conditionsOrderedNorm = [0.25 0.00 1.00; ...
                          1.00 0.50 0.25; ...
                          1.00 1.00 1.00];
 
+diffFromOptDist = defocus875-optDistAll;
+% EXCLUDE DATA FOR WHICH PARTICIPANT WAS ACCOMMODATING OUTSIDE OF
+% VISIBLE RANGE
+indGood = humanWaveDefocusInvertARC(875,diffFromOptDist,subjNum)>380 & ...
+          humanWaveDefocusInvertARC(875,diffFromOptDist,subjNum)<780;
+defocus875 = defocus875(indGood);
+rgbAll = rgbAll(indGood,:);
+optDistAll = optDistAll(indGood);
+
 for i = 1:size(conditionsOrderedNorm,1)
     ind(i) = find(abs(rgbLumNorm(:,1)-conditionsOrderedNorm(i,1))<0.01 & ...
                   abs(rgbLumNorm(:,2)-conditionsOrderedNorm(i,2))<0.01 & ...
@@ -238,7 +247,7 @@ for l = 1:length(wL)
     end
 end
 
-saveas(gcf,[modelCompFolder 'fitStackStrehl' modelType num2str(subjNum)],'png');
+% saveas(gcf,[modelCompFolder 'fitStackStrehl' modelType num2str(subjNum)],'png');
 
 errorIndividual = defocus875mean2fit(:)-defocus875pred(:);
 for i = 1:200

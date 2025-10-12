@@ -33,7 +33,7 @@ end
 
 if strcmp(modelType,'LM') % IF LUMINANCE MODEL WITH FREE WEIGHTS
     wS = 0;
-    load([coneWeightsFolder 'S' num2str(subjNum) 'wvInFocusModelResultsSfree' num2str(round(-wS*10)) '.mat'],'RMSEall','wS','wLM','wLprop');
+    load([coneWeightsFolder 'S' num2str(subjNum) 'wvInFocusModelResults' num2str(round(-wS*10)) '.mat'],'RMSEall','wS','wLM','wLprop');
     
     [wLpropGrid,wLMgrid] = meshgrid(wLprop,wLM);
     

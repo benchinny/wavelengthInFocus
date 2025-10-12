@@ -53,8 +53,8 @@ peakCorr = [];
 for i = 1:nFocus
     fnameConeRsp = ['subj' num2str(subjNum) 'stimulus' num2str(stimNum) 'focusInd' num2str(i)];
     load([foldernameCones 'S' num2str(subjNum) slash fnameConeRsp]);
-    absorptions(:,:,1) = absorptions(:,:,1).*wLMS(1);
-    absorptions(:,:,2) = absorptions(:,:,2).*wLMS(2);
+    absorptions(:,:,1) = SconeMask.*absorptions(:,:,1).*wLMS(1);
+    absorptions(:,:,2) = SconeMask.*absorptions(:,:,2).*wLMS(2);
     absorptions(:,:,3) = SconeMask.*absorptions(:,:,3).*wLMS(3);
     coneImg = sum(absorptions,3);
 

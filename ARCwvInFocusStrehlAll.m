@@ -54,7 +54,7 @@ for i = 1:size(wvMeanAll,2)
     wvPredTmp = squeeze(wvPredAll(:,i,:));
     plot(mean(wvPredTmp(1:5,:),2),'k-','LineWidth',1);
     for j = 1:5
-        errorbar(j,mean(wvMeanTmp(j,:),2),1.96.*std(wvPredTmp(j,:)')./sqrt(8),['k' symbDist(i)],'MarkerSize',10,'MarkerFaceColor',conditionsOrderedNorm(j,:),'LineWidth',1);
+        errorbar(j,mean(wvMeanTmp(j,:),2),1.96.*std(wvMeanTmp(j,:)')./sqrt(8),['k' symbDist(i)],'MarkerSize',10,'MarkerFaceColor',conditionsOrderedNorm(j,:),'LineWidth',1);
     end
 end
 % axis square;
@@ -72,7 +72,7 @@ for i = 1:size(wvMeanAll,2)
     wvPredTmp = squeeze(wvPredAll(:,i,:));
     plot(mean(wvPredTmp(6:10,:),2),'k-','LineWidth',1);
     for j = 6:10
-        errorbar(j-5,mean(wvMeanTmp(j,:),2),1.96.*std(wvPredTmp(j,:)')./sqrt(8),['k' symbDist(i)],'MarkerSize',10,'MarkerFaceColor',conditionsOrderedNorm(j,:),'LineWidth',1);
+        errorbar(j-5,mean(wvMeanTmp(j,:),2),1.96.*std(wvMeanTmp(j,:)')./sqrt(8),['k' symbDist(i)],'MarkerSize',10,'MarkerFaceColor',conditionsOrderedNorm(j,:),'LineWidth',1);
     end
 end
 % axis square;
@@ -109,7 +109,7 @@ for i = 1:size(wvMeanAll,2)
     wvPredTmp = squeeze(wvPredAll(:,i,:));
     plot(mean(wvMeanTmp(1:5,:),2),'k-','LineWidth',1);
     for j = 1:5
-        errorbar(j,mean(wvMeanTmp(j,:),2),std(wvPredTmp(j,:)')./sqrt(8),['k' symbDist(i)],'MarkerSize',10,'MarkerFaceColor',conditionsOrderedNorm(j,:),'LineWidth',1);
+        errorbar(j,mean(wvMeanTmp(j,:),2),std(wvMeanTmp(j,:)')./sqrt(8),['k' symbDist(i)],'MarkerSize',10,'MarkerFaceColor',conditionsOrderedNorm(j,:),'LineWidth',1);
     end
 end
 % axis square;
@@ -129,7 +129,7 @@ for i = 1:size(wvMeanAll,2)
     wvPredTmp = squeeze(wvPredAll(:,i,:));
     plot(mean(wvMeanTmp(6:10,:),2),'k-','LineWidth',1);
     for j = 6:10
-        errorbar(j-5,mean(wvMeanTmp(j,:),2),std(wvPredTmp(j,:)')./sqrt(8),['k' symbDist(i)],'MarkerSize',10,'MarkerFaceColor',conditionsOrderedNorm(j,:),'LineWidth',1);
+        errorbar(j-5,mean(wvMeanTmp(j,:),2),std(wvMeanTmp(j,:)')./sqrt(8),['k' symbDist(i)],'MarkerSize',10,'MarkerFaceColor',conditionsOrderedNorm(j,:),'LineWidth',1);
     end
 end
 % axis square;
