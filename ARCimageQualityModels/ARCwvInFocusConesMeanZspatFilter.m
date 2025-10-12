@@ -21,6 +21,25 @@ coneImgOrig = sum(absorptionsOrig,3);
 % LOAD SPATIAL FILTER
 load([dataPath 'data' slash 'modelParams' slash 'freqFilterARC.mat']);
 
+[SconeMaskSupportXX, SconeMaskSupportYY] = meshgrid(-90:91,-90:91);
+SconeMask = ones(size(SconeMaskSupportXX));
+SconeMask(sqrt(SconeMaskSupportXX.^2 + SconeMaskSupportYY.^2)<22.5) = 0;
+[softEdgeSupportXX, softEdgeKernSupportYY] = meshgrid(linspace(-1,1,9));
+softEdgeKernCol = mvnpdf([softEdgeSupportXX(:) softEdgeKernSupportYY(:)],[0 0],[0.3^2 0; 0 0.3^2]); 
+softEdgeKern = reshape(softEdgeKernCol,size(softEdgeSupportXX))./sum(softEdgeKernCol(:));
+SconeMaskSoft = conv2(SconeMask,softEdgeKern);
+SconeMask = SconeMaskSoft(5:186,5:186);
+SconeMask(:,1:5) = 1;
+SconeMask(:,178:182) = 1;
+SconeMask(1:5,:) = 1;
+SconeMask(178:182,:) = 1;
+
+if wLMS(3) == 0
+    SconeMask = ones(size(SconeMask));
+end
+
+coneImgOrig = coneImgOrig.*SconeMask;
+
 coneImgOrigFFT = fftshift(fft2(coneImgOrig));
 coneImgOrigFilteredFFT = coneImgOrigFFT.*freqFilterARC;
 coneImgOrigFiltered = real(ifft2(ifftshift(coneImgOrigFilteredFFT)));
@@ -35,19 +54,6 @@ coneImgOrigFiltered2 = real(ifftshift(ifft2(coneImgOrigFilteredFFT2)));
 % % Multiply the transformed otf and the image.
 % % Then invert and put the image center in  the center of the matrix
 % filteredIMG = abs(ifftshift(ifft2(otf .* imgFFT)));
-
-[SconeMaskSupportXX, SconeMaskSupportYY] = meshgrid(-90:91,-90:91);
-SconeMask = ones(size(SconeMaskSupportXX));
-SconeMask(sqrt(SconeMaskSupportXX.^2 + SconeMaskSupportYY.^2)<22.5) = 0;
-[softEdgeSupportXX, softEdgeKernSupportYY] = meshgrid(linspace(-1,1,9));
-softEdgeKernCol = mvnpdf([softEdgeSupportXX(:) softEdgeKernSupportYY(:)],[0 0],[0.3^2 0; 0 0.3^2]); 
-softEdgeKern = reshape(softEdgeKernCol,size(softEdgeSupportXX))./sum(softEdgeKernCol(:));
-SconeMaskSoft = conv2(SconeMask,softEdgeKern);
-SconeMask = SconeMaskSoft(5:186,5:186);
-SconeMask(:,1:5) = 1;
-SconeMask(:,178:182) = 1;
-SconeMask(1:5,:) = 1;
-SconeMask(178:182,:) = 1;
 
 peakCorr = [];
 for i = 1:nFocus
