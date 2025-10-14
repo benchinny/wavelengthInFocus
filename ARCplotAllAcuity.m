@@ -57,10 +57,12 @@ for k = 1:nRepeat
             subplot(2,4,j);
             hold on;
             plot(shiftValBestFit+defocusForStim+modelPrediction875nmPurpleAt2pt5-2.5,normcdf(dprimeMetric.*dprimeScaleBestFit/2),'-','Color',[0.56 0 1],'LineWidth',1);
-            errorbar(unqFocDst.*scaleFac,normcdf(dprime/2),(normcdf(dprime/2)-normcdf(dprimeCI(1,:)/2)),(normcdf(dprimeCI(2,:)/2)-normcdf(dprime/2)),'o','Color',[0.56 0 1],'MarkerFaceColor','w','LineWidth',1.5,'MarkerSize',10);
-            xlabel('Gabor - word Distance (D)');
+            errorbar(unqFocDst.*scaleFac,normcdf(dprime/2),(normcdf(dprime/2)-normcdf(dprimeCI(1,:)/2)),(normcdf(dprimeCI(2,:)/2)-normcdf(dprime/2)),'o','Color',[0.56 0 1],'MarkerFaceColor','w','LineWidth',1.5,'MarkerSize',8);
+            xlabel('Relative Distance (D)');
             ylabel('Proportion Correct');
-            set(gca,'FontSize',15);
+            set(gca,'FontSize',12);
+            set(gca,'Box','on');
+            set(gca,'XTick',[-1 -0.5 0 0.5 1]);
             axis square;
             text(-1,0.3,['S' num2str(j)],'FontSize',18);
             % title(['Mean defocus at 875nm = ' num2str(modelPrediction875nmPurpleAt2pt5,3) 'D']);

@@ -123,6 +123,6 @@ for l = 1:length(wLM)
     RMSEall(l,:) = RMSE;
 end
 
-save([coneWeightsFolder 'S' num2str(subjNum) 'wvInFocusModelResultsSfree' num2str(round(-wS*10)) '.mat'],'RMSEall','wS','wLM','wLprop');
+save([coneWeightsFolder 'S' num2str(subjNum) 'wvInFocusModelResultsDonutx2' num2str(round(-wS*10)) '.mat'],'RMSEall','wS','wLM','wLprop');
 
 end

@@ -198,7 +198,7 @@ for l = 1:length(wL)
             for j = 1:5
                 % plot(j,wvMean1to5(j),['k' markerPlotSpeed(i)],'MarkerFaceColor',conditionsOrderedNorm(j,:), ...
                 %      'MarkerSize',10);
-                % defocus875mean2fit(j,i) = defocus875mean(ind(j),i);
+                defocus875mean2fit(j,i) = defocus875mean(ind(j),i);
             end
             % title(['Subject ' num2str(subjNum) ', Distance = ' num2str(optDistUnq(i)) ', Weights = [' num2str(wL(l)) ' ' num2str(wM(k))]);
             % title(['RMSE = ' num2str(RMSE,3) ', RMSE_{flat} = ' num2str(RMSEflat,3) ', RMSE_{lum} = ' num2str(RMSElum,3)])

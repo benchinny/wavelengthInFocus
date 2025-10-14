@@ -40,7 +40,7 @@ if wLMS(3) == 0
     SconeMask = ones(size(SconeMask));
 end
 
-% coneImgOrig = coneImgOrig.*SconeMask;
+coneImgOrig = coneImgOrig.*SconeMask;
 
 coneImgOrigFFT = fftshift(fft2(coneImgOrig));
 coneImgOrigFilteredFFT = coneImgOrigFFT.*freqFilterARC;

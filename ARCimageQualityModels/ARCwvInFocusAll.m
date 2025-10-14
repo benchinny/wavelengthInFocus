@@ -11,7 +11,7 @@ wLMminAll = [];
 wLpropMinAll = [];
 
 for i = 1:length(subjNum)
-    [aic, pFit, wvMean, wvPred, dfPredPurple, wLMmin, wLpropMin] = ARCtestWvInFocusMeanZspatFilterLMSeffectPlotWave(subjNum(i),'LMS',dataPath);
+    [aic, pFit, wvMean, wvPred, dfPredPurple, wLMmin, wLpropMin] = ARCtestWvInFocusMeanZspatFilterLMSeffectPlotWave(subjNum(i),'LM',dataPath);
     wvMeanAll(:,:,i) = wvMean;
     wvPredAll(:,:,i) = wvPred;
     aicAll(i) = aic;
@@ -30,7 +30,7 @@ else
 end
 foldername = [dataPath 'data' slash 'PresavedFigureData' slash];
 
-load([foldername 'wvMeanAndPredSfree.mat']);
+load([foldername 'wvMeanAndPredLM.mat']);
 
 symbDist = 'sod';
 conditionsOrderedNorm = [0.25 0.00 1.00; ...
@@ -50,7 +50,7 @@ predDiffDue2LCA = [];
 subjNum = [1 3 5 10 16 17 18 20];
 
 figure;
-set(gcf,'Position',[737 404 593 333]);
+set(gcf,'Position',[180 156 959 574]);
 subplot(1,2,1);
 hold on;
 for i = 1:size(wvMeanAll,2)
@@ -65,10 +65,11 @@ for i = 1:size(wvMeanAll,2)
         end
     end
 end
-% axis square;
+axis square;
 set(gca,'FontSize',15);
 set(gca,'XTick',1:5);
 set(gca,'XTickLabel',{'0.25' '0.50' '1.00' '2.00' '4.00'});
+set(gca,'Box','on');
 xlim([0.5 5.5]);
 ylim([450 680]);
 xlabel('Red-blue ratio');
@@ -83,9 +84,10 @@ for i = 1:size(wvMeanAll,2)
         errorbar(j-5,mean(wvMeanTmp(j,:),2),1.96.*std(wvMeanTmp(j,:)')./sqrt(8),['k' symbDist(i)],'MarkerSize',10,'MarkerFaceColor',conditionsOrderedNorm(j,:),'LineWidth',1);
     end
 end
-% axis square;
+axis square;
 xlim([0.5 5.5]);
 ylim([450 680]);
+set(gca,'Box','on');
 set(gca,'FontSize',15);
 set(gca,'XTick',1:5);
 set(gca,'XTickLabel',{'0.25' '0.50' '1.00' '2.00' '4.00'});

@@ -63,6 +63,7 @@ for k = 1:nRepeat
             xlabel('Distance');
             ylabel('D-prime metric');
             set(gca,'FontSize',15);
+            set(gca,'Box','on');
             axis square;
             title(['Mean defocus at 875nm = ' num2str(modelPrediction875nmPurpleAt2pt5,3) 'D']);
             % subplot(1,2,2);
@@ -116,6 +117,9 @@ for k = 1:nRepeat
     %          'ko','MarkerFaceColor',[0.56 0 1],'MarkerSize',15);
     axis square;
     set(gca,'FontSize',15);
+    set(gca,'Box','on');
+    set(gca,'XTick',1.6:0.2:2.8);
+    set(gca,'YTick',1.6:0.2:2.8);
     xlim([1.5 2.8]);
     ylim([1.5 2.8]);
     plot([1.5 2.8],[1.5 2.8],'k--','LineWidth',1);

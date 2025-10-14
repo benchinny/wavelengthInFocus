@@ -65,20 +65,82 @@ legend('L+M-S','L-M','L-M Strehl','L+M-S Strehl','L+M 2cpd','L+M','Location','No
 
 %% FIGURE 4C WITH EXTRA COMPARISON
 
+dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
+if ispc
+    slash = '\';
+else
+    slash = '/';
+end
+foldername = [dataPath 'data' slash 'PresavedFigureData' slash];
+
+load([foldername 'wvMeanAndPredLM.mat']);
+aicSpatFilterLM = aicAll;
+load([foldername 'wvMeanAndPredLminusM.mat']);
+aicSpatFilterLminusM = aicAll;
+load([foldername 'wvMeanAndPredDonutx2.mat']);
+aicSpatFilterLMS = aicAll;
+
 figure; 
 hold on;
 boxplot([(aicSpatFilterLM-aicSpatFilterLMS)' ...
           (aicSpatFilterLM-aicSpatFilterLminusM)' ... 
           (aicSpatFilterLminusM-aicSpatFilterLMS)']);
-ylim([-25 95]);
-set(gca,'YTick',[-23.0259 0 23.0259 46.0517 69.0776 92.1034]);
-set(gca,'YTickLabel',{'10^-10' '1' '10^10' '10^20' '10^30' '10^40'});
+ylim([-25 120]);
+set(gca,'YTick',[-23.0259 0 23.0259 46.0517 69.0776 92.1034 115.1293]);
+set(gca,'YTickLabel',{'10^-10' '1' '10^10' '10^20' '10^30' '10^40' '10^50'});
+set(gca,'XTick',1:3);
+set(gca,'XTickLabel',{'Blue-yellow' 'Red-green' 'Luminance'});
 
-%% FIGURE 4C WITH ONLY BEST COMPARISON
+%% FIGURE 4C
+
+dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
+if ispc
+    slash = '\';
+else
+    slash = '/';
+end
+foldername = [dataPath 'data' slash 'PresavedFigureData' slash];
+
+load([foldername 'wvMeanAndPredLM.mat']);
+aicSpatFilterLM = aicAll;
+load([foldername 'wvMeanAndPredLminusM.mat']);
+aicSpatFilterLminusM = aicAll;
+load([foldername 'wvMeanAndPredDonutx2.mat']);
+aicSpatFilterLMS = aicAll;
 
 figure; 
 hold on;
-boxplot((aicSpatFilterLM-min([aicSpatFilterLMS; aicSpatFilterLminusM]))');
-ylim([-25 95]);
-set(gca,'YTick',[-23.0259 0 23.0259 46.0517 69.0776 92.1034]);
-set(gca,'YTickLabel',{'10^-10' '1' '10^10' '10^20' '10^30' '10^40'});
+boxplot([(aicSpatFilterLM-aicSpatFilterLMS)' ...
+          (aicSpatFilterLM-aicSpatFilterLminusM)']);
+ylim([-25 120]);
+set(gca,'YTick',[-23.0259 0 23.0259 46.0517 69.0776 92.1034 115.1293]);
+set(gca,'YTickLabel',{'10^-10' '1' '10^10' '10^20' '10^30' '10^40' '10^50'});
+set(gca,'XTick',1:2);
+set(gca,'XTickLabel',{'Blue-yellow vs Luminance' 'Red-green vs Luminance'});
+
+%% FIGURE 4C RESPONSE TO REVIEWER WITH STREHL
+
+dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
+if ispc
+    slash = '\';
+else
+    slash = '/';
+end
+foldername = [dataPath 'data' slash 'PresavedFigureData' slash];
+
+load([foldername 'wvMeanAndPredStrehlLM.mat']);
+aicStrehlFilterLM = aicAll;
+load([foldername 'wvMeanAndPredStrehlLminusM.mat']);
+aicStrehlLminusM = aicAll;
+load([foldername 'wvMeanAndPredStrehlLMS.mat']);
+aicStrehlLMS = aicAll;
+
+figure; 
+hold on;
+boxplot([(aicStrehlFilterLM-aicStrehlLMS)' ...
+          (aicStrehlFilterLM-aicStrehlLminusM)']);
+ylim([-25 120]);
+set(gca,'YTick',[-23.0259 0 23.0259 46.0517 69.0776 92.1034 115.1293]);
+set(gca,'YTickLabel',{'10^-10' '1' '10^10' '10^20' '10^30' '10^40' '10^50'});
+set(gca,'XTick',1:2);
+set(gca,'XTickLabel',{'Blue-yellow vs Luminance' 'Red-green vs Luminance'});

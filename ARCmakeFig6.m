@@ -5,7 +5,7 @@ subjNumInd = 2;
 subjNumAll = [1 3 5 10 16 17 18 20];
 
 LMSweights = [0.5467    0.2533   -1.0000; ...
-              0.6875    0.5625   -1.0000; ...
+              0.6475    0.4025   -1.0000; ...
               0.7650    0.1350   -0.5000; ...
               1.1475    0.2025   -1.0000; ...
               0.2267    0.5733   -1.0000; ...
@@ -38,6 +38,7 @@ wv2vis = [620 540 460];
 stimInd = [1 8 6];
 coneImgFilteredEgLMS = [];
 coneImgFilteredEgLM = [];
+coneImgFilteredEgLminusM = [];
 absorptionsS_LMS = [];
 absorptionsLM_LMS = [];
 
@@ -45,14 +46,18 @@ peakCorrAll = [];
 for i = 1:length(stimInd)
     for j = 1:length(wv2vis)
         [wvInFocus, coneImgFilteredEg, coneImgOrigFilteredEg, wvInFocus2, wave, peakCorr, absorptions] = ...
-         ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),LMSweights(2,:),find(wave==wv2vis(j)),dataPath);
+         ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),LMSweights(subjNumAll(subjNumInd),:),find(wave==wv2vis(j)),dataPath);
          coneImgFilteredEgLMS(:,:,i,j) = coneImgFilteredEg;
          absorptionsS_LMS(:,:,i,j) = absorptions(:,:,3);
          absorptionsLM_LMS(:,:,i,j) = absorptions(:,:,1)+absorptions(:,:,2);
 
         [wvInFocus, coneImgFilteredEg, coneImgOrigFilteredEg, wvInFocus2, wave, peakCorr, absorptions] = ...
-         ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),[LMSweights(2,1) LMSweights(2,2) 0],find(wave==wv2vis(j)),dataPath); 
+         ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),[LMSweights(subjNumAll(subjNumInd),1) LMSweights(subjNumAll(subjNumInd),2) 0],find(wave==wv2vis(j)),dataPath); 
         coneImgFilteredEgLM(:,:,i,j) = coneImgFilteredEg;
+
+        [wvInFocus, coneImgFilteredEg, coneImgOrigFilteredEg, wvInFocus2, wave, peakCorr, absorptions] = ...
+         ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),[LminusMweights(subjNumAll(subjNumInd),1) LminusMweights(subjNumAll(subjNumInd),2) 0],find(wave==wv2vis(j)),dataPath); 
+        coneImgFilteredEgLminusM(:,:,i,j) = coneImgFilteredEg;        
     end
     [~, ~, ~, ~, wave, peakCorr, ~] = ...
     ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),[LMSweights(subjNumAll(subjNumInd),1) LMSweights(subjNumAll(subjNumInd),2) LMSweights(subjNumAll(subjNumInd),3)],1:101,dataPath);
