@@ -104,7 +104,7 @@ end
 axis square;
 formatFigure('Red-blue ratio','Wavelength in focus (nm)','No green');
 xlim([0.5 5.5]);
-ylim([450 650]);
+ylim([450 680]);
 set(gca,'XTickLabel',{'0.25' '0.50' '1.00' '2.00' '4.00'});
 subplot(1,2,2);
 hold on;
@@ -135,5 +135,5 @@ end
 axis square;
 formatFigure('Red-blue ratio','Wavelength in focus (nm)','Some green');
 xlim([0.5 5.5]);
-ylim([450 650]);
+ylim([450 680]);
 set(gca,'XTickLabel',{'0.25' '0.50' '1.00' '2.00' '4.00'});

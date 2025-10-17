@@ -9,7 +9,7 @@ LMSweights = [0.5467    0.2533   -1.0000; ...
               0.7650    0.1350   -0.5000; ...
               1.1475    0.2025   -1.0000; ...
               0.2267    0.5733   -1.0000; ...
-              0.3008    0.6492   -1.0000; ...
+              0.2850    0.6150   -1.0000; ...
               1.1050    0.1950   -1.0000; ...
               1.1433    0.2567   -0.2500];
 
@@ -34,7 +34,7 @@ LminusMweights = [0.3250   -0.1750         0; ...
 % MAKE EXAMPLE CONE IMAGES FOR SUBJECT 2 AT INFORMATIVE WAVELENGTHS
 
 wave = 380:4:780;
-wv2vis = [620 540 460];
+wv2vis = [616 540 468];
 stimInd = [1 8 6];
 coneImgFilteredEgLMS = [];
 coneImgFilteredEgLM = [];
@@ -46,32 +46,34 @@ peakCorrAll = [];
 for i = 1:length(stimInd)
     for j = 1:length(wv2vis)
         [wvInFocus, coneImgFilteredEg, coneImgOrigFilteredEg, wvInFocus2, wave, peakCorr, absorptions] = ...
-         ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),LMSweights(subjNumAll(subjNumInd),:),find(wave==wv2vis(j)),dataPath);
+         ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),LMSweights(subjNumInd,:),find(wave==wv2vis(j)),dataPath);
          coneImgFilteredEgLMS(:,:,i,j) = coneImgFilteredEg;
          absorptionsS_LMS(:,:,i,j) = absorptions(:,:,3);
          absorptionsLM_LMS(:,:,i,j) = absorptions(:,:,1)+absorptions(:,:,2);
 
         [wvInFocus, coneImgFilteredEg, coneImgOrigFilteredEg, wvInFocus2, wave, peakCorr, absorptions] = ...
-         ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),[LMSweights(subjNumAll(subjNumInd),1) LMSweights(subjNumAll(subjNumInd),2) 0],find(wave==wv2vis(j)),dataPath); 
+         ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),[LMSweights(subjNumInd,1) LMSweights(subjNumInd,2) 0],find(wave==wv2vis(j)),dataPath); 
         coneImgFilteredEgLM(:,:,i,j) = coneImgFilteredEg;
 
         [wvInFocus, coneImgFilteredEg, coneImgOrigFilteredEg, wvInFocus2, wave, peakCorr, absorptions] = ...
-         ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),[LminusMweights(subjNumAll(subjNumInd),1) LminusMweights(subjNumAll(subjNumInd),2) 0],find(wave==wv2vis(j)),dataPath); 
+         ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),[LminusMweights(subjNumInd,1) LminusMweights(subjNumInd,2) 0],find(wave==wv2vis(j)),dataPath); 
         coneImgFilteredEgLminusM(:,:,i,j) = coneImgFilteredEg;        
     end
     [~, ~, ~, ~, wave, peakCorr, ~] = ...
-    ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),[LMSweights(subjNumAll(subjNumInd),1) LMSweights(subjNumAll(subjNumInd),2) LMSweights(subjNumAll(subjNumInd),3)],1:101,dataPath);
+    ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),[LMSweights(subjNumInd,1) LMSweights(subjNumInd,2) LMSweights(subjNumInd,3)],1:101,dataPath);
     peakCorrAll(:,end+1) = peakCorr;
     [~, ~, ~, ~, wave, peakCorr, ~] = ...
-    ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),[LMweights(subjNumAll(subjNumInd),1) LMweights(subjNumAll(subjNumInd),2) LMweights(subjNumAll(subjNumInd),3)],1:101,dataPath);
+    ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),[LMweights(subjNumInd,1) LMweights(subjNumInd,2) 0],1:101,dataPath);
     peakCorrAll(:,end+1) = peakCorr;
     [~, ~, ~, ~, wave, peakCorr, ~] = ...
-    ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),[LminusMweights(subjNumAll(subjNumInd),1) LminusMweights(subjNumAll(subjNumInd),2) LminusMweights(subjNumAll(subjNumInd),3)],1:101,dataPath);
+    ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),[LminusMweights(subjNumInd,1) LminusMweights(subjNumInd,2) LminusMweights(subjNumInd,3)],1:101,dataPath);
     peakCorrAll(:,end+1) = peakCorr;
 end
 
 %% PLOT DIFFERENT CONE IMAGES FOR BUILDING MODEL INTUITIONS
-
+absorptionsS_LMSplot = absorptionsS_LMS.*1;
+absorptionsLM_LMSplot = absorptionsLM_LMS.*1;
+coneImgFilteredEgLMSplot = coneImgFilteredEgLMS.*1;
 redblue = make_yellow_blue_colormap(1);
 axisLims = [min([coneImgFilteredEgLM(:); coneImgFilteredEgLMS(:)]) ...
             max([coneImgFilteredEgLM(:); coneImgFilteredEgLMS(:)])];
@@ -82,13 +84,13 @@ figure;
 set(gcf,'Position',[29 90 890 908]);
 for i = 1:length(wv2vis)
     subplot(3,3,(i-1)*3+3);
-    imagesc(squeeze(coneImgFilteredEgLMS(:,:,1,i))); 
+    imagesc(squeeze(coneImgFilteredEgLMSplot(:,:,1,i))); 
     axis square; 
     set(gca,'XTick',[]);
     set(gca,'YTick',[]);
     set(gca,'LineWidth',2);
     colormap(redblue); 
-    xlim([50 120]+62); 
+    xlim([50 120]+57); 
     ylim([55 125]); 
     if i==1 && bColorBar
        colorbar;
@@ -98,13 +100,13 @@ for i = 1:length(wv2vis)
         title(['\lambda_{focus} = ' num2str(wv2vis(i)) ', ' stimCell{1} ', LMS']);
     end
     subplot(3,3,(i-1)*3+2);
-    imagesc(squeeze(absorptionsS_LMS(:,:,1,i)));
+    imagesc(squeeze(absorptionsS_LMSplot(:,:,1,i)));
     axis square; 
     colormap(redblue); 
     set(gca,'XTick',[]);
     set(gca,'YTick',[]); 
     set(gca,'LineWidth',2);
-    xlim([50 120]+62); 
+    xlim([50 120]+57); 
     ylim([55 125]); 
     % colorbar; 
     clim(axisLims(2).*[-1 1]);
@@ -112,13 +114,13 @@ for i = 1:length(wv2vis)
        title(['\lambda_{focus} = ' num2str(wv2vis(i)) ', ' stimCell{1} ', S image']);
     end
     subplot(3,3,(i-1)*3+1);
-    imagesc(squeeze(absorptionsLM_LMS(:,:,1,i)));
+    imagesc(squeeze(absorptionsLM_LMSplot(:,:,1,i)));
     axis square; 
     set(gca,'XTick',[]);
     set(gca,'YTick',[]); 
     set(gca,'LineWidth',2);
     colormap(redblue); 
-    xlim([50 120]+62); 
+    xlim([50 120]+57); 
     ylim([55 125]); 
     % colorbar; 
     clim(axisLims(2).*[-1 1]);
@@ -131,13 +133,13 @@ figure;
 set(gcf,'Position',[29 90 890 908]);
 for i = 1:length(wv2vis)
     subplot(3,3,(i-1)*3+3);
-    imagesc(squeeze(coneImgFilteredEgLMS(:,:,3,i))); 
+    imagesc(squeeze(coneImgFilteredEgLMSplot(:,:,3,i))); 
     axis square; 
     set(gca,'XTick',[]);
     set(gca,'YTick',[]);
     set(gca,'LineWidth',2);
     colormap(redblue); 
-    xlim([50 120]+62); 
+    xlim([50 120]+57); 
     ylim([55 125]); 
     if i==1 && bColorBar
        colorbar;
@@ -147,13 +149,13 @@ for i = 1:length(wv2vis)
         title(['\lambda_{focus} = ' num2str(wv2vis(i)) ', ' stimCell{3} ', LMS']);
     end
     subplot(3,3,(i-1)*3+2);
-    imagesc(squeeze(absorptionsS_LMS(:,:,3,i)));
+    imagesc(squeeze(absorptionsS_LMSplot(:,:,3,i)));
     axis square; 
     colormap(redblue); 
     set(gca,'XTick',[]);
     set(gca,'YTick',[]); 
     set(gca,'LineWidth',2);
-    xlim([50 120]+62); 
+    xlim([50 120]+57); 
     ylim([55 125]); 
     % colorbar; 
     clim(axisLims(2).*[-1 1]);  
@@ -161,13 +163,13 @@ for i = 1:length(wv2vis)
         title(['\lambda_{focus} = ' num2str(wv2vis(i)) ', ' stimCell{3} ', S image']);
     end
     subplot(3,3,(i-1)*3+1);
-    imagesc(squeeze(absorptionsLM_LMS(:,:,3,i)));
+    imagesc(squeeze(absorptionsLM_LMSplot(:,:,3,i)));
     axis square; 
     set(gca,'XTick',[]);
     set(gca,'YTick',[]); 
     set(gca,'LineWidth',2);
     colormap(redblue); 
-    xlim([50 120]+62); 
+    xlim([50 120]+57); 
     ylim([55 125]); 
     % colorbar; 
     clim(axisLims(2).*[-1 1]);
