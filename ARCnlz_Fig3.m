@@ -137,3 +137,13 @@ formatFigure('Red-blue ratio','Wavelength in focus (nm)','Some green');
 xlim([0.5 5.5]);
 ylim([450 680]);
 set(gca,'XTickLabel',{'0.25' '0.50' '1.00' '2.00' '4.00'});
+
+%% MAKE TABLE
+
+wvInFocusArrayForSuppTable = [];
+condForTable = [1:10 12:21 23:32]';
+for i = 1:8
+   for j = 1:length(condForTable)
+       wvInFocusArrayForSuppTable(j,i) = mean(wvInFocusCellAll{condForTable(j)+(i-1)*33});
+   end
+end

@@ -287,12 +287,19 @@ for rgbAcuCnd = 1:3 % SORT DATA BY COLOR
     % FITTING SPLINE TO DATA
     PCfitSupport = min(unqFocDst.*scaleFac):0.01:max(unqFocDst.*scaleFac);
     PCfit = spline(unqFocDst.*scaleFac,PC,PCfitSupport);
-    [~,indLCA] = max(PCfit);
-    defocusLCAmeasured(rgbAcuCnd) = PCfitSupport(indLCA);
-    if subj==5 && rgbAcuCnd==2
-        PCfit(PCfitSupport>0.6) = 0;
+    % PROTECT AGAINST IMPLAUSIBLE PEAK VALUES FROM MEASUREMENT NOISE OR
+    % MONOCHROMATIC ABERRATIONS BY ENFORCING CONSTRAINT THAT PEAK FOR 
+    % GREEN IS WITHIN 1.0D OF PEAK FOR RED, AND PEAK FOR BLUE IS WITHIN 
+    % 1.0D OF PEAK FOR GREEN
+    if rgbAcuCnd==2 || rgbAcuCnd==3
+        indValid = abs(PCfitSupport-defocusLCAmeasured(rgbAcuCnd-1))<1;
+        PCfitSupportValid = PCfitSupport(indValid);
+        PCfitValid = PCfit(indValid);
+        [~,indLCA] = max(PCfitValid);
+        defocusLCAmeasured(rgbAcuCnd) = PCfitSupportValid(indLCA);   
+    else
         [~,indLCA] = max(PCfit);
-        defocusLCAmeasured(rgbAcuCnd) = PCfitSupport(indLCA);
+        defocusLCAmeasured(rgbAcuCnd) = PCfitSupport(indLCA);        
     end
     if bPLOT
         % subplot(1,3,rgbAcuCnd);
