@@ -34,7 +34,7 @@ LminusMweights = [0.3250   -0.1750         0; ...
 % MAKE EXAMPLE CONE IMAGES FOR SUBJECT 2 AT INFORMATIVE WAVELENGTHS
 
 wave = 380:4:780;
-wv2vis = [616 540 468];
+wv2vis = [616 552 468];
 stimInd = [1 8 6];
 coneImgFilteredEgLMS = [];
 coneImgFilteredEgLM = [];

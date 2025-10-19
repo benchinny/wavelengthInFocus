@@ -9,15 +9,17 @@ aicAll = [];
 dfPredPurpleAll = [];
 wLMminAll = [];
 wLpropMinAll = [];
+pFitAll = [];
 
 for i = 1:length(subjNum)
-    [aic, pFit, wvMean, wvPred, dfPredPurple, wLMmin, wLpropMin] = ARCtestWvInFocusMeanZspatFilterLMSeffectPlotWave(subjNum(i),'LM',dataPath);
+    [aic, pFit, wvMean, wvPred, dfPredPurple, wLMmin, wLpropMin] = ARCtestWvInFocusMeanZspatFilterLMSeffectPlotWave(subjNum(i),'LminusM',dataPath);
     wvMeanAll(:,:,i) = wvMean;
     wvPredAll(:,:,i) = wvPred;
     aicAll(i) = aic;
     dfPredPurpleAll(i) = dfPredPurple;
     wLMminAll(i) = wLMmin;
     wLpropMinAll(i) = wLpropMin;
+    pFitAll(:,i) = pFit;
 end 
 
 %% MAKE FIGURE 4B IN THE PAPER
@@ -30,7 +32,7 @@ else
 end
 foldername = [dataPath 'data' slash 'PresavedFigureData' slash];
 
-load([foldername 'wvMeanAndPredDonutx2.mat']);
+load([foldername 'wvMeanAndPredLminusM.mat']);
 
 symbDist = 'sod';
 conditionsOrderedNorm = [0.25 0.00 1.00; ...
