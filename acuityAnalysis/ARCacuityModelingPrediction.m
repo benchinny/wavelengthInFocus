@@ -141,7 +141,7 @@ cAll = [];
 % S-CONE FREE
 % modelPrediction875nmPurpleAt2pt5all = [1.28 1.67 1.75 1.59 1.48 1.70 1.26 1.53];
 % S-CONE DONUT x 2
-modelPrediction875nmPurpleAt2pt5all = [1.29 1.66 1.75 1.54 1.44 1.70 1.26 1.52];
+modelPrediction875nmPurpleAt2pt5all = [1.29 1.66 1.75 1.54 1.44 1.70 1.21 1.52];
 % FOR CURRENT LUMINANCE MODEL
 % modelPrediction875nmPurpleAt2pt5all = [1.39 1.76 1.88 1.81 1.16 1.74 1.39 1.49];
 

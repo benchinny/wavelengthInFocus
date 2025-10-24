@@ -8,9 +8,9 @@ subjNumAll = [1 3 5 10 16 17 18 20];
 % subjNumAllRand = subjNumAll;
 peakLocModelPredictionAll = [];
 nRepeat = 1;
-subjNumInclude = [1:8];
+subjNumInclude = [1:4 5:8];
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
-fileStr = 'acuityModelingPrediction';
+fileStr = 'acuityModelingPredictionLum';
 
 if ispc
     slash = '\';
@@ -20,6 +20,7 @@ end
 dataFolder = [dataPath 'data' slash 'acuityModeling' slash];
 
 for k = 1:nRepeat
+    shiftValBestFitAll = [];
     for j = 1:length(subjNumAll)
     
         subjNum = subjNumAll(j);
@@ -40,7 +41,7 @@ for k = 1:nRepeat
         % dprimeScale = dprime2regress\dprime';
         
         % 'DEPTH-OF-FOCUS' PARAMETER
-        shiftVals = -0.25:0.05:0.25;
+        shiftVals = -0.25:0.025:0.25;
         
         % SHIFT PREDICTED D-PRIME CURVES AND REGRESS AGAINST ACTUAL DATA TO
         % FIT 'DEPTH-OF-FOCUS' PARAMETER
@@ -52,6 +53,7 @@ for k = 1:nRepeat
         [~,indMinShift] = min(errorDP);
         shiftValBestFit = shiftVals(indMinShift);
         dprimeScaleBestFit = dprimeScaleTmp(indMinShift);
+        shiftValBestFitAll(j) = shiftValBestFit;
         
         if bPlot
             figure;
@@ -109,7 +111,7 @@ for k = 1:nRepeat
     
     figure;
     hold on;
-    plot(peakLocModelPredictionAll(subjNumInclude),peakLocActualAll(subjNumInclude),'ko','MarkerFaceColor',[0.56 0 1],'MarkerSize',15);
+    plot(peakLocModelPredictionAll,peakLocActualAll(subjNumInclude),'ko','MarkerFaceColor',[0.56 0 1],'MarkerSize',15);
     % errorbar(peakLocModelPredictionAll(subjNumInclude), ...
     %          peakLocActualAll(subjNumInclude), ...
     %          peakLocActualAll(subjNumInclude)-peakLocLBall(subjNumInclude), ...
@@ -125,7 +127,7 @@ for k = 1:nRepeat
     plot([1.5 2.8],[1.5 2.8],'k--','LineWidth',1);
     xlabel(['Predicted Peak Location (D)']);
     ylabel(['Actual Peak Location (D)']);
-    title(['Correlation = ' num2str(corr(peakLocModelPredictionAll(subjNumInclude)',peakLocActualAll(subjNumInclude)'),3)]);
+    title(['Correlation = ' num2str(corr(peakLocModelPredictionAll',peakLocActualAll(subjNumInclude)'),3)]);
 
     % corrShuffle(k) = corr(peakLocModelPredictionAll',peakLocActualAll');
     display(['Iteration ' num2str(k)]);
