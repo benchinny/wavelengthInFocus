@@ -140,10 +140,14 @@ cAll = [];
 % modelPrediction875nmPurpleAt2pt5all = [1.29 1.66 1.79 1.55 1.41 1.71 1.27 1.52];
 % S-CONE FREE
 % modelPrediction875nmPurpleAt2pt5all = [1.28 1.67 1.75 1.59 1.48 1.70 1.26 1.53];
-% S-CONE DONUT x 2
-modelPrediction875nmPurpleAt2pt5all = [1.29 1.66 1.75 1.54 1.44 1.70 1.21 1.52];
+% BEST CHROMATIC MODEL
+% modelPrediction875nmPurpleAt2pt5all = [1.29 1.66 1.75 1.54 1.44 1.70 1.21 1.52];
 % FOR CURRENT LUMINANCE MODEL
-% modelPrediction875nmPurpleAt2pt5all = [1.39 1.76 1.88 1.81 1.16 1.74 1.39 1.49];
+modelPrediction875nmPurpleAt2pt5all = [1.39 1.76 1.88 1.81 1.16 1.74 1.39 1.49];
+% FOR L MINUS M MODEL
+% modelPrediction875nmPurpleAt2pt5all = [1.29 1.66 1.76 1.51 1.48 1.61 1.21 1.53];
+% FOR S-CONE 'DONUT' MODEL
+% modelPrediction875nmPurpleAt2pt5all = [1.29 1.66 1.75 1.54 1.44 1.70 1.26 1.52];
 
 % ---THIS BLOCK IS UNUSUED (USES MEASURED RATHER THAN PREDICTED DEFOCUS---
 wvfFiles = ARCacuAnalysisWvfSubj(subjNum, dataPath);
@@ -289,7 +293,7 @@ xlabel('Wavelength in focus (nm)');
 ylabel('D-prime metric');
 set(gca,'FontSize',15);
 
-save([saveFolder 'acuityModelingPredictionS' num2str(subjNum)],'dprimeMetric','defocusForStim', ...
+save([saveFolder 'acuityModelingPredictionLum' num2str(subjNum)],'dprimeMetric','defocusForStim', ...
     'modelPrediction875nmPurpleAt2pt5','dprime','dprimeCI','unqFocDst','wvInFocusForStim');
 
 end

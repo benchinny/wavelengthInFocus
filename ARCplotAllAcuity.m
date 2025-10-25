@@ -9,7 +9,7 @@ nRepeat = 1;
 corrShuffle = [];
 subjNumInclude = [1:8];
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
-fileStr = 'acuityModelingPrediction';
+fileStr = 'acuityModelingPredictionLminusM';
 
 if ispc
     slash = '\';
@@ -40,7 +40,7 @@ for k = 1:nRepeat
         % dprimeScale = dprime2regress\dprime';
         
         % 'DEPTH-OF-FOCUS' PARAMETER
-        shiftVals = -0.25:0.05:0.25;
+        shiftVals = -0.25:0.025:0.25;
         
         % SHIFTING PREDICTED D-PRIME CURVE AND REGRESSING AGAINST ACTUAL
         % D-PRIME VALUES TO GET THE BEST FIT
