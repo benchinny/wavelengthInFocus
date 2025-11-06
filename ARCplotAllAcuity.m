@@ -9,7 +9,7 @@ nRepeat = 1;
 corrShuffle = [];
 subjNumInclude = [1:8];
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
-fileStr = 'acuityModelingPredictionLminusM';
+fileStr = 'acuityModelingPrediction';
 
 if ispc
     slash = '\';
@@ -40,7 +40,7 @@ for k = 1:nRepeat
         % dprimeScale = dprime2regress\dprime';
         
         % 'DEPTH-OF-FOCUS' PARAMETER
-        shiftVals = -0.25:0.025:0.25;
+        shiftVals = 0;
         
         % SHIFTING PREDICTED D-PRIME CURVE AND REGRESSING AGAINST ACTUAL
         % D-PRIME VALUES TO GET THE BEST FIT
@@ -66,7 +66,7 @@ for k = 1:nRepeat
             axis square;
             text(-1,0.3,['S' num2str(j)],'FontSize',18);
             % title(['Mean defocus at 875nm = ' num2str(modelPrediction875nmPurpleAt2pt5,3) 'D']);
-            ylim([0.2 1]);
+            ylim([0.2 1.05]);
             xlim([-1.2 1.2]);
             % subplot(1,2,2);
             % plot(wvInFocusForStim,dprimeMetric,'k-','LineWidth',1);

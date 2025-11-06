@@ -10,7 +10,8 @@ peakLocModelPredictionAll = [];
 nRepeat = 1;
 subjNumInclude = [1:4 5:8];
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
-fileStr = 'acuityModelingPredictionLum';
+fileStr = 'acuityModelingPrediction';
+plotColorCorr = [0.56 0 1];
 
 if ispc
     slash = '\';
@@ -41,7 +42,7 @@ for k = 1:nRepeat
         % dprimeScale = dprime2regress\dprime';
         
         % 'DEPTH-OF-FOCUS' PARAMETER
-        shiftVals = -0.25:0.025:0.25;
+        shiftVals = 0;
         
         % SHIFT PREDICTED D-PRIME CURVES AND REGRESS AGAINST ACTUAL DATA TO
         % FIT 'DEPTH-OF-FOCUS' PARAMETER
@@ -60,8 +61,8 @@ for k = 1:nRepeat
             set(gcf,'Position',[342 460 1052 440]);
             subplot(1,2,1);
             hold on;
-            plot(shiftValBestFit+defocusForStim+modelPrediction875nmPurpleAt2pt5,dprimeMetric.*dprimeScaleBestFit,'-','Color',[0.56 0 1],'LineWidth',1);
-            errorbar(2.5+unqFocDst.*scaleFac,dprime,(dprime-dprimeCI(1,:)),(dprimeCI(2,:)-dprime),'o','Color',[0.56 0 1],'MarkerFaceColor','w','LineWidth',1.5,'MarkerSize',10);
+            plot(shiftValBestFit+defocusForStim+modelPrediction875nmPurpleAt2pt5,dprimeMetric.*dprimeScaleBestFit,'-','Color',plotColorCorr,'LineWidth',1);
+            errorbar(2.5+unqFocDst.*scaleFac,dprime,(dprime-dprimeCI(1,:)),(dprimeCI(2,:)-dprime),'o','Color',plotColorCorr,'MarkerFaceColor','w','LineWidth',1.5,'MarkerSize',10);
             xlabel('Distance');
             ylabel('D-prime metric');
             set(gca,'FontSize',15);
@@ -79,7 +80,7 @@ for k = 1:nRepeat
             set(gcf,'Position',[342 460 1052 440]);
             subplot(1,2,1);
             hold on;
-            plot(shiftValBestFit+defocusForStim+modelPrediction875nmPurpleAt2pt5-2.5,normcdf(dprimeMetric.*dprimeScaleBestFit/2),'-','Color',[0.56 0 1],'LineWidth',1);
+            plot(shiftValBestFit+defocusForStim+modelPrediction875nmPurpleAt2pt5-2.5,normcdf(dprimeMetric.*dprimeScaleBestFit/2),'-','Color',plotColorCorr,'LineWidth',1);
             xlabel('Distance');
             ylabel('Proportion Correct');
             set(gca,'FontSize',15);
@@ -111,12 +112,13 @@ for k = 1:nRepeat
     
     figure;
     hold on;
-    plot(peakLocModelPredictionAll,peakLocActualAll(subjNumInclude),'ko','MarkerFaceColor',[0.56 0 1],'MarkerSize',15);
+    plot(peakLocModelPredictionAll,peakLocActualAll(subjNumInclude),'ko','MarkerFaceColor',plotColorCorr,'MarkerSize',15);
+    RMSE = sqrt(mean((peakLocModelPredictionAll-peakLocActualAll(subjNumInclude)).^2));
     % errorbar(peakLocModelPredictionAll(subjNumInclude), ...
     %          peakLocActualAll(subjNumInclude), ...
     %          peakLocActualAll(subjNumInclude)-peakLocLBall(subjNumInclude), ...
     %          peakLocUBall(subjNumInclude)-peakLocActualAll(subjNumInclude), ...
-    %          'ko','MarkerFaceColor',[0.56 0 1],'MarkerSize',15);
+    %          'ko','MarkerFaceColor',plotColorCorr,'MarkerSize',15);
     axis square;
     set(gca,'FontSize',15);
     set(gca,'Box','on');
