@@ -11,7 +11,8 @@ nRepeat = 1;
 subjNumInclude = [1:4 5:8];
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 fileStr = 'acuityModelingPrediction';
-plotColorCorr = [0.56 0 1];
+plotColorCorr = [1 1 1];
+plotSymb = '>^<vsdho';
 
 if ispc
     slash = '\';
@@ -112,7 +113,9 @@ for k = 1:nRepeat
     
     figure;
     hold on;
-    plot(peakLocModelPredictionAll,peakLocActualAll(subjNumInclude),'ko','MarkerFaceColor',plotColorCorr,'MarkerSize',15);
+    for i = 1:length(peakLocModelPredictionAll)
+       plot(peakLocModelPredictionAll(i),peakLocActualAll(subjNumInclude(i)),['k' plotSymb(i)],'MarkerFaceColor',plotColorCorr,'MarkerSize',15);
+    end
     RMSE = sqrt(mean((peakLocModelPredictionAll-peakLocActualAll(subjNumInclude)).^2));
     % errorbar(peakLocModelPredictionAll(subjNumInclude), ...
     %          peakLocActualAll(subjNumInclude), ...
@@ -154,3 +157,11 @@ peakLocActualAll = [1.8635 1.9435 2.6335 2.1235 2.6435 1.9035 1.8935 2.3235];
 dataTableAcuity = array2table([peakLocModelPredictionAll' peakLocActualAll'], ...
                              'VariableNames',{'Predictions' 'Actual'});
 
+%% T-TEST ERROR VALUES
+
+errorLum = [-0.2035 -0.0335 -0.4135 0.0965 ...
+            -0.9935 0.1165 0.1665 -0.5135];
+errorCO = [-0.3035 -0.1335 -0.5435 -0.1735 ...
+           -0.7135 0.0765 -0.0135 -0.4835];
+
+[h,p] = ttest(errorCO-errorLum);

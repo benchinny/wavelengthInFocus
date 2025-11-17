@@ -91,7 +91,7 @@ ylim([1.25 2.75]);
 
 %% FIGURE 5C WITH SYMBOLS
 
-plotSymAll = 'xosd>^<v';
+plotSymAll = '>^<vsdho';
 dprimeRatioAll = [2.41 1.000 1.000 1.41 1.000 1.98 1.76 1.023];
 
 figure;
@@ -110,4 +110,5 @@ end
 % set(gca,'XTickLabel',{'S1' 'S3' 'S5' 'S10' 'S16' 'S17' 'S18' 'S20'});
 % xlabel('Subject');
 ylabel('d''_{max}/d''_{0}');
-% ylim([0 1]);
+ylim([0.9 2.6]);
+set(gca,'YTick',[1 1.5 2 2.5]);

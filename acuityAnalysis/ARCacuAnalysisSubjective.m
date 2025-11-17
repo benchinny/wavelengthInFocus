@@ -1,5 +1,5 @@
 %%
-function [unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport,bestDist,bestDistCI] = ARCacuAnalysisSubjective(subjNum,bPLOT,dataPath)
+function [unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport,bestDist,bestDistCI,PCboots] = ARCacuAnalysisSubjective(subjNum,bPLOT,dataPath)
 
 if ispc
     slash = '\';
@@ -288,7 +288,7 @@ PCfit = spline(unqFocDst.*scaleFac,PC,PCfitSupport);
 [~,indBest] = max(PCfit);
 bestDist = PCfitSupport(indBest);
 
-nBoots = 500;
+nBoots = 1000;
 if nBoots>0
     for j = 1:nBoots % BOOTSTRAPPING
         for i = 1:length(unqFocDst)

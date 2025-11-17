@@ -131,6 +131,7 @@ for l = 1:length(blockNums) % LOOP OVER BLOCK
         c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65. 
         PARAMS = struct;
         PARAMS.PupilSize=mean(table2array(ZernikeTable(:,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)
+        PARAMS.PupilSize = 4.*ones(size(PARAMS.PupilSize)); % hard code pupil size (FOR BVAMS ONLY)
         PARAMS.PupilFitSize=mean(table2array(ZernikeTable(:,5))); 
         PARAMS.PupilFieldSize=PARAMS.PupilSize*2; %automatically compute the field size
         c(:,3:NumCoeffs)=table2array(ZernikeTable(:,11:width(ZernikeTable)));
