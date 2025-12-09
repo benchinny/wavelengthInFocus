@@ -4,8 +4,7 @@ function ARCnlz_psf(subjNum,dataPath)
 % example of dataPath: 
 %  dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 
-% bSave = true;
-if ispc
+if ispc % GETTING PATHS RIGHT
     slash = '\';
 else
     slash = '/';
@@ -14,9 +13,9 @@ foldername = [dataPath 'data' slash 'ARC' slash];
 
 fitType = 'weibull';
 
-subjNum = subjNum+10;
+subjNum = subjNum+10; % NEED TO ADD 10 AS PER OUR NAMING CONVENTION
 
-if subjNum==18
+if subjNum==18 % STORING FILE NUMBERS
     filenames = {
                  'S1018V1_AFC_RightACL0_2409061234.mat' ...
                  'S1018V1_AFC_RightACL0_2409061236.mat' ...
@@ -142,40 +141,42 @@ elseif subjNum==30
                  }; 
 end
 
-for i = 1:length(filenames)
-    load([foldername filenames{i}]);
-    lengthRsp = length(AFCp.rspAcu);
-    AFCp.t3 = AFCp.t3(1:lengthRsp,:,:);
-    AFCp.rgb = AFCp.rgb(1:lengthRsp,:);
-    AFCp.meanFocstmOptDst = AFCp.meanFocstmOptDst(1:lengthRsp);
-    AFCp.contrast = AFCp.contrast(1:lengthRsp);
-    AFCp.rspAcu = AFCp.rspAcu';
-    AFCp.stimOrientation = AFCp.stimOrientation(1:lengthRsp);
+for i = 1:length(filenames) % LOOP OVER FILENAMES
+    load([foldername filenames{i}]); % LOAD
+    lengthRsp = length(AFCp.rspAcu); % RESPONSES
+    AFCp.t3 = AFCp.t3(1:lengthRsp,:,:); % STIMULUS APPEARANCE TIME
+    AFCp.rgb = AFCp.rgb(1:lengthRsp,:); % STIMULUS COLOR
+    AFCp.meanFocstmOptDst = AFCp.meanFocstmOptDst(1:lengthRsp); % STIM DISTANCE
+    AFCp.contrast = AFCp.contrast(1:lengthRsp); % STIM CONTRAST
+    AFCp.rspAcu = AFCp.rspAcu'; % RESPONSE
+    AFCp.stimOrientation = AFCp.stimOrientation(1:lengthRsp); % STIM ORIENTATION
     if i==1
         AFCpAll = AFCp;
     else
-        AFCpAll = structmerge(AFCpAll,AFCp);
+        AFCpAll = structmerge(AFCpAll,AFCp); % MERGE DATA FROM VARIOUS FILES
     end
 end
 
 rgbUnq = [0.569 0.000 0.000; ...
           0.000 0.432 0.000; ...
           0.000 0.000 1.000; ...
-          0.569 0.000 1.000];
+          0.569 0.000 1.000]; % THESE ARE ALL THE UNIQUE COLOR CONDITIONS
 
 if strcmp(fitType,'gauss')
     figure;
     set(gcf,'Position',[414 281 1013 660]);
-    for i = 1:size(rgbUnq,1)
+    for i = 1:size(rgbUnq,1) % GET ALL DATA FROM A GIVEN COLOR
         ind = abs(AFCpAll.rgb(:,1)-rgbUnq(i,1))<0.001 & ...
               abs(AFCpAll.rgb(:,2)-rgbUnq(i,2))<0.001 & ...
               abs(AFCpAll.rgb(:,3)-rgbUnq(i,3))<0.001;
+        % FIT PSYCHOMETRIC FUNCTION PARAMETERS
         [mFit,sFit,bFit,Tfit,PCdta,PCfit,negLL] = psyfitgengauss(zeros(size(AFCpAll.contrast(ind))),AFCpAll.contrast(ind),AFCpAll.rspAcu(ind)==AFCpAll.stimOrientation(ind),0,[],[],1.48,2,0);
         if subjNum==13
            contrastIncr = 0.1:0.01:1;
         else
            contrastIncr = 0.2:0.01:1;
         end
+        % PLOT PSYCHOMETRIC FUNCTION
         [PCplt,~]=psyfitgengaussfunc(zeros(size(contrastIncr)),contrastIncr,mFit,sFit,bFit,1.48,2,0);
         subplot(2,2,i);
         hold on;
@@ -196,16 +197,18 @@ end
 if strcmp(fitType,'weibull')
     figure;
     set(gcf,'Position',[414 281 1013 660]);
-    for i = 1:size(rgbUnq,1)
+    for i = 1:size(rgbUnq,1) % GET ALL DATA FROM A GIVEN COLOR
         ind = abs(AFCpAll.rgb(:,1)-rgbUnq(i,1))<0.001 & ...
               abs(AFCpAll.rgb(:,2)-rgbUnq(i,2))<0.001 & ...
               abs(AFCpAll.rgb(:,3)-rgbUnq(i,3))<0.001;
+        % FIT PSYCHOMETRIC FUNCTION
         [mFit,sFit,bFit,Tfit,PCdta,PCfit,negLL] = psyfitWeibull(zeros(size(AFCpAll.contrast(ind))),AFCpAll.contrast(ind),AFCpAll.rspAcu(ind)==AFCpAll.stimOrientation(ind),[],[],[],1.48,2,0);
         if subjNum==13
            contrastIncr = 0.1:0.01:1;
         else
            contrastIncr = 0.2:0.01:1;
         end
+        % PLOT PSYCHOMETRIC FUNCTION
         [PCplt,~]=psyfitWeibullfunc(zeros(size(contrastIncr)),contrastIncr,mFit,sFit,bFit,1.48,2,0);
         subplot(2,2,i);
         hold on;
@@ -222,9 +225,5 @@ if strcmp(fitType,'weibull')
         ylim([0.3 1]);
     end
 end
-
-% if bSave
-%     saveas(gcf,[filePath 'psf/S' num2str(subjNum) 'psf'],'epsc');
-% end
 
 end
