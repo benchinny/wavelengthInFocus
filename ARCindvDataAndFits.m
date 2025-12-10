@@ -9,13 +9,13 @@ else
 end
 
 % PRE-SAVED DATA FILES FOR VARIOUS MODELS:
-% wvMeanAndPredSfree: BLUE-YELLOW
+% wvMeanAndPredDonutx2: BLUE-YELLOW
 % wvMeanAndPredLminusM: RED-GREEN
 % wvMeanAndPredLM: LUMINANCE
 load([dataPath 'data' slash 'PresavedFigureData' slash 'wvMeanAndPredSfree.mat']);
 
-wvPredAllSubj = wvPredAll;
-wvMeanAllSubj = wvMeanAll;
+wvPredAllSubj = wvPredAll; % PREDICTIONS
+wvMeanAllSubj = wvMeanAll; % FITS
 
 % DEFINE ORDER OF CONDITIONS FOR PLOT
 conditionsOrderedNorm = [0.25 0.00 1.00; ...
