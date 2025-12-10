@@ -23,8 +23,6 @@ rgbLumNormCndUnq = [0.2500         0    1.0000; ...
                     1.0000    0.5000    0.2500; ...
                     1.0000    1.0000    1.0000];
 
-nBoots = 1000;
-
 wvInFocusSortedCell = {}; % MAIN THING TO PLOT
 optDistUnq = [1.5 2.5 3.5]; % UNIQUE OPTICAL DISTANCES
 subjSymbols = 'sd+x^><v';
@@ -37,13 +35,10 @@ for k = 1:length(optDistUnq) % LOOP OVER OPTICAL DISTANCES
                                 abs(rgbLumNormCndAll(:,3)-rgbLumNormCndUnq(i,3))<0.001 & ...
                                 abs(optDistCndAll+optDistUnq(k))<0.001);
         % THESE VALUES ARE ALL DESCRIBED AFTER THE NEXT 'FOR' LOOP
-        defocusAt875objDistCentered = [];
         wvInFocusSorted = [];
         subjNumTagInd = subjNumTag(indRgbLumNormCnd);
         subjNumTagTmp = [];
         for j = 1:length(indRgbLumNormCnd)
-            % DEFOCUS AT 875NM RELATIVE TO OBJECT DISTANCE
-            defocusAt875objDistCentered = [defocusAt875objDistCentered; defocusAt875cellAll{indRgbLumNormCnd(j)}-optDistCndAll(indRgbLumNormCnd(j))];
             % SORTING WAVELENGTH-IN-FOCUS VALUES FROM PRE-SAVED DATA
             wvInFocusSorted = [wvInFocusSorted; wvInFocusCellAll{indRgbLumNormCnd(j)}];
             % SORTING DATA BY PARTICIPANT

@@ -1,5 +1,7 @@
-function ARCnlz_psf(subjNum,dataPath)
+function thresholds = ARCnlz_psf(subjNum,bPLOT,dataPath)
 
+% Loads data from contrast calibration task for the acuity and LCA-measuring tasks.
+% Then, makes psychometric functions and returns thresholds.
 % use subjNums 1, 3, 5, 10, 16, 17, 18, 20
 % example of dataPath: 
 %  dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
@@ -13,26 +15,7 @@ foldername = [dataPath 'data' slash 'ARC' slash];
 
 fitType = 'weibull';
 
-subjNum = subjNum+10; % NEED TO ADD 10 AS PER OUR NAMING CONVENTION
-
-if subjNum==18 % STORING FILE NUMBERS
-    filenames = {
-                 'S1018V1_AFC_RightACL0_2409061234.mat' ...
-                 'S1018V1_AFC_RightACL0_2409061236.mat' ...
-                 'S1018V1_AFC_RightACL0_2409061237.mat' ...
-                 'S1018V1_AFC_RightACL0_2409061240.mat' ...
-                 'S1018V1_AFC_RightACL0_2409061243.mat' ...
-                 'S1018V1_AFC_RightACL0_2409061247.mat' ...
-                 'S1018V8_AFC_RightACL0_2409110958.mat' ...
-                 'S1018V8_AFC_RightACL0_2409111004.mat' ...
-                 'S1018V8_AFC_RightACL0_2409110958.mat' ...
-                 'S1018V8_AFC_RightACL0_2409111007.mat' ...
-                 'S1018V8_AFC_RightACL0_2409111016.mat' ...
-                 'S1018V8_AFC_RightACL0_2409111019.mat' ...
-                 'S1018V8_AFC_RightACL0_2409111022.mat' ...
-                 'S1018V8_AFC_RightACL0_2409111024.mat' ...
-                 };
-elseif subjNum==20
+if subjNum==10
     filenames = {
                  % 'S1020V1_AFC_RightACL0_2409091341.mat' ...
                  'S1020V1_AFC_RightACL0_2409091343.mat' ...
@@ -51,7 +34,7 @@ elseif subjNum==20
                  'S1020V9_AFC_RightACL0_2409111542.mat' ...
                  'S1020V9_AFC_RightACL0_2409111544.mat' ...
                  }; 
-elseif subjNum==11
+elseif subjNum==1
     filenames = {
                  'S1011V17_AFC_RightACL0_2409100948.mat' ...
                  'S1011V17_AFC_RightACL0_2409100949.mat' ...
@@ -61,7 +44,7 @@ elseif subjNum==11
                  'S1011V17_AFC_RightACL0_2409101014.mat' ...
                  'S1011V17_AFC_RightACL0_2409101019.mat' ...
                  }; 
-elseif subjNum==13
+elseif subjNum==3
     filenames = {
                  'S1013V18_AFC_RightACL0_2409171533.mat' ...
                  'S1013V18_AFC_RightACL0_2409171535.mat' ...
@@ -71,7 +54,7 @@ elseif subjNum==13
                  'S1013V18_AFC_RightACL0_2409171604.mat' ...
                  'S1013V18_AFC_RightACL0_2409171610.mat' ...
                  }; 
-elseif subjNum==15
+elseif subjNum==5
     filenames = {
                  'S1015V9_AFC_RightACL0_2409181657.mat' ...
                  'S1015V9_AFC_RightACL0_2409181652.mat' ...
@@ -82,19 +65,7 @@ elseif subjNum==15
                  'S1015V9_AFC_RightACL0_2409181633.mat' ...
                  'S1015V9_AFC_RightACL0_2409181622.mat' ...
                  }; 
-elseif subjNum==19
-    filenames = {
-                 'S1019V8_AFC_RightACL0_2409201425.mat' ...
-                 'S1019V8_AFC_RightACL0_2409201420.mat' ...
-                 'S1019V8_AFC_RightACL0_2409201416.mat' ...
-                 'S1019V8_AFC_RightACL0_2409201412.mat' ...
-                 'S1019V8_AFC_RightACL0_2409201410.mat' ...
-                 'S1019V8_AFC_RightACL0_2409201407.mat' ...
-                 'S1015V9_AFC_RightACL0_2409181622.mat' ...
-                 'S1019V9_AFC_RightACL0_2410041240.mat' ...
-                 'S1019V9_AFC_RightACL0_2410041239.mat' ...
-                 };  
-elseif subjNum==26
+elseif subjNum==16
     filenames = {
                  'S1026V1_AFC_RightACL0_2409161339.mat' ...
                  'S1026V1_AFC_RightACL0_2409161341.mat' ...
@@ -106,7 +77,7 @@ elseif subjNum==26
                  'S1026V1_AFC_RightACL0_2409161403.mat' ...
                  'S1026V1_AFC_RightACL0_2409161408.mat' ...
                  }; 
-elseif subjNum==27
+elseif subjNum==17
     filenames = {
                  'S1027V8_AFC_RightACL0_2409241158.mat' ...
                  'S1027V8_AFC_RightACL0_2409241150.mat' ...
@@ -115,7 +86,7 @@ elseif subjNum==27
                  'S1027V9_AFC_RightACL0_2410081122.mat' ...
                  'S1027V9_AFC_RightACL0_2410081121.mat' ...
                  };                 
-elseif subjNum==28
+elseif subjNum==18
     filenames = {
                  'S1028V8_AFC_RightACL0_2409271127.mat' ...
                  'S1028V8_AFC_RightACL0_2409271124.mat' ...
@@ -125,7 +96,7 @@ elseif subjNum==28
                  'S1028V8_AFC_RightACL0_2409271106.mat' ...
                  'S1028V9_AFC_RightACL0_2411051403.mat' ...
                  }; 
-elseif subjNum==30
+elseif subjNum==20
     filenames = {
                  'S1030V8_AFC_RightACL0_2410311629.mat' ...
                  'S1030V8_AFC_RightACL0_2410311627.mat' ...
@@ -162,47 +133,19 @@ rgbUnq = [0.569 0.000 0.000; ...
           0.000 0.000 1.000; ...
           0.569 0.000 1.000]; % THESE ARE ALL THE UNIQUE COLOR CONDITIONS
 
-if strcmp(fitType,'gauss')
-    figure;
-    set(gcf,'Position',[414 281 1013 660]);
-    for i = 1:size(rgbUnq,1) % GET ALL DATA FROM A GIVEN COLOR
-        ind = abs(AFCpAll.rgb(:,1)-rgbUnq(i,1))<0.001 & ...
-              abs(AFCpAll.rgb(:,2)-rgbUnq(i,2))<0.001 & ...
-              abs(AFCpAll.rgb(:,3)-rgbUnq(i,3))<0.001;
-        % FIT PSYCHOMETRIC FUNCTION PARAMETERS
-        [mFit,sFit,bFit,Tfit,PCdta,PCfit,negLL] = psyfitgengauss(zeros(size(AFCpAll.contrast(ind))),AFCpAll.contrast(ind),AFCpAll.rspAcu(ind)==AFCpAll.stimOrientation(ind),0,[],[],1.48,2,0);
-        if subjNum==13
-           contrastIncr = 0.1:0.01:1;
-        else
-           contrastIncr = 0.2:0.01:1;
-        end
-        % PLOT PSYCHOMETRIC FUNCTION
-        [PCplt,~]=psyfitgengaussfunc(zeros(size(contrastIncr)),contrastIncr,mFit,sFit,bFit,1.48,2,0);
-        subplot(2,2,i);
-        hold on;
-        plot([1 1].*(mFit+Tfit),[min(contrastIncr) 1].*0.85,'k--','LineWidth',1);
-        plot([min(contrastIncr) 1].*(mFit+Tfit),[1 1].*0.85,'k--','LineWidth',1);
-        plot(contrastIncr,PCplt,'-','Color',rgbUnq(i,:),'LineWidth',1);
-        plot(unique(AFCpAll.contrast(ind)),PCdta,'o','Color',rgbUnq(i,:),'LineWidth',1,'MarkerSize',10,'MarkerFaceColor','w');
-        axis square;
-        xlabel('Contrast');
-        ylabel('Proportion correct');
-        title(['Subj ' num2str(subjNum-10) ', Threshold = ' num2str(mFit+Tfit,2)]);
-        set(gca,'FontSize',15);
-        xlim([min(contrastIncr) 1]);
-        ylim([0.3 1]);
-    end
-end
-
 if strcmp(fitType,'weibull')
-    figure;
-    set(gcf,'Position',[414 281 1013 660]);
+    if bPLOT
+       figure;
+       set(gcf,'Position',[414 281 1013 660]);
+    end
+    thresholds = [];
     for i = 1:size(rgbUnq,1) % GET ALL DATA FROM A GIVEN COLOR
         ind = abs(AFCpAll.rgb(:,1)-rgbUnq(i,1))<0.001 & ...
               abs(AFCpAll.rgb(:,2)-rgbUnq(i,2))<0.001 & ...
               abs(AFCpAll.rgb(:,3)-rgbUnq(i,3))<0.001;
         % FIT PSYCHOMETRIC FUNCTION
         [mFit,sFit,bFit,Tfit,PCdta,PCfit,negLL] = psyfitWeibull(zeros(size(AFCpAll.contrast(ind))),AFCpAll.contrast(ind),AFCpAll.rspAcu(ind)==AFCpAll.stimOrientation(ind),[],[],[],1.48,2,0);
+        thresholds(i) = mFit+Tfit;
         if subjNum==13
            contrastIncr = 0.1:0.01:1;
         else
@@ -210,19 +153,21 @@ if strcmp(fitType,'weibull')
         end
         % PLOT PSYCHOMETRIC FUNCTION
         [PCplt,~]=psyfitWeibullfunc(zeros(size(contrastIncr)),contrastIncr,mFit,sFit,bFit,1.48,2,0);
-        subplot(2,2,i);
-        hold on;
-        plot([1 1].*(mFit+Tfit),[min(contrastIncr) 1].*0.85,'k--','LineWidth',1);
-        plot([min(contrastIncr) 1].*(mFit+Tfit),[1 1].*0.85,'k--','LineWidth',1);
-        plot(contrastIncr,PCplt,'-','Color',rgbUnq(i,:),'LineWidth',1);
-        plot(unique(AFCpAll.contrast(ind)),PCdta,'o','Color',rgbUnq(i,:),'LineWidth',1,'MarkerSize',10,'MarkerFaceColor','w');
-        axis square;
-        xlabel('Contrast');
-        ylabel('Proportion correct');
-        title(['Subj ' num2str(subjNum-10) ', Threshold = ' num2str(mFit+Tfit,2)]);
-        set(gca,'FontSize',15);
-        xlim([min(contrastIncr) 1]);
-        ylim([0.3 1]);
+        if bPLOT
+            subplot(2,2,i);
+            hold on;
+            plot([1 1].*(mFit+Tfit),[min(contrastIncr) 1].*0.85,'k--','LineWidth',1);
+            plot([min(contrastIncr) 1].*(mFit+Tfit),[1 1].*0.85,'k--','LineWidth',1);
+            plot(contrastIncr,PCplt,'-','Color',rgbUnq(i,:),'LineWidth',1);
+            plot(unique(AFCpAll.contrast(ind)),PCdta,'o','Color',rgbUnq(i,:),'LineWidth',1,'MarkerSize',10,'MarkerFaceColor','w');
+            axis square;
+            xlabel('Contrast');
+            ylabel('Proportion correct');
+            title(['Subj ' num2str(subjNum-10) ', Threshold = ' num2str(mFit+Tfit,2)]);
+            set(gca,'FontSize',15);
+            xlim([min(contrastIncr) 1]);
+            ylim([0.3 1]);
+        end
     end
 end
 

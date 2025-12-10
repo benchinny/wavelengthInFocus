@@ -41,6 +41,11 @@ function D = humanWaveDefocusARC(waveRef,wave,subjNum)
 % Larry N. Thibos, Ming Ye, Xiaoxiao Zhang, and Arthur Bradley, 
 % "The chromatic eye: a new reduced-eye model of ocular chromatic aberration 
 % in humans," Appl. Opt. 31, 3594-3600 (1992)
+
+% THESE ARE THE BEST-FIT VALUES PRODUCED BY ARCacuAnalysisLCA
+% THEY'RE HARD-CODED HERE FOR REPRODUCIBILITY SINCE FITS ARE VERY SLIGHTLY
+% STOCHASTIC AND THESE WERE VALUES USED TO CREATE THE CONE IMAGES STORED IN
+% THE 'data' FOLDER
 if subjNum==10
     q1 = 1.9851;
     q2 = 0.4644;

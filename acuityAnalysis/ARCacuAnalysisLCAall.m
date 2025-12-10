@@ -3,9 +3,10 @@
 clear;
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 
+rng(1); % INITIALIZE SAME RANDOM SEED
 %% MAKE FIGURE 7E
 
-% subjNumAll = [1 3 5 9 10 16 17 18 20];
+% LIST OF SUBJECTS TO ANALYZE
 subjNumAll = [1 3 5 10 16 17 18 20];
 % MEASURED DEFOCUS VALUES FOR EACH DISPLAY PRIMARY
 defocusLCAmeasuredAll = [];
@@ -38,19 +39,12 @@ for i = 1:length(subjNumAll)
     display(['Finished subject ' num2str(i)]);
 end
 
-% NOT USING THE FOLLOWING 4 VARIABLES ANY LONGER (STANDARD LCA FUNCTION)
-wave2fit = 460:5:875; % SUPPORT FOR LCA FUNCTION
-standardLCAfit = humanWaveDefocus(wave2fit); % STANDARD LCA
-val532 = humanWaveDefocus(532);
-standardLCAfit = standardLCAfit-val532;
-
 displacementLambda = -4:4; % JITTER DATA POINTS FOR EACH PARTICIPANT FOR VISIBILITY
 wavePlot = 380:5:875; % SUPPORT OVER LCA FUNCTION
 defocusAt875centered533 = []; % POORLY-NAMED VARIABLE
 
 figure;
 hold on;
-% plot(wave2fit,standardLCAfit,'k-','LineWidth',1);
 % PLOT CONTINUOUS LCA CURVES
 for i = 1:size(defocusLCAmeasuredAll,1)
     set(gca,'ColorOrderIndex',i);
@@ -107,3 +101,4 @@ xlim([440 875]);
 formatFigure('Wavelength (\lambda)','Defocus (D)');
 legend('','','','','','','','','','','','','','','','','S1','S2','S3','S4','S5','S6','S7','S8','Location','SouthEast');
 
+save(fullfile([dataPath '\data\PresavedFigureData\LCAparams.mat']),'q1bestAll','q2bestAll','q3bestAll');
