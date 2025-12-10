@@ -1,14 +1,12 @@
-%%
+%% RECREATES FIGURE 5B-STYLE PLOTS FOR ALL SUBJECTS
 
-bRandomize = false;
 bPlot = true;
 subjNumAll = [1 3 5 10 16 17 18 20];
-% subjNumAllRand = subjNumAll;
-peakLocModelPredictionAll = [];
-nRepeat = 1;
-corrShuffle = [];
-subjNumInclude = [1:8];
+peakLocModelPredictionAll = []; % MODEL PREDICTIONS OF BEST ACUITY DISTANCE
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
+% OPTIONS:
+% acuityModelingPrediction: FOR BEST-FITTING COLOR-OPPONENT MODEL
+% acuityModelingPredictionLum: FOR BEST-FITTING LUMINANCE MODEL
 fileStr = 'acuityModelingPrediction';
 
 if ispc
@@ -19,67 +17,55 @@ end
 
 figure;
 set(gcf,'Position',[176 273 1309 669]);
-for k = 1:nRepeat
-    for j = 1:length(subjNumAll)
+for j = 1:length(subjNumAll)
+
+    subjNum = subjNumAll(j);
     
-        subjNum = subjNumAll(j);
-        
-        % LOAD PRE-GENERATED DATA
-        load([dataPath 'data' slash 'acuityModeling' slash fileStr 'S' num2str(subjNum) '.mat']);
-        
-        if bRandomize
-            subjNumAllRand = subjNumAll(randperm(length(subjNumAll)));
-            load([dataPath 'data' slash 'acuityModeling' slash fileStr 'S' ...
-                  num2str(subjNumAllRand(j)) '.mat'],'dprimeMetric','defocusForStim');
-        end
+    % LOAD PRE-GENERATED DATA
+    load([dataPath 'data' slash 'acuityModeling' slash fileStr 'S' num2str(subjNum) '.mat']);
+
+    scaleFac = 0.8; % ACCOUNTS FOR OPTOTUNE TO ACTUAL DEFOCUS CONVERSION
     
-        scaleFac = 0.8;
-        % dprime2regress = interp1(defocusForStim+modelPrediction875nmPurpleAt2pt5,dprimeMetric,2.5+unqFocDst.*scaleFac);
-        % 
-        % % dprimeScale = max(dprime(:)./max(dprimeMetric));
-        % dprimeScale = dprime2regress\dprime';
-        
-        % 'DEPTH-OF-FOCUS' PARAMETER
-        shiftVals = 0;
-        
-        % SHIFTING PREDICTED D-PRIME CURVE AND REGRESSING AGAINST ACTUAL
-        % D-PRIME VALUES TO GET THE BEST FIT
-        for i = 1:length(shiftVals)
-            dprime2regressTmp = interp1(defocusForStim+modelPrediction875nmPurpleAt2pt5+shiftVals(i),dprimeMetric,2.5+unqFocDst.*scaleFac);
-            dprimeScaleTmp(i) = dprime2regressTmp\dprime';
-            errorDP(i) = sqrt(mean((dprimeScaleTmp(i).*dprime2regressTmp-dprime').^2));
-        end
-        [~,indMinShift] = min(errorDP);
-        shiftValBestFit = shiftVals(indMinShift);
-        dprimeScaleBestFit = dprimeScaleTmp(indMinShift);
-        
-        if bPlot
-            subplot(2,4,j);
-            hold on;
-            plot(shiftValBestFit+defocusForStim+modelPrediction875nmPurpleAt2pt5-2.5,normcdf(dprimeMetric.*dprimeScaleBestFit/2),'-','Color',[0.56 0 1],'LineWidth',1);
-            errorbar(unqFocDst.*scaleFac,normcdf(dprime/2),(normcdf(dprime/2)-normcdf(dprimeCI(1,:)/2)),(normcdf(dprimeCI(2,:)/2)-normcdf(dprime/2)),'o','Color',[0.56 0 1],'MarkerFaceColor','w','LineWidth',1.5,'MarkerSize',8);
-            xlabel('Relative Distance (D)');
-            ylabel('Proportion Correct');
-            set(gca,'FontSize',12);
-            set(gca,'Box','on');
-            set(gca,'XTick',[-1 -0.5 0 0.5 1]);
-            axis square;
-            text(-1,0.3,['S' num2str(j)],'FontSize',18);
-            % title(['Mean defocus at 875nm = ' num2str(modelPrediction875nmPurpleAt2pt5,3) 'D']);
-            ylim([0.2 1.05]);
-            xlim([-1.2 1.2]);
-            % subplot(1,2,2);
-            % plot(wvInFocusForStim,dprimeMetric,'k-','LineWidth',1);
-            % xlabel('Wavelength in focus (nm)');
-            % ylabel('D-prime metric');
-            % set(gca,'FontSize',15);
-            % axis square;
-        end
-        
-        stimDistanceSmp = 1.2:0.01:3.8;
-        dprimeMetricSmooth = interp1(defocusForStim+modelPrediction875nmPurpleAt2pt5+shiftVals(indMinShift),dprimeMetric,stimDistanceSmp,'spline');
-        [~,indPeak] = max(dprimeMetricSmooth);
-        peakLocModelPrediction = stimDistanceSmp(indPeak);
-        peakLocModelPredictionAll(j) = peakLocModelPrediction;
+    % 'DEPTH-OF-FOCUS' PARAMETER (SET 0 NOW)
+    shiftVals = 0;
+    
+    % SHIFTING PREDICTED D-PRIME CURVE AND REGRESSING AGAINST ACTUAL
+    % D-PRIME VALUES TO GET THE BEST FIT
+    for i = 1:length(shiftVals)
+        % INTERPOLATE MODEL PREDICTIONS TO BE AT SAME X-VALUES AS
+        % PARTICIPANTS' DATA
+        dprime2regressTmp = interp1(defocusForStim+modelPrediction875nmPurpleAt2pt5+shiftVals(i),dprimeMetric,2.5+unqFocDst.*scaleFac);
+        % CALCULATE BEST-FITTING SCALE FACTOR
+        dprimeScaleTmp(i) = dprime2regressTmp\dprime';
+        % STORE ERROR
+        errorDP(i) = sqrt(mean((dprimeScaleTmp(i).*dprime2regressTmp-dprime').^2));
     end
+    % FIND SHIFT YIELDING BEST FOCUS
+    [~,indMinShift] = min(errorDP);
+    shiftValBestFit = shiftVals(indMinShift);
+    dprimeScaleBestFit = dprimeScaleTmp(indMinShift);
+    
+    if bPlot
+        subplot(2,4,j);
+        hold on;
+        plot(shiftValBestFit+defocusForStim+modelPrediction875nmPurpleAt2pt5-2.5,normcdf(dprimeMetric.*dprimeScaleBestFit/2),'-','Color',[0.56 0 1],'LineWidth',1);
+        errorbar(unqFocDst.*scaleFac,normcdf(dprime/2),(normcdf(dprime/2)-normcdf(dprimeCI(1,:)/2)),(normcdf(dprimeCI(2,:)/2)-normcdf(dprime/2)),'o','Color',[0.56 0 1],'MarkerFaceColor','w','LineWidth',1.5,'MarkerSize',8);
+        xlabel('Relative Distance (D)');
+        ylabel('Proportion Correct');
+        set(gca,'FontSize',12);
+        set(gca,'Box','on');
+        set(gca,'XTick',[-1 -0.5 0 0.5 1]);
+        axis square;
+        text(-1,0.3,['S' num2str(j)],'FontSize',18);
+        ylim([0.2 1.05]);
+        xlim([-1.2 1.2]);
+    end
+    
+    % DETERMINE PREDICTED PEAK PERFORMANCE AFTER FITTING DEPTH-OF-FOCUS
+    % PARAMETER
+    stimDistanceSmp = 1.2:0.01:3.8;
+    dprimeMetricSmooth = interp1(defocusForStim+modelPrediction875nmPurpleAt2pt5+shiftVals(indMinShift),dprimeMetric,stimDistanceSmp,'spline');
+    [~,indPeak] = max(dprimeMetricSmooth);
+    peakLocModelPrediction = stimDistanceSmp(indPeak);
+    peakLocModelPredictionAll(j) = peakLocModelPrediction;
 end
