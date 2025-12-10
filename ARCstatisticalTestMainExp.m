@@ -16,8 +16,8 @@ load([dataPath 'data' slash 'PresavedFigureData' slash 'allExp1DataRGB.mat']);
 subjStr = 'A B C    D     EFG H';
 
 rgbLumNormCndUnq = unique(rgbLumNormCndAll,'rows'); % UNIQUE CONDITIONS
-indGreenless = [1 3 7 6 5];
-indGreen = [2 4 10 9 8];
+indGreenless = [1 3 7 6 5]; % INDICES FOR ORDERING BLUEST TO REDDEST
+indGreen = [2 4 10 9 8]; % SAME AS ABOVE BUT FOR 'SOME GREEN' CONDITIONS
 
 % ORIGINALLY THIS VARIABLE WAS DEFOCUS AT 550, BUT I CHANGED IT TO DEFOCUS
 % AT 875 WITHOUT CHANGING THIS VARIABLE NAME. I SHOULD FIX THIS. 
@@ -66,18 +66,7 @@ for i = 1:length(indGreen)
     end
 end
 
-% rbRatioGreen = ordinal(rbRatioGreen);
-% rbRatioGreenless = ordinal(rbRatioGreenless);
-
 %% CREATE TABLES
-
-% defocusAt550meanGreen = defocusAt550meanGreen(randperm(120));
-
-% defocusAt550meanGreenless = defocusAt550meanGreenless(randperm(120));
-
-% rbRatioGreen = rbRatioGreen(randperm(120));
-% 
-% rbRatioGreenless = rbRatioGreenless(randperm(120));
 
 dataTableGreen = array2table([optDistCndGreen' wvInFocusMeanGreen'], ...
                              'VariableNames',{'OpticalDistance' 'MeanD'});
@@ -94,8 +83,8 @@ dataTableGreenless.("ColorRatio") = rbRatioGreenless';
 %% RUN GLME
 
 glmeGreenless = fitglme(dataTableGreenless,'MeanD ~ ColorRatio + OpticalDistance + ColorRatio:OpticalDistance + (1|Subject)', ...
-    'Distribution','Normal','Link','identity');
+    'Distribution','Normal','Link','identity')
 
 glmeGreen = fitglme(dataTableGreen,'MeanD ~ ColorRatio + OpticalDistance + ColorRatio:OpticalDistance + (1|Subject)', ...
-    'Distribution','Normal','Link','identity');
+    'Distribution','Normal','Link','identity')
 

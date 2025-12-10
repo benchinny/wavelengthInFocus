@@ -17,58 +17,22 @@ function [wvInFocusCell, defocusAt550cell, defocusAt875cell, optDistCnd, rgbLumN
 % conditions corresponding to those values. The 'c' variable contains the
 % raw traces of every coefficient on each of the 65 Zernike terms. 
 
-bSave = false;
-
 if subjNum==11
-   % blockNums = 2:7;
-   % trialNums = {1:33 1:33 1:33 1:33 1:33 1:33};
    blockNums = 11:16;
    trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};   
    subjName = ['S' num2str(subjNum) '-OD'];
-elseif subjNum==12
-   % blockNums = 2:7;
-   % trialNums = {1:33 1:33 1:33 1:33 1:33 1:33};
-   % subjName = ['S' num2str(subjNum) '-OD'];
-
-   blockNums = [11:15 18];
-   trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
-   subjName = ['S' num2str(subjNum) '-OD'];
 elseif subjNum==13
-   % blockNums = 3:8;
-   % trialNums = {1:33 1:33 1:33 1:33 1:33 1:33};
    blockNums = 12:17;
    trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};   
    subjName = ['S' num2str(subjNum) '-OD'];   
-elseif subjNum==14
-   blockNums = 9:14;
-   trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
-   % blockNums = 3:8;
-   % trialNums = {1:33 1:33 1:33 1:33 1:33 1:33};   
-   subjName = ['S' num2str(subjNum) '-OD'];      
 elseif subjNum==15
    blockNums = 3:8;
    trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
    subjName = ['S' num2str(subjNum) '-OD'];   
-elseif subjNum==17
-   blockNums = 2:7;
-   trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
-   subjName = ['S' num2str(subjNum) '-OD'];      
-elseif subjNum==19
-   blockNums = 2:7;
-   trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
-   subjName = ['S' num2str(subjNum) '-OD'];         
 elseif subjNum==20
    blockNums = 3:8;
    trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
    subjName = ['S' num2str(subjNum) '-OD'];         
-elseif subjNum==21
-   blockNums = 2:7;
-   trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
-   subjName = ['S' num2str(subjNum) '-OD'];            
-elseif subjNum==22
-   blockNums = 2:7;
-   trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
-   subjName = ['S' num2str(subjNum) '-OD'];          
 elseif subjNum==26
    blockNums = 2:7;
    trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
@@ -87,46 +51,47 @@ elseif subjNum==30
    subjName = ['S' num2str(subjNum) '-OD'];      
 end
 
-meanC = [];
+meanC = []; % MEAN OF Z COEFFICIENTS
 rgb1all = []; % RGB VALUES
 meanv00all = []; % OPTOTUNE VALUE (TO GET STIMULUS DISTANCE, DIVIDE BY 1.2255)
-nIndBadTracker = [];
-c4all = {};
+nIndBadTracker = []; % TRACKING BLINKS
+c4all = {}; % FOR STORING ALL DEFOCUS TERM VALUES
 
 % GRABBING ZERNIKE VALUES FROM DATA REPOSITORY
 for i = 1:length(blockNums)
-    blockNumTmp = blockNums(i);
-    trialNumsTmp = trialNums{i};
-    AFCp = ARCloadFileBVAMS(subjNum,blockNumTmp,dataPath);
-    for j = 1:length(trialNumsTmp)
+    blockNumTmp = blockNums(i); % BLOCK REFERS TO BLOCK OF TRIALS
+    trialNumsTmp = trialNums{i}; % TRIAL NUMBERS
+    AFCp = ARCloadFileBVAMS(subjNum,blockNumTmp,dataPath); % LOAD EXPERIMENT FILE
+    for j = 1:length(trialNumsTmp) % LOOP OVER TRIALS
+        % THIS LOADS THE WAVEFRONT DATA
         [ZernikeTable, ~, ~, ~] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumsTmp(j),0,dataPath);
         NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
         c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65.
         indBadPupil = table2array(ZernikeTable(:,5))==0; % GET RID OF BLINKS IN PUPIL SIZE VECTOR!
         PARAMS.PupilSize=mean(table2array(ZernikeTable(~indBadPupil,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)
-        PARAMS.PupilFitSize=mean(table2array(ZernikeTable(~indBadPupil,5))); 
-        PARAMS.PupilFieldSize=PARAMS.PupilSize*2; %automatically compute the field size
         c(:,3:NumCoeffs)=table2array(ZernikeTable(:,11:width(ZernikeTable)));
         indBad = c(:,4)==0; % VALUE OF EXACTLY 0 MEANS BLINK
-        nIndBadTracker(end+1) = sum(indBad);
-        c(indBad,4) = mean(c(~indBad,4));
+        nIndBadTracker(end+1) = sum(indBad); % TRACK BLINKS
+        c(indBad,4) = mean(c(~indBad,4)); % REPLACE BLINKS WITH MEAN
         meanC(end+1,:) = mean(c(1:end,:),1); % TAKE MEAN OF COEFFICIENTS    
         c4all{end+1} = c(:,4); % COEFFICIENTS ON DEFOCUS TERM
     end
-    rgb1all = [rgb1all; AFCp.rgb100(trialNumsTmp,:)];
-    meanv00all = [meanv00all; AFCp.meanv00(trialNumsTmp)./1.2255];
+    rgb1all = [rgb1all; AFCp.rgb100(trialNumsTmp,:)]; % STORE COLOR CONDITIONS
+    meanv00all = [meanv00all; AFCp.meanv00(trialNumsTmp)./1.2255]; % STORE STIM DISTANCES
 end
 
-% GETTING DEFOCUS AT 550NM and 875NM (875NM IS WHAT WAS MEASURED)
+% STANDARD CONVERSION FROM 4TH ZERNIKE COEFFICIENT TO EQUIVALENT DEFOCUS 
 defocusCorrectionFactor = (1e6/(4*sqrt(3)))*((PARAMS.PupilSize/2000)^2);
+% GETTING DEFOCUS AT 550NM and 875NM (875NM IS WHAT WAS MEASURED)
 defocusAt550 = humanWaveDefocusARC(550,875,subjNum-10)+meanC(:,4)./defocusCorrectionFactor;
 defocusAt875 = meanC(:,4)./defocusCorrectionFactor;
 
 % SORTING CONDITIONS BY COLOR
 lumScaleRGB = [4.0888 9.6669 1]; % SCALE FACTOR FOR NORMALIZING RGB TO 1
 
-gammaRGB = [2.5 2.7 2.3];
+gammaRGB = [2.5 2.7 2.3]; % GAMMA EXPONENTS FOR DISPLAY
 
+% NORMALIZE RGB VALUES SO MAXIMUM OF ANY INDIVIDUAL DISPLAY PRIMARY IS 1
 rgbLumNorm = [lumScaleRGB(1).*rgb1all(:,1).^gammaRGB(1) lumScaleRGB(2).*rgb1all(:,2).^gammaRGB(2) lumScaleRGB(3).*rgb1all(:,3).^gammaRGB(3)];
 
 % EACH TRIPLET INDICATES THE LUMINANCE OF THE RED, GREEN, AND BLUE PIXELS
@@ -144,17 +109,16 @@ conditionsOrderedNorm = [0.25 0.00 1.00; ...
                          1.00 0.50 0.25; ...
                          1.00 1.00 1.00];
 
-optDistToCheckAll = [1.5 2.5 3.5];
-optDistCnd = [];
-rgbLumNormCnd = [];
-defocusAt550cell = {};
-defocusAt875cell = {};
-wvInFocusCell = {};
+optDistToCheckAll = [1.5 2.5 3.5]; % STIMULUS DISTANCES
+optDistCnd = []; % FOR SORTING OPTICAL DISTANCES
+rgbLumNormCnd = []; % FOR SORTING RGB CONDITION VALUES
+defocusAt550cell = {}; % FOR SORTING DEFOCUS VALUES AT 550NM
+defocusAt875cell = {}; % FOR SORTING DEFOCUS VALUES AT 875NM
+wvInFocusCell = {}; % FOR STORING WAVELENGTH IN FOCUS VALUES
 
-for j = 1:length(optDistToCheckAll)
+for j = 1:length(optDistToCheckAll) % LOOP OVER STIM DISTANCE
     optDistToCheck = optDistToCheckAll(j);
-    indDist = abs(meanv00all-optDistToCheck)<0.01;
-    for i = 1:size(conditionsOrderedNorm,1)
+    for i = 1:size(conditionsOrderedNorm,1) % LOOP OVER RGB CONDITIONS
         % GET ALL TRIALS FOR EACH COMBINATION OF COLOR AND DISTANCE
         ind = abs(rgbLumNorm(:,1)-conditionsOrderedNorm(i,1))<0.01 & ...
               abs(rgbLumNorm(:,2)-conditionsOrderedNorm(i,2))<0.01 & ...
