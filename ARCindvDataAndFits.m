@@ -8,6 +8,10 @@ else
     slash = '/';
 end
 
+% PRE-SAVED DATA FILES FOR VARIOUS MODELS:
+% wvMeanAndPredSfree: BLUE-YELLOW
+% wvMeanAndPredLminusM: RED-GREEN
+% wvMeanAndPredLM: LUMINANCE
 load([dataPath 'data' slash 'PresavedFigureData' slash 'wvMeanAndPredSfree.mat']);
 
 wvPredAllSubj = wvPredAll;
