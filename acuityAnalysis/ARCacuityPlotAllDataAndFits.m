@@ -24,7 +24,7 @@ for j = 1:length(subjNumAll)
     % LOAD PRE-GENERATED DATA
     load([dataPath 'data' slash 'acuityModeling' slash fileStr 'S' num2str(subjNum) '.mat']);
 
-    scaleFac = 0.8; % ACCOUNTS FOR OPTOTUNE TO ACTUAL DEFOCUS CONVERSION
+    scaleFac = 0.816; % ACCOUNTS FOR OPTOTUNE TO ACTUAL DEFOCUS CONVERSION
     
     % 'DEPTH-OF-FOCUS' PARAMETER (SET 0 NOW)
     shiftVals = 0;

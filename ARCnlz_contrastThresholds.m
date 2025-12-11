@@ -1,4 +1,4 @@
-function thresholds = ARCnlz_psf(subjNum,bPLOT,dataPath)
+function thresholds = ARCnlz_contrastThresholds(subjNum,bPLOT,dataPath)
 
 % Loads data from contrast calibration task for the acuity and LCA-measuring tasks.
 % Then, makes psychometric functions and returns thresholds.

@@ -27,7 +27,7 @@ for j = 1:length(subjNumAll)
     % LOAD PRE-GENERATED D-PRIME DATA FOR ACUITY TASK
     load([dataFolder fileStr 'S' num2str(subjNum) '.mat']);
 
-    scaleFac = 0.8; % CONVERT OPTOTUNE VALUE IN BVAMS TO DEFOCUS AT EYE
+    scaleFac = 0.816; % CONVERT OPTOTUNE VALUE IN BVAMS TO DEFOCUS AT EYE
     
     % 'DEPTH-OF-FOCUS' PARAMETER (SET TO 0 CURRENTLY)
     shiftVals = 0;
