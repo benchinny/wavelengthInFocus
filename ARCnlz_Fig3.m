@@ -2,13 +2,8 @@
 
 % LOADED DATA GENERATED WITH FIRST PART OF ARCnlz_mainExpAvg
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
-if ispc
-    slash = '\';
-else
-    slash = '/';
-end
 
-load([dataPath 'data' slash 'PresavedFigureData' slash 'allExp1DataRGB_backup.mat']);
+load(fullfile(dataPath,'data','PresavedFigureData','allExp1DataRGB_backup.mat'));
 
 % UNIQUE COLOR CONDITIONS IN TERMS OF PROPORTION OF MAX LUMINANCE
 rgbLumNormCndUnq = [0.2500         0    1.0000; ...

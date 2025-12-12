@@ -6,7 +6,7 @@ function thresholds = ARCnlz_contrastThresholds(subjNum,bPLOT,dataPath)
 % example of dataPath: 
 %  dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 
-rng(1);
+rng(1); % FIX RANDOM SEED
 if ispc % GETTING PATHS RIGHT
     slash = '\';
 else
@@ -121,6 +121,7 @@ for i = 1:length(filenames) % LOOP OVER FILENAMES
     AFCp.meanFocstmOptDst = AFCp.meanFocstmOptDst(1:lengthRsp); % STIM DISTANCE
     AFCp.contrast = AFCp.contrast(1:lengthRsp); % STIM CONTRAST
     AFCp.rspAcu = AFCp.rspAcu'; % RESPONSE
+    % '1' is -15 deg, '2' is +15deg
     AFCp.stimOrientation = AFCp.stimOrientation(1:lengthRsp); % STIM ORIENTATION
     if i==1
         AFCpAll = AFCp;
@@ -147,11 +148,7 @@ if strcmp(fitType,'weibull')
         % FIT PSYCHOMETRIC FUNCTION
         [mFit,sFit,bFit,Tfit,PCdta,PCfit,negLL] = psyfitWeibull(zeros(size(AFCpAll.contrast(ind))),AFCpAll.contrast(ind),AFCpAll.rspAcu(ind)==AFCpAll.stimOrientation(ind),[],[],[],1.48,2,0);
         thresholds(i) = mFit+Tfit;
-        if subjNum==13
-           contrastIncr = 0.1:0.01:1;
-        else
-           contrastIncr = 0.2:0.01:1;
-        end
+        contrastIncr = 0.1:0.01:1;
         % PLOT PSYCHOMETRIC FUNCTION
         [PCplt,~]=psyfitWeibullfunc(zeros(size(contrastIncr)),contrastIncr,mFit,sFit,bFit,1.48,2,0);
         if bPLOT
@@ -164,7 +161,7 @@ if strcmp(fitType,'weibull')
             axis square;
             xlabel('Contrast');
             ylabel('Proportion correct');
-            title(['Subj ' num2str(subjNum-10) ', Threshold = ' num2str(mFit+Tfit,2)]);
+            title(['Subj ' num2str(subjNum) ', Threshold = ' num2str(mFit+Tfit,2)]);
             set(gca,'FontSize',15);
             xlim([min(contrastIncr) 1]);
             ylim([0.3 1]);

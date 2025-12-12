@@ -57,8 +57,8 @@ for j = 1:length(subjNumAll)
     peakLocModelPredictionAll(j) = peakLocModelPrediction;
 end
    
+% GET EMPIRICALLY-ESTIMATED BEST DISTANCES
 peakLocActualAll = [];
-
 for i = 1:length(subjNumAll)
     [~,~,~,~,~,~,~,~,bestDist,bestDistCI,~] = ARCacuityAnalyzeDataOnly(subjNumAll(i),0,dataPath);
     peakLocActualAll(i) = 2.5+bestDist;

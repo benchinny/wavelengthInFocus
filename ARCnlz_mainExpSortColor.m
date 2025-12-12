@@ -5,10 +5,10 @@ function [wvInFocusCell, optDistCnd, rgbLumNormCnd] = ARCnlz_mainExpSortColor(su
 % subjNum values for participants who passed screening: S1, S3, S5, S10, S16, S17, S18, S20. 
 
 % This function grabs all raw wavefront data from Experiment 1 for a
-% particular subject and returns mean defocus values (both at 550nm and 875nm),
-% wavelength-in-focus values, and the optical distances and color
-% conditions corresponding to those values. The 'c' variable contains the
-% raw traces of every coefficient on each of the 65 Zernike terms. 
+% particular subject and returns wavelength-in-focus values, optical 
+% distances and color conditions corresponding to those values. 
+% The 'c' variable contains the raw traces of every coefficient 
+% on each of the 65 Zernike terms. 
 
 % LIST OF ALL POSSIBLE SUBJECTS
 subjNumAll = [1 3 5 10 16 17 18 20];
