@@ -1,6 +1,16 @@
 %% FIGURE 5C IN MANUSCRIPT
 
-dprimeRatioAll = [2.41 1.000 1.000 1.41 1.000 1.98 1.76 1.023];
+dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
+
+% ALL SUBJECT NUMBERS
+subjNumAll = [1 3 5 10 16 17 18 20];
+
+dprimeRatioAll = []; % D-PRIME RATIOS
+for i = 1:length(subjNumAll)
+    [~,~,~,dprime,~,~,~,~,~,~,~] = ARCacuityAnalyzeDataOnly(subjNumAll(i),0,dataPath);
+    % RATIO OF BEST D-PRIME TO D-PRIME AT 0
+    dprimeRatioAll(i) = max(dprime)/dprime(5);
+end
 
 figure;
 boxplot(dprimeRatioAll);

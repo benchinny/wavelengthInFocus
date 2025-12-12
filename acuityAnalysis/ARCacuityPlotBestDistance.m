@@ -56,11 +56,13 @@ for j = 1:length(subjNumAll)
     peakLocModelPrediction = stimDistanceSmp(indPeak);
     peakLocModelPredictionAll(j) = peakLocModelPrediction;
 end
-    
-% HARD-CODED ACTUAL PEAK LOCATIONS AND UPPER/LOWER BOUNDS
-peakLocActualAll = [1.8635 1.9435 2.6335 2.1235 2.6435 1.9035 1.8935 2.3235];
-peakLocLBall = [1.6835 1.8135 1.5935 1.9435 2.2535 1.7935 1.5035 2.2635];
-peakLocUBall = [3.0935 3.1835 3.5635 3.1035 2.7735 2.0535 2.4535 2.4235];
+   
+peakLocActualAll = [];
+
+for i = 1:length(subjNumAll)
+    [~,~,~,~,~,~,~,~,bestDist,bestDistCI,~] = ARCacuityAnalyzeDataOnly(subjNumAll(i),0,dataPath);
+    peakLocActualAll(i) = 2.5+bestDist;
+end
 
 figure;
 hold on;
@@ -78,4 +80,4 @@ ylim([1.5 2.8]);
 plot([1.5 2.8],[1.5 2.8],'k--','LineWidth',1);
 xlabel(['Predicted Peak Location (D)']);
 ylabel(['Actual Peak Location (D)']);
-title(['Correlation = ' num2str(corr(peakLocModelPredictionAll',peakLocActualAll(subjNumInclude)'),3)]);
+corrPredAndActual = corr(peakLocModelPredictionAll',peakLocActualAll(subjNumInclude)');
