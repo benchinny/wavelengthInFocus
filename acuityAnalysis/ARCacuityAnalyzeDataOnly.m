@@ -1,5 +1,5 @@
 %%
-function [unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport,bestDist,bestDistCI,PCboots] = ARCacuAnalysisSubjective(subjNum,bPLOT,dataPath)
+function [unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport,bestDist,bestDistCI,PCboots] = ARCacuityAnalyzeDataOnly(subjNum,bPLOT,dataPath)
 
 if ispc
     slash = '\';

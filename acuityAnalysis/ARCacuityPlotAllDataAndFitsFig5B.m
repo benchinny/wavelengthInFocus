@@ -58,7 +58,7 @@ for j = 1:length(subjNumAll)
         axis square;
         text(-1,0.3,['S' num2str(j)],'FontSize',18);
         ylim([0.2 1.05]);
-        xlim([-1.2 1.2]);
+        xlim([-1.21 1.21]);
     end
     
     % DETERMINE PREDICTED PEAK PERFORMANCE AFTER FITTING DEPTH-OF-FOCUS

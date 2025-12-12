@@ -79,12 +79,3 @@ plot([1.5 2.8],[1.5 2.8],'k--','LineWidth',1);
 xlabel(['Predicted Peak Location (D)']);
 ylabel(['Actual Peak Location (D)']);
 title(['Correlation = ' num2str(corr(peakLocModelPredictionAll',peakLocActualAll(subjNumInclude)'),3)]);
-
-%% T-TEST ERROR VALUES
-
-errorLum = [-0.2035 -0.0335 -0.4135 0.0965 ...
-            -0.9935 0.1165 0.1665 -0.5135];
-errorCO = [-0.3035 -0.1335 -0.5435 -0.1735 ...
-           -0.7135 0.0765 -0.0135 -0.4835];
-
-[h,p] = ttest(errorCO-errorLum);

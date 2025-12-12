@@ -1,11 +1,11 @@
-function [dprimeMetric, dprime, dprimeCI] = ARCacuityModelingPrediction(subjNum, dataPath)
+function [dprimeMetric, dprime, dprimeCI] = ARCacuityModelPrediction(subjNum,LumOrChrom,dataPath)
 
 % MAKE SURE LENS TRANSMITTANCE IN ISETBIO IS SET TO 1 EVERYWHERE!
 
 %% Initialize and clear
 ieInit;
 
-%% Set up display struct and build Ben's stimulus
+% Set up display struct and build Ben's stimulus
 
 if ispc
     slash = '\';
@@ -13,7 +13,36 @@ else
     slash = '/';
 end
 
+% SET UP FOLDERS FOR SAVING AND LOADING MODEL PREDICTIONS FROM EXP1
 saveFolder = [dataPath 'data' slash 'acuityModeling' slash];
+folderExp1 = [dataPath 'data' slash 'PresavedFigureData' slash];
+
+if strcmp(LumOrChrom,'Chrom') % IF GENERATING CHROMATIC PREDICTIONS
+    % LOAD BLUE-YELLOW PREDICTIONS
+    load([folderExp1 'wvMeanAndPredDonutx2.mat'],'dfPredPurpleAll','aicAll');
+    dfPredPurpleBYAll = dfPredPurpleAll;
+    aicBYall = aicAll;
+    % LOAD RED-GREEN PREDICTIONS
+    load([folderExp1 'wvMeanAndPredLminusM.mat'],'dfPredPurpleAll','aicAll');
+    dfPredPurpleRGAll = dfPredPurpleAll;
+    aicRGall = aicAll;    
+    % USE AIC TO DETERMINE BETTER CHROMATIC MODEL FOR EACH SUBJECT
+    modelPrediction875nmPurpleAt2pt5all = zeros(size(dfPredPurpleBYAll));
+    indBYbetter = aicBYall<aicRGall;
+    % STORE BEST CHROMATIC MODEL PREDICTIONS
+    modelPrediction875nmPurpleAt2pt5all(indBYbetter) = dfPredPurpleBYAll(indBYbetter);
+    modelPrediction875nmPurpleAt2pt5all(~indBYbetter) = dfPredPurpleRGAll(~indBYbetter);
+    % FOR SAVING FILE
+    savePredName = 'acuityModelingPredictionS';
+elseif strcmp(LumOrChrom,'Lum') % IF USING LUMINANCE MODEL PREDICTIONS
+    % LOAD THE LUMINANCE MODEL PREDICTIONS
+    load([folderExp1 'wvMeanAndPredLM.mat'],'dfPredPurpleAll','aicAll');
+    modelPrediction875nmPurpleAt2pt5all = dfPredPurpleAll;
+    % FOR SAVING FILE
+    savePredName = 'acuityModelingPredictionLumS';
+else
+    error('LumOrChrom variable needs to either be the string ''Lum'' or ''Chrom'' ');
+end
 
 % Setting up display properties
 d = displayCreate('OLED-Samsung');
@@ -124,31 +153,15 @@ dataFolder = [dataPath 'data' slash 'csvFiles' slash 'SUBJ' slash];
 
 cAll = [];
 
-% HARD CODED MODEL PREDICTIONS FROM ARCtestWvInFocusMeanZspatFilterLMSeffectFitOnly
-% OLD BLUE-YELLOW MODEL
-% modelPrediction875nmPurpleAt2pt5all = [1.36 1.756 1.864 1.633 1.463 1.815 1.355 1.603];
-% OLD LUMINANCE MODEL
-% modelPrediction875nmPurpleAt2pt5all = [1.461 1.851 1.957 1.892 1.216 1.837 1.511 1.561];
-% FOR CURRENT BLUE-YELLOW MODEL
-% modelPrediction875nmPurpleAt2pt5all = [1.29 1.66 1.79 1.55 1.41 1.71 1.27 1.52];
-% S-CONE FREE
-% modelPrediction875nmPurpleAt2pt5all = [1.28 1.67 1.75 1.59 1.48 1.70 1.26 1.53];
-% BEST CHROMATIC MODEL
-% modelPrediction875nmPurpleAt2pt5all = [1.29 1.66 1.75 1.54 1.44 1.70 1.21 1.52];
-% FOR CURRENT LUMINANCE MODEL
-modelPrediction875nmPurpleAt2pt5all = [1.39 1.76 1.88 1.81 1.16 1.74 1.39 1.49];
-% FOR L MINUS M MODEL
-% modelPrediction875nmPurpleAt2pt5all = [1.29 1.66 1.76 1.51 1.48 1.61 1.21 1.53];
-% FOR S-CONE 'DONUT' MODEL
-% modelPrediction875nmPurpleAt2pt5all = [1.29 1.66 1.75 1.54 1.44 1.70 1.26 1.52];
-
 % ---THIS BLOCK IS UNUSUED (USES MEASURED RATHER THAN PREDICTED DEFOCUS---
 wvfFiles = ARCacuAnalysisWvfSubj(subjNum, dataPath);
 for i = 1:length(wvfFiles)
     ZernikeTable = readtable([dataFolder wvfFiles{i}]);
     NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
     c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65. 
+    indBadPupil = table2array(ZernikeTable(:,5))==0; % GET RID OF BLINKS IN PUPIL SIZE VECTOR!
     PARAMS = struct;
+    PARAMS.PupilSize=mean(table2array(ZernikeTable(~indBadPupil,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)    
     PARAMS.PupilSize=mean(table2array(ZernikeTable(:,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)
     PARAMS.PupilFitSize=mean(table2array(ZernikeTable(:,5))); 
     PARAMS.PupilFieldSize=PARAMS.PupilSize*2; %automatically compute the field size
@@ -161,7 +174,7 @@ meanC = meanCacc;
 dprimeMetric = [];
 defocusScaleFactor = 0.5774; % FOR 4MM PUPIL SIZE
 
-% GET HARD-CODED PREDICTIONS
+% GET PREDICTIONS
 if subjNum==1
     modelPrediction875nmPurpleAt2pt5 = modelPrediction875nmPurpleAt2pt5all(1);
 elseif subjNum==3
@@ -263,7 +276,7 @@ parfor i = 1:length(defocusForStim)
 end
 %% PREDICTIONS WITHOUT THE FUDGE DEPTH-OF-FOCUS FREE PARAMETER
 
-[unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport] = ARCacuAnalysisSubjective(subjNum,0,dataPath);
+[unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport] = ARCacuityAnalyzeDataOnly(subjNum,0,dataPath);
 
 figure;
 set(gcf,'Position',[342 460 1052 440]);
@@ -283,7 +296,7 @@ xlabel('Wavelength in focus (nm)');
 ylabel('D-prime metric');
 set(gca,'FontSize',15);
 
-save([saveFolder 'acuityModelingPredictionLumS' num2str(subjNum)],'dprimeMetric','defocusForStim', ...
+save([saveFolder savePredName num2str(subjNum)],'dprimeMetric','defocusForStim', ...
     'modelPrediction875nmPurpleAt2pt5','dprime','dprimeCI','unqFocDst','wvInFocusForStim');
 
 end
