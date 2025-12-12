@@ -6,6 +6,7 @@ function thresholds = ARCnlz_contrastThresholds(subjNum,bPLOT,dataPath)
 % example of dataPath: 
 %  dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 
+rng(1);
 if ispc % GETTING PATHS RIGHT
     slash = '\';
 else

@@ -8,7 +8,7 @@ else
     slash = '/';
 end
 
-load([dataPath 'data' slash 'PresavedFigureData' slash 'allExp1DataRGB.mat']);
+load([dataPath 'data' slash 'PresavedFigureData' slash 'allExp1DataRGB_backup.mat']);
 
 % UNIQUE COLOR CONDITIONS IN TERMS OF PROPORTION OF MAX LUMINANCE
 rgbLumNormCndUnq = [0.2500         0    1.0000; ...
@@ -42,7 +42,7 @@ for k = 1:length(optDistUnq) % LOOP OVER OPTICAL DISTANCES
             % SORTING WAVELENGTH-IN-FOCUS VALUES FROM PRE-SAVED DATA
             wvInFocusSorted = [wvInFocusSorted; wvInFocusCellAll{indRgbLumNormCnd(j)}];
             % SORTING DATA BY PARTICIPANT
-            subjNumTagTmp = [subjNumTagTmp; subjNumTagInd(j).*ones(size(defocusAt875cellAll{indRgbLumNormCnd(j)}))];
+            subjNumTagTmp = [subjNumTagTmp; subjNumTagInd(j).*ones(size(wvInFocusCellAll{indRgbLumNormCnd(j)}))];
         end
         subjNumTagUnq = unique(subjNumTagTmp); % UNIQUE SUBJECT TAGS
         wvInFocusAvg = [];

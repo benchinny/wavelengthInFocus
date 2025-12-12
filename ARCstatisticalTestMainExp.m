@@ -19,13 +19,10 @@ rgbLumNormCndUnq = unique(rgbLumNormCndAll,'rows'); % UNIQUE CONDITIONS
 indGreenless = [1 3 7 6 5]; % INDICES FOR ORDERING BLUEST TO REDDEST
 indGreen = [2 4 10 9 8]; % SAME AS ABOVE BUT FOR 'SOME GREEN' CONDITIONS
 
-% ORIGINALLY THIS VARIABLE WAS DEFOCUS AT 550, BUT I CHANGED IT TO DEFOCUS
-% AT 875 WITHOUT CHANGING THIS VARIABLE NAME. I SHOULD FIX THIS. 
-defocusAt550meanGreenless = [];
-rbRatioGreenless = [];
-optDistCndGreenless = [];
-subjNumTagGreenless = [];
-wvInFocusMeanGreenless = [];
+rbRatioGreenless = []; % RED BLUE RATIO
+optDistCndGreenless = []; % STIMULUS DISTANCE
+subjNumTagGreenless = []; % SUBJECT NUMBER TAG
+wvInFocusMeanGreenless = []; % WAVELENGTH IN FOCUS
 
 % THIS LOOP IS JUST SORTING DATA INTO COLUMNS OF TABLE--SEE 'dataTable'
 % VARIABLES IN NEXT SECTION
@@ -37,7 +34,6 @@ for i = 1:length(indGreenless)
                      abs(rgbLumNormCndAll(:,2)-rgbTmp(2))<0.001 & ... 
                      abs(rgbLumNormCndAll(:,3)-rgbTmp(3))<0.001);
     for j = 1:length(indRgbTmp) % ADD TO VECTOR
-        defocusAt550meanGreenless(end+1) = mean(defocusAt875cellAll{indRgbTmp(j)});
         rbRatioGreenless(end+1) = rgbLumNormCndAll(indRgbTmp(j),1)/rgbLumNormCndAll(indRgbTmp(j),3);
         optDistCndGreenless(end+1) = optDistCndAll(indRgbTmp(j));
         subjNumTagGreenless = [subjNumTagGreenless; subjStr(subjNumTag(indRgbTmp(j)))];
@@ -46,7 +42,6 @@ for i = 1:length(indGreenless)
 end
 
 % SAME AS ABOVE LOOP, JUST FOR STIMULI WITH GREEN PRIMARY ON
-defocusAt550meanGreen = [];
 rbRatioGreen = [];
 optDistCndGreen = [];
 subjNumTagGreen = [];
@@ -58,7 +53,6 @@ for i = 1:length(indGreen)
                      abs(rgbLumNormCndAll(:,2)-rgbTmp(2))<0.001 & ... 
                      abs(rgbLumNormCndAll(:,3)-rgbTmp(3))<0.001);
     for j = 1:length(indRgbTmp)
-        defocusAt550meanGreen(end+1) = mean(defocusAt875cellAll{indRgbTmp(j)});
         rbRatioGreen(end+1) = rgbLumNormCndAll(indRgbTmp(j),1)/rgbLumNormCndAll(indRgbTmp(j),3);
         optDistCndGreen(end+1) = optDistCndAll(indRgbTmp(j));
         subjNumTagGreen = [subjNumTagGreen; subjStr(subjNumTag(indRgbTmp(j)))];

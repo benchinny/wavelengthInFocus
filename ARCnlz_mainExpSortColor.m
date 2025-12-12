@@ -1,15 +1,8 @@
 %% LOAD MAIN EXPERIMENT FILES
 
-function [wvInFocusCell, defocusAt550cell, defocusAt875cell, optDistCnd, rgbLumNormCnd] = ARCnlz_mainExpSortColor(subjNum,dataPath)
+function [wvInFocusCell, optDistCnd, rgbLumNormCnd] = ARCnlz_mainExpSortColor(subjNum,dataPath)
 
-% NOTE SUBJECT NUMBER CONVENTION: SUBTRACT 10 FROM subjNum TO GET ACTUAL
-% SUBJECT NUMBER. subjNum VALUES <=10 WERE INTENTIONALLY NOT USED FOR
-% ACTUAL PARTICIPANTS. NOTE ALSO THAT PARTICIPANTS WHO DID NOT PASS
-% SCREENING OR HAD TO BE EXCLUDED FROM THE ACTUAL ANALYSIS ARE STILL
-% INCLUDED IN THIS FUNCTION. 
-
-% subjNum values for participants who passed screening: 11, 13, 15, 20, 26,
-% 27, 28, 30. That is, subjects S1, S3, S5, S10, S16, S17, S18, S20. 
+% subjNum values for participants who passed screening: S1, S3, S5, S10, S16, S17, S18, S20. 
 
 % This function grabs all raw wavefront data from Experiment 1 for a
 % particular subject and returns mean defocus values (both at 550nm and 875nm),
@@ -17,38 +10,43 @@ function [wvInFocusCell, defocusAt550cell, defocusAt875cell, optDistCnd, rgbLumN
 % conditions corresponding to those values. The 'c' variable contains the
 % raw traces of every coefficient on each of the 65 Zernike terms. 
 
-if subjNum==11
+% LIST OF ALL POSSIBLE SUBJECTS
+subjNumAll = [1 3 5 10 16 17 18 20];
+% COMPUTE LCA PARAMETERS FOR ALL SUBJECTS
+[q1bestAll, q2bestAll, q3bestAll] = ARCacuAnalysisLCAall(dataPath,0);
+
+if subjNum==1
    blockNums = 11:16;
    trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};   
-   subjName = ['S' num2str(subjNum) '-OD'];
-elseif subjNum==13
+   subjName = ['S' num2str(subjNum+10) '-OD'];
+elseif subjNum==3
    blockNums = 12:17;
    trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};   
-   subjName = ['S' num2str(subjNum) '-OD'];   
-elseif subjNum==15
+   subjName = ['S' num2str(subjNum+10) '-OD'];   
+elseif subjNum==5
    blockNums = 3:8;
    trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
-   subjName = ['S' num2str(subjNum) '-OD'];   
+   subjName = ['S' num2str(subjNum+10) '-OD'];   
+elseif subjNum==10
+   blockNums = 3:8;
+   trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
+   subjName = ['S' num2str(subjNum+10) '-OD'];         
+elseif subjNum==16
+   blockNums = 2:7;
+   trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
+   subjName = ['S' num2str(subjNum+10) '-OD'];      
+elseif subjNum==17
+   blockNums = 2:7;
+   trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
+   subjName = ['S' num2str(subjNum+10) '-OD'];      
+elseif subjNum==18
+   blockNums = 2:7;
+   trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
+   subjName = ['S' num2str(subjNum+10) '-OD'];   
 elseif subjNum==20
-   blockNums = 3:8;
-   trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
-   subjName = ['S' num2str(subjNum) '-OD'];         
-elseif subjNum==26
    blockNums = 2:7;
    trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
-   subjName = ['S' num2str(subjNum) '-OD'];      
-elseif subjNum==27
-   blockNums = 2:7;
-   trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
-   subjName = ['S' num2str(subjNum) '-OD'];      
-elseif subjNum==28
-   blockNums = 2:7;
-   trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
-   subjName = ['S' num2str(subjNum) '-OD'];   
-elseif subjNum==30
-   blockNums = 2:7;
-   trialNums = {1:36 1:36 1:36 1:36 1:36 1:36};
-   subjName = ['S' num2str(subjNum) '-OD'];      
+   subjName = ['S' num2str(subjNum+10) '-OD'];      
 end
 
 meanC = []; % MEAN OF Z COEFFICIENTS
@@ -61,7 +59,7 @@ c4all = {}; % FOR STORING ALL DEFOCUS TERM VALUES
 for i = 1:length(blockNums)
     blockNumTmp = blockNums(i); % BLOCK REFERS TO BLOCK OF TRIALS
     trialNumsTmp = trialNums{i}; % TRIAL NUMBERS
-    AFCp = ARCloadFileBVAMS(subjNum,blockNumTmp,dataPath); % LOAD EXPERIMENT FILE
+    AFCp = ARCloadFileBVAMS(subjNum+10,blockNumTmp,dataPath); % LOAD EXPERIMENT FILE
     for j = 1:length(trialNumsTmp) % LOOP OVER TRIALS
         % THIS LOADS THE WAVEFRONT DATA
         [ZernikeTable, ~, ~, ~] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumsTmp(j),0,dataPath);
@@ -83,8 +81,7 @@ end
 % STANDARD CONVERSION FROM 4TH ZERNIKE COEFFICIENT TO EQUIVALENT DEFOCUS 
 defocusCorrectionFactor = (1e6/(4*sqrt(3)))*((PARAMS.PupilSize/2000)^2);
 % GETTING DEFOCUS AT 550NM and 875NM (875NM IS WHAT WAS MEASURED)
-defocusAt550 = humanWaveDefocusARC(550,875,subjNum-10)+meanC(:,4)./defocusCorrectionFactor;
-defocusAt875 = meanC(:,4)./defocusCorrectionFactor;
+defocusAt550 = humanWaveDefocusParameterizedARC(550,875,q1bestAll(subjNumAll==subjNum),q2bestAll(subjNumAll==subjNum),q3bestAll(subjNumAll==subjNum))+meanC(:,4)./defocusCorrectionFactor;
 
 % SORTING CONDITIONS BY COLOR
 lumScaleRGB = [4.0888 9.6669 1]; % SCALE FACTOR FOR NORMALIZING RGB TO 1
@@ -112,8 +109,6 @@ conditionsOrderedNorm = [0.25 0.00 1.00; ...
 optDistToCheckAll = [1.5 2.5 3.5]; % STIMULUS DISTANCES
 optDistCnd = []; % FOR SORTING OPTICAL DISTANCES
 rgbLumNormCnd = []; % FOR SORTING RGB CONDITION VALUES
-defocusAt550cell = {}; % FOR SORTING DEFOCUS VALUES AT 550NM
-defocusAt875cell = {}; % FOR SORTING DEFOCUS VALUES AT 875NM
 wvInFocusCell = {}; % FOR STORING WAVELENGTH IN FOCUS VALUES
 
 for j = 1:length(optDistToCheckAll) % LOOP OVER STIM DISTANCE
@@ -124,18 +119,17 @@ for j = 1:length(optDistToCheckAll) % LOOP OVER STIM DISTANCE
               abs(rgbLumNorm(:,2)-conditionsOrderedNorm(i,2))<0.01 & ...
               abs(rgbLumNorm(:,3)-conditionsOrderedNorm(i,3))<0.01 & ...
               abs(meanv00all-optDistToCheck)<0.01;
+        % FOR OUTLIER EXCLUSION
         defocusAt550tmp = defocusAt550(ind);
-        defocusAt875tmp = defocusAt875(ind);
         % DEFOCUS RELATIVE TO OPTICAL DISTANCE
         diffFromOptDist = defocusAt550tmp-meanv00all(ind);
         % EXCLUDE DATA FOR WHICH PARTICIPANT WAS ACCOMMODATING OUTSIDE OF
         % VISIBLE RANGE
-        indGood = abs(diffFromOptDist)<1 & ...
-                  humanWaveDefocusInvertARC(550,diffFromOptDist,subjNum-10)>380 & ...
-                  humanWaveDefocusInvertARC(550,diffFromOptDist,subjNum-10)<780;
-        wvInFocusCell{end+1} =  humanWaveDefocusInvertARC(550,diffFromOptDist(indGood),subjNum-10);
-        defocusAt550cell{end+1} = -defocusAt550tmp(indGood);
-        defocusAt875cell{end+1} = -defocusAt875tmp(indGood);
+        indGood = abs(diffFromOptDist)<2 & ...
+                  humanWaveDefocusInvertParameterizedARC(550,diffFromOptDist,q1bestAll(subjNumAll==subjNum),q2bestAll(subjNumAll==subjNum),q3bestAll(subjNumAll==subjNum))>380 & ...
+                  humanWaveDefocusInvertParameterizedARC(550,diffFromOptDist,q1bestAll(subjNumAll==subjNum),q2bestAll(subjNumAll==subjNum),q3bestAll(subjNumAll==subjNum))<780;
+        % CONVERT FROM DEFOCUS AT 550NM TO WAVELENGTH IN FOCUS
+        wvInFocusCell{end+1} =  humanWaveDefocusInvertParameterizedARC(550,diffFromOptDist(indGood),q1bestAll(subjNumAll==subjNum),q2bestAll(subjNumAll==subjNum),q3bestAll(subjNumAll==subjNum));
         optDistCnd(end+1,:) = optDistToCheckAll(j);
         rgbLumNormCnd(end+1,:) = conditionsOrderedNorm(i,:);
     end
