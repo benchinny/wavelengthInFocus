@@ -147,21 +147,21 @@ if strcmp(fitType,'weibull')
               abs(AFCpAll.rgb(:,3)-rgbUnq(i,3))<0.001;
         % FIT PSYCHOMETRIC FUNCTION
         [mFit,sFit,bFit,Tfit,PCdta,PCfit,negLL] = psyfitWeibull(zeros(size(AFCpAll.contrast(ind))),AFCpAll.contrast(ind),AFCpAll.rspAcu(ind)==AFCpAll.stimOrientation(ind),[],[],[],1.48,2,0);
-        thresholds(i) = mFit+Tfit;
+        thresholds(i) = Tfit;
         contrastIncr = 0.1:0.01:1;
         % PLOT PSYCHOMETRIC FUNCTION
         [PCplt,~]=psyfitWeibullfunc(zeros(size(contrastIncr)),contrastIncr,mFit,sFit,bFit,1.48,2,0);
         if bPLOT
             subplot(2,2,i);
             hold on;
-            plot([1 1].*(mFit+Tfit),[min(contrastIncr) 1].*0.85,'k--','LineWidth',1);
-            plot([min(contrastIncr) 1].*(mFit+Tfit),[1 1].*0.85,'k--','LineWidth',1);
+            plot([1 1].*(Tfit),[min(contrastIncr) 1].*0.85,'k--','LineWidth',1);
+            plot([min(contrastIncr) 1].*(Tfit),[1 1].*0.85,'k--','LineWidth',1);
             plot(contrastIncr,PCplt,'-','Color',rgbUnq(i,:),'LineWidth',1);
             plot(unique(AFCpAll.contrast(ind)),PCdta,'o','Color',rgbUnq(i,:),'LineWidth',1,'MarkerSize',10,'MarkerFaceColor','w');
             axis square;
             xlabel('Contrast');
             ylabel('Proportion correct');
-            title(['Subj ' num2str(subjNum) ', Threshold = ' num2str(mFit+Tfit,2)]);
+            title(['Subj ' num2str(subjNum) ', Threshold = ' num2str(Tfit,2)]);
             set(gca,'FontSize',15);
             xlim([min(contrastIncr) 1]);
             ylim([0.3 1]);

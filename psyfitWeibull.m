@@ -2,22 +2,7 @@ function [mFit,sFit,bFit,Tfit,PCdta,PCfit,negLL] = psyfitWeibull(Xstd,Xcmp,RcmpC
 
 % function [mFit,sFit,bFit,Tfit,PCdta,PCfit,negLL] = psyfitWeibull(Xstd,Xcmp,RcmpChs,mFix,sFix,bFix,DPcrt,nIntrvl,bPLOT,xLbl,yLbl,color,shape,figh)
 %
-%   example call:   % FIT SUBJECT DATA
-%                   psyfitWeibull(abs(S.stdX),abs(S.cmpX),S.R == S.cmpIntrvl,[],[],[1],1,2,1);
-%
-%                   % FIT SIMULATED PSYCHOMETRIC DATA
-%                   clear R; clear Xcmp;
-%                   N = 50; Xlvl = -6:2:6; Xstd = 0; Xcmp = reshape(repmat(Xlvl,[N 1]),[N.*length(Xlvl) 1]);
-%                   Rlvl = binornd(N,psyfuncgengauss([],Xlvl,0,1,1,1,2,0)');
-%                   R    = zeros(N,length(Xlvl));
-%                   for i = 1:length(Xlvl), R(1:Rlvl(i),i) = 1; end;
-%                   psyfitWeibull(Xstd,Xcmp,R,[],[],[1],1,2,1);
-%
-%                   nTrlPerLvl = 200; Xstd = 0; Xcmp = repmat(-3:.5:3,nTrlPerLvl,1);
-%                   RcmpChs = binornd(1,repmat(normcdf(unique(Xcmp)',0,2),nTrlPerLvl,1));
-%                   psyfitWeibull(Xstd,Xcmp,RcmpChs,[],[],[1],1,2,1);
-%
-% fit generalized gaussian psychometric function to data
+% fit generalized weibull function to data
 %
 % Xstd:      std X values                    [nTrl x 1]
 % Xcmp:      cmp X values                    [nTrl x 1]
@@ -116,9 +101,6 @@ XcmpUnq = unique(Xcmp);
 
 % NEW FUNCTION... HANDLES nIntrvl
 [PCfit,Tfit] = psyfitWeibullfunc(XstdUnq,XcmpUnq,mFit,sFit,bFit,DPcrt,nIntrvl);
-
-% OLD FUNCTION (DOES NOT HANDLE nIntrvl)
-% [PCfit,Tfit,DPfit] = psyfuncgengauss(XstdUnq,XcmpUnq,mFit,sFit,bFit,DPcrt,0);
 
 % RAW DATA- COMPUTE PERCENT COMPARISON CHOSEN
 [PCdta,XstdUnq,XcmpUnq] = psyPercentChosen(Xstd,Xcmp,RcmpChs);

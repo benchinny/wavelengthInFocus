@@ -2,16 +2,7 @@ function [PC,T] = psyfitWeibullfunc(Xstd,Xcmp,mFit,sFit,bFit,DPcrt,nIntrvl,bPLOT
 
 % function [PC,T] = psyfitWeibullfunc(Xstd,Xcmp,mFit,sFit,bFit,DPcrt,nIntrvl,bPLOT,xLbl,yLbl,color,figh)
 %
-%   example call: % SAME    TAILS AS   GAUSSIAN (cause it's gaussian)
-%                   PC = psyfitWeibullfunc([],[-5:.1:5],0,1,1.0,1,1,1)
-%
-%                 % HEAVIER TAILS THAN GAUSSIAN
-%                   PC = psyfitWeibullfunc([],[-5:.1:5],0,1,0.5,1,1,1)
-%
-%                 % LIGHTER TAILS THAN GAUSSIAN
-%                   PC = psyfitWeibullfunc([],[-5:.1:5],0,1,2.0,1,1,1)
-%
-% plot generalized gaussian fit to psychometric data
+% plot Weibull fit to psychometric data
 %
 % Xstd:      standard   values                           [ 1 x  1   ]
 % Xcmp:      comparison values                           [ 1 x nCmp ]
@@ -38,14 +29,12 @@ if ~exist('yLbl','var')  || isempty(yLbl),  yLbl  = '% Comparison Chosen'; end
 if ~exist('color','var') || isempty(color), color = 'k';                   end
 if ~exist('figh','var')  || isempty(figh),  figh = [];                     end
 
-% D-PRIMEs 
-% DP = sign(Xcmp-mFit).*(abs(Xcmp-mFit)./sFit).^bFit; % abs() prevent complex numbers w. some betas 
-% CDF 
-% PC = normcdf( 0.5.*sqrt(nIntrvl).*DP,0,1); % sign() reinstates sign of Xcmp-mFit 
-
+% TYPICAL EQUATION FOR A WEIBULL FUNCTION WITH A LAPSE RATE OF 0.5, E.G.
+% SEE MORTENSEN (2002) IN VISION RESEARCH.
 PC0 = 0.5;
 PC = 1-(1-PC0).*exp(-(Xcmp./sFit).^bFit);
 
+% 'CRITERION', MEANING PERFORMANCE LEVEL THE THRESHOLD IS DEFINED FOR
 crt = normcdf(0.5.*sqrt(nIntrvl).*DPcrt);
 % SIGNAL AT THRESHOLD
 T  = abs(-sFit.*log((1-crt)./(1-PC0)).^(1./bFit));
