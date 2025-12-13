@@ -9,30 +9,8 @@ else
 end
 dataDirectory = [dataPath 'data' slash 'ARC' slash];
 
-bSave = 0;
-
 % DATA TO LOAD
 if subj==1
-    % filenames = {
-    %              [dataDirectory 'S1001V12_AFC_RightACL0_2408161637.mat'] ...
-    %              [dataDirectory 'S1001V12_AFC_RightACL0_2408191326.mat'] ...
-    %              [dataDirectory 'S1001V12_AFC_RightACL0_2408191333.mat'] ...
-    %              [dataDirectory 'S1001V12_AFC_RightACL0_2408191345.mat'] ...
-    %              [dataDirectory 'S1001V12_AFC_RightACL0_2408191352.mat'] ...
-    %              [dataDirectory 'S1001V12_AFC_RightACL0_2408191359.mat'] ...
-    %              [dataDirectory 'S1001V12_AFC_RightACL0_2408191417.mat'] ...
-    %              [dataDirectory 'S1001V12_AFC_RightACL0_2408191424.mat'] ...
-    %              [dataDirectory 'S1001V12_AFC_RightACL0_2408191432.mat'] ...
-    %              [dataDirectory 'S1001V12_AFC_RightACL0_2408191439.mat'] ...
-    %              };
-    % filenames = {
-    %              [dataDirectory 'S1011V9_AFC_RightACL0_2408290924.mat'] ...
-    %              [dataDirectory 'S1011V9_AFC_RightACL0_2408290931.mat'] ...
-    %              [dataDirectory 'S1011V9_AFC_RightACL0_2408290938.mat'] ...
-    %              [dataDirectory 'S1011V9_AFC_RightACL0_2408290951.mat'] ...
-    %              [dataDirectory 'S1011V9_AFC_RightACL0_2408291006.mat'] ...
-    %              [dataDirectory 'S1011V9_AFC_RightACL0_2408291021.mat'] ...           
-    %              };    
     filenames = {
                  [dataDirectory 'S1011V18_AFC_RightACL0_2410290922.mat'] ...
                  [dataDirectory 'S1011V18_AFC_RightACL0_2410290936.mat'] ...
@@ -42,52 +20,7 @@ if subj==1
                  [dataDirectory 'S1011V18_AFC_RightACL0_2410291029.mat'] ...
                  [dataDirectory 'S1011V18_AFC_RightACL0_2411050914.mat'] ...
                  }; 
-elseif subj==2
-    % filenames = {
-    %              [dataDirectory 'S1002V7_AFC_RightACL0_2406101420.mat'] ...
-    %              [dataDirectory 'S1002V7_AFC_RightACL0_2406101425.mat'] ...
-    %              [dataDirectory 'S1002V7_AFC_RightACL0_2406101428.mat'] ...
-    %              [dataDirectory 'S1002V7_AFC_RightACL0_2406101432.mat'] ...
-    %              [dataDirectory 'S1002V7_AFC_RightACL0_2406101435.mat'] ... 
-    %              [dataDirectory 'S1002V7_AFC_RightACL0_2406101439.mat'] ... 
-    %              [dataDirectory 'S1002V7_AFC_RightACL0_2406101443.mat'] ...
-    %              [dataDirectory 'S1002V7_AFC_RightACL0_2406101446.mat'] ... 
-    %              [dataDirectory 'S1002V7_AFC_RightACL0_2406101449.mat'] ...
-    %              [dataDirectory 'S1002V7_AFC_RightACL0_2406101453.mat'] ... 
-    %              [dataDirectory 'S1002V7_AFC_RightACL0_2406101515.mat'] ... 
-    %              [dataDirectory 'S1002V7_AFC_RightACL0_2406101519.mat'] ... 
-    %              [dataDirectory 'S1002V7_AFC_RightACL0_2406101524.mat'] ... 
-    %              [dataDirectory 'S1002V7_AFC_RightACL0_2406101528.mat'] ... 
-    %              [dataDirectory 'S1002V7_AFC_RightACL0_2406101535.mat'] ...
-    %              };    
-    filenames = {[dataDirectory 'S1012V10_AFC_RightACL0_2408231042.mat'] ...
-                 [dataDirectory 'S1012V10_AFC_RightACL0_2408231049.mat'] ... 
-                 [dataDirectory 'S1012V10_AFC_RightACL0_2408231054.mat'] ... 
-                 [dataDirectory 'S1012V10_AFC_RightACL0_2408231100.mat'] ...
-                 [dataDirectory 'S1012V10_AFC_RightACL0_2408231107.mat'] ... 
-                 [dataDirectory 'S1012V10_AFC_RightACL0_2408231112.mat'] ...
-                 [dataDirectory 'S1012V10_AFC_RightACL0_2408231118.mat'] ... 
-                 [dataDirectory 'S1012V10_AFC_RightACL0_2408231124.mat'] ... 
-                 [dataDirectory 'S1012V10_AFC_RightACL0_2408231132.mat'] ... 
-                 [dataDirectory 'S1012V10_AFC_RightACL0_2408231137.mat'] ... 
-                 [dataDirectory 'S1012V10_AFC_RightACL0_2408231151.mat'] ... 
-                 [dataDirectory 'S1012V10_AFC_RightACL0_2408231142.mat'] ...
-                 };    
 elseif subj==3
-    % filenames = {
-    %              [dataDirectory 'S1013V11_AFC_RightACL0_2408261612.mat'] ...
-    %              [dataDirectory 'S1013V11_AFC_RightACL0_2408261619.mat'] ...
-    %              [dataDirectory 'S1013V11_AFC_RightACL0_2408261627.mat'] ...
-    %              [dataDirectory 'S1013V11_AFC_RightACL0_2408261633.mat'] ...
-    %              [dataDirectory 'S1013V11_AFC_RightACL0_2408261640.mat'] ... 
-    %              [dataDirectory 'S1013V11_AFC_RightACL0_2408261646.mat'] ... 
-    %              [dataDirectory 'S1013V11_AFC_RightACL0_2408261652.mat'] ...
-    %              [dataDirectory 'S1013V11_AFC_RightACL0_2408261659.mat'] ... 
-    %              [dataDirectory 'S1013V11_AFC_RightACL0_2408261709.mat'] ... 
-    %              [dataDirectory 'S1013V11_AFC_RightACL0_2408261715.mat'] ... 
-    %              [dataDirectory 'S1013V11_AFC_RightACL0_2408261722.mat'] ...
-    %              [dataDirectory 'S1013V11_AFC_RightACL0_2408261731.mat'] ...                  
-    %              };        
     filenames = {
                  [dataDirectory 'S1013V19_AFC_RightACL0_2409191523.mat'] ...
                  [dataDirectory 'S1013V19_AFC_RightACL0_2409191540.mat'] ...
@@ -217,17 +150,17 @@ elseif subj==20
                  };                     
 end
 
-rgb = [];
-meanFocstmOptDst = [];
-focStmOptDstIncr = [];
-rspAcu = [];
-stimOrientation = [];
-indAcuRB = [];
-defocusLCAmeasuredBoots = [];
+rgb = []; % COLOR CONDITIONS OF ACCOMMODATIVE STIMULUS--ALWAYS THE SAME
+meanFocstmOptDst = []; % ACCOMMODATIVE STIMULUS DISTANCE
+focStmOptDstIncr = []; % ACUITY STIMULUS DISTANCE
+rspAcu = []; % RESPONSES
+stimOrientation = []; % STIM ORIENTATION: 1 FOR -15 DEG, 2 FOR 15 DEG
+indAcuRB = []; % 1 FOR RED, 2 FOR GREEN, 3 FOR BLUE
 
 for i = 1:length(filenames)
-    load(filenames{i});
-    rgb = [rgb; AFCp.rgb];
+    load(filenames{i}); % LOAD FILE
+    % STACK UP VARIABLES REQUIRED FOR ANALYSIS INTO COLUMNS
+    rgb = [rgb; AFCp.rgb]; 
     meanFocstmOptDst = [meanFocstmOptDst; AFCp.meanFocstmOptDst];
     focStmOptDstIncr = [focStmOptDstIncr; AFCp.focStmOptDstIncr];
     rspAcu = [rspAcu; AFCp.rspAcu'];
@@ -235,53 +168,25 @@ for i = 1:length(filenames)
     indAcuRB = [indAcuRB; AFCp.indAcuRGBall(1:end-1)];
 end
 
-if size(unique(rgb,'rows'),1)>1
-   error('ARCacuAnalysisPilot: code does not handle multiple colors yet!');
-else
-   rgbUnq = unique(rgb,'rows');
-   rgbUnq = [1 0 0; 0 1 0; 0 0 1];
-   figPositions = [62 488 560 420; ...
-                   623 488 560 420; ...
-                   1111 493 560 420];
-end
+% COLORS FOR PLOTTING
+rgbUnq = [1 0 0; 0 1 0; 0 0 1];
 
 scaleFac = 0.816; % ACCOUNT FOR OPTICAL PROPERTIES OF BVAMS
-% meanFocInt = 5;
-defocusLCAmeasured = [];
-dprimeFitAll = {};
 
 if bPLOT
     figure;
-    % set(gcf,'Position',[149 495 1277 420]);
 end
-for rgbAcuCnd = 1:3 % SORT DATA BY COLOR
+
+defocusLCAmeasured = []; % BEST DISTANCE
+dprimeFitAll = {}; % D PRIMES
+for rgbAcuCnd = 1:3 % SORrgbAcuCndT DATA BY COLOR
     unqFocDst = unique(focStmOptDstIncr(indAcuRB==rgbAcuCnd));
-    for i = 1:length(unqFocDst)
+    for i = 1:length(unqFocDst) % LOOP OVER STIMULUS DISTANCE
         indAnalysis = abs(focStmOptDstIncr-unqFocDst(i))<0.001 & indAcuRB==rgbAcuCnd;
-    %    PC(i) = sum(rspAcu(focStmOptDstIncr==unqFocDst(i) & meanFocstmOptDst==meanFocInt)==stimOrientation(focStmOptDstIncr==unqFocDst(i) & meanFocstmOptDst==meanFocInt))./sum(focStmOptDstIncr==unqFocDst(i) & meanFocstmOptDst==meanFocInt); 
-         PC(i) = sum(rspAcu(indAnalysis)==stimOrientation(indAnalysis))./sum(indAnalysis);
-         PCci(:,i) = binoinv([0.025 0.975],sum(focStmOptDstIncr==unqFocDst(i) & indAcuRB==rgbAcuCnd),PC(i))./sum(focStmOptDstIncr==unqFocDst(i) & indAcuRB==rgbAcuCnd);
-    end
-    
-    if nBoots>0
-        for j = 1:nBoots % BOOTSTRAPPING
-            for i = 1:length(unqFocDst)
-                indAnalysis = focStmOptDstIncr==unqFocDst(i) & indAcuRB==rgbAcuCnd;
-                indBoots = randsample(find(indAnalysis),sum(indAnalysis),'true');
-                PCboots(i,j) = sum(rspAcu(indBoots)==stimOrientation(indBoots))./length(indBoots);
-            end
-            PCfitSupportBoots = min(unqFocDst.*scaleFac):0.01:max(unqFocDst.*scaleFac);
-            PCfitBoots = spline(unqFocDst.*scaleFac,PCboots(:,j),PCfitSupportBoots);
-            if subj==5 && (rgbAcuCnd==2 || rgbAcuCnd==1)
-                PCfitBoots(PCfitSupportBoots>0.6) = 0;
-            elseif subj==5 && rgbAcuCnd==3
-                PCfitBoots(PCfitSupportBoots<0.6) = 0;
-            elseif subj==18 && rgbAcuCnd==2
-                PCfitBoots(PCfitSupportBoots<-0.5) = 0;
-            end
-            [~,indLCAboots] = max(PCfitBoots);
-            defocusLCAmeasuredBoots(rgbAcuCnd,j) = PCfitSupportBoots(indLCAboots);
-        end
+        % PERCENT CORRECT
+        PC(i) = sum(rspAcu(indAnalysis)==stimOrientation(indAnalysis))./sum(indAnalysis);
+        % 95% CONFIDENCE INTERVALS
+        PCci(:,i) = binoinv([0.025 0.975],sum(focStmOptDstIncr==unqFocDst(i) & indAcuRB==rgbAcuCnd),PC(i))./sum(focStmOptDstIncr==unqFocDst(i) & indAcuRB==rgbAcuCnd);
     end
 
     % FITTING SPLINE TO DATA
@@ -302,13 +207,10 @@ for rgbAcuCnd = 1:3 % SORT DATA BY COLOR
         defocusLCAmeasured(rgbAcuCnd) = PCfitSupport(indLCA);        
     end
     if bPLOT
-        % subplot(1,3,rgbAcuCnd);
-        % set(gcf,'Position',figPositions(rgbAcuCnd,:));
         hold on;
         plot(PCfitSupport,PCfit,'-','Color',rgbUnq(rgbAcuCnd,:),'MarkerFaceColor','w','LineWidth',2,'MarkerSize',20);
         plot(unqFocDst.*scaleFac,PC,'o','Color',rgbUnq(rgbAcuCnd,:),'MarkerFaceColor','w','LineWidth',2,'MarkerSize',20);
         errorbar(unqFocDst.*scaleFac,PC,PC-PCci(1,:),PCci(2,:)-PC,'o','Color',rgbUnq(rgbAcuCnd,:),'MarkerFaceColor','w','LineWidth',2,'MarkerSize',20);
-        % axis square;
         ylim([0.4 1]);
         if rgbAcuCnd==1
            formatFigure('Relative optical distance (D)','Proportion Correct',['Subject ' num2str(subj)]);
@@ -321,14 +223,49 @@ for rgbAcuCnd = 1:3 % SORT DATA BY COLOR
     dprimeFitAll{rgbAcuCnd} = 2*norminv(PCfit);
 end
 
-filePathSave = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/ARChroma/Meetings/meeting_Sept25/';
-if bSave
-   saveas(gcf,[filePathSave 'LCA/S' num2str(subj) 'LCA'],'epsc');
+% THE BLOCK OF CODE BELOW DOES BOOTSTRAPPING
+defocusLCAmeasuredBoots = []; % BOOTSTRAPPING BEST DISTANCE VALUES
+if nBoots>1
+    defocusLCAmeasuredTmp = [];
+    for j = 1:nBoots
+        for rgbAcuCnd = 1:3 % SORrgbAcuCndT DATA BY COLOR
+            unqFocDstBoots = unique(focStmOptDstIncr(indAcuRB==rgbAcuCnd));
+            for i = 1:length(unqFocDstBoots) % LOOP OVER STIMULUS DISTANCE
+                indAnalysisBoots = abs(focStmOptDstIncr-unqFocDstBoots(i))<0.001 & indAcuRB==rgbAcuCnd;
+                % COMPUTE PERCENT CORRECT
+                indBoots = randsample(find(indAnalysisBoots),sum(indAnalysisBoots),'true');                
+                % PERCENT CORRECT
+                PCboots(i) = sum(rspAcu(indBoots)==stimOrientation(indBoots))./sum(indBoots);
+            end
+        
+            % FITTING SPLINE TO DATA
+            PCfitSupportBoots = min(unqFocDstBoots.*scaleFac):0.01:max(unqFocDstBoots.*scaleFac);
+            PCfitBoots = spline(unqFocDstBoots.*scaleFac,PCboots,PCfitSupportBoots);
+            % PROTECT AGAINST IMPLAUSIBLE PEAK VALUES FROM MEASUREMENT NOISE OR
+            % MONOCHROMATIC ABERRATIONS BY ENFORCING CONSTRAINT THAT PEAK FOR 
+            % GREEN IS WITHIN 1.0D OF PEAK FOR RED, AND PEAK FOR BLUE IS WITHIN 
+            % 1.0D OF PEAK FOR GREEN
+            if rgbAcuCnd==2 || rgbAcuCnd==3
+                indValidBoots = abs(PCfitSupportBoots-defocusLCAmeasuredTmp(rgbAcuCnd-1))<1;
+                PCfitSupportValidBoots = PCfitSupportBoots(indValidBoots);
+                PCfitValidBoots = PCfitBoots(indValidBoots);
+                [~,indLCAboots] = max(PCfitValidBoots);
+                defocusLCAmeasuredTmp(rgbAcuCnd) = PCfitSupportValidBoots(indLCAboots);   
+            else
+                [~,indLCAboots] = max(PCfitBoots);
+                defocusLCAmeasuredTmp(rgbAcuCnd) = PCfitSupportBoots(indLCAboots);        
+            end
+            epsilonPC = 0.999;
+            PCfitBoots(PCfitBoots>epsilonPC) = epsilonPC;
+        end
+        defocusLCAmeasuredBoots(:,j) = defocusLCAmeasuredTmp;
+    end
 end
 
-wavePlotLCA = 380:875;
-wavePlotPrimaries = [616 533 468];
-nRepeatFit = 100;
+wavePlotLCA = 380:875; % SUPPORT FOR LCA FUNCTION
+wavePlotPrimaries = [616 533 468]; % PEAK WAVELENGTHS OF PRIMARIES
+nRepeatFit = 100; % NUMBER OF TIMES TO REPEAT FIT
+% LCA PARAMETERS
 q1all = [];
 q2all = [];
 q3all = [];
@@ -344,10 +281,12 @@ for i = 1:nRepeatFit
        display(['Iteration ' num2str(i)]);
    end
 end
+% GET BEST OF REPEATED FITS
 [~,indBestFit] = min(errAll);
 q1best = q1all(indBestFit);
 q2best = q2all(indBestFit);
 q3best = q3all(indBestFit);
+% DEFOCUS AT GREEN (NOT CURRENTLY USING BUT COULD FOR OTHER PURPOSES)
 Dgreen = humanWaveDefocusParameterized(532,q1best,q2best,q3best);
 
 if bPLOT
@@ -360,10 +299,6 @@ if bPLOT
     xlabel('Wavelength (\lambda)'); 
     ylabel('Relative Defocus (D)');
     xlim([400 875]);
-end
-
-if bSave
-   saveas(gcf,[filePathSave 'LCA/S' num2str(subj) 'LCAfit'],'epsc');
 end
 
 end

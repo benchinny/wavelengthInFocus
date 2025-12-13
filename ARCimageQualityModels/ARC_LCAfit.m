@@ -1,5 +1,7 @@
 function [q1,q2,q3,err] = ARC_LCAfit(wave,D)
 
+% fits LCA function from Thibos et al. (1992) to defocus values
+
 % SET FMINCON OPTIONS
 opts             = optimset('fmincon');
 opts.Algorithm   = 'active-set';
@@ -8,12 +10,14 @@ opts.LargeScale  = 'off';
 opts.Display     = 'off';
 % opts.MaxIter     = 500;
 
+% INITIAL CONDITIONS, UPPER AND LOWER BOUNDS
 p0 = [rand*2 rand*0.99 rand*0.37];
 pLB = [0.01 0.01 0.01];
 pUB = [2.00 0.99 0.37];
 
 [pFit,err] = fmincon(   @(p) humanWaveDefocusObjFunc(wave,D,p),p0,[],[],[],[],pLB,pUB,[],opts);
 
+% BEST FIT VALUES
 q1 = pFit(1);
 q2 = pFit(2);
 q3 = pFit(3);
