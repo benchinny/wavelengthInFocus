@@ -2,7 +2,7 @@
 
 function ARCtestWvInFocusMeanZspatFilterLMSeffectFitOnly(subjNum,wS,dataPath)
 
-objFunc = 'RMS';
+objFunc = 'RMS'; % OBJECTIVE FUNCTION FOR FITTING
 
 if subjNum==10
     subjName = 'S20-OD';
@@ -33,37 +33,35 @@ elseif subjNum==20
     blockNumAll = 2:7;
 end
 
-trialNumAll = 1:36;
+trialNumAll = 1:36; % ALL SUBJECTS HAVE SAME NUMBER OF TRIALS
 
-defocus875 = [];
-optDistAll = [];
-rgbAll = [];
+defocus875 = []; % DEFOCUS AT 875NM
+optDistAll = []; % STIMULUS DISTANCES
+rgbAll = []; % COLOR CONDITIONS
 
 % LOAD DATA TO FIT
-for k = 1:length(blockNumAll)
-    AFCp = ARCloadFileBVAMS(subjNum+10,blockNumAll(k),dataPath);
-    optDistAll = [optDistAll; AFCp.meanv00./1.2255];
-    rgbAll = [rgbAll; AFCp.rgb100];
-    for l = 1:length(trialNumAll)
+for k = 1:length(blockNumAll) % LOOP OVER BLOCKS
+    AFCp = ARCloadFileBVAMS(subjNum+10,blockNumAll(k),dataPath); % LOAD CONDITION FILE
+    optDistAll = [optDistAll; AFCp.meanv00./1.2255]; % CONCATENATE OPTICAL DISTANCES (1.2255 SCALE FACTOR)
+    rgbAll = [rgbAll; AFCp.rgb100]; % CONCATENATE COLOR CONDITIONS
+    for l = 1:length(trialNumAll) % FOR EACH TRIAL
         % LOAD ZERNIKE TABLE AND TIMESTAMPS
         [ZernikeTable, ~, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumAll(k),trialNumAll(l),0,dataPath);
 
         NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
         c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65. 
         PARAMS = struct;
-        indBadPupil = table2array(ZernikeTable(:,5))==0;
+        indBadPupil = table2array(ZernikeTable(:,5))==0; % IDENTIFY BLINKS
         PARAMS.PupilSize=mean(table2array(ZernikeTable(~indBadPupil,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)
-        PARAMS.PupilFitSize=mean(table2array(ZernikeTable(~indBadPupil,5))); 
-        PARAMS.PupilFieldSize=PARAMS.PupilSize*2; %automatically compute the field size
+        % ALL ZERNIKE COEFFICIENTS
         c(:,3:NumCoeffs)=table2array(ZernikeTable(:,11:width(ZernikeTable)));
-        indBad = c(:,4)==0;
-        meanC = mean(c(~indBad,:),1); % TAKE MEAN OF COEFFICIENTS  
+        indBad = c(:,4)==0; % FIND BLINKS IN DEFOCUS VECTOR
+        meanC = mean(c(~indBad,:),1); % TAKE MEAN OF COEFFICIENTS WITHOUT BLINKS
+        % STANDARD CORRECTION TO CONVERT TO EQUIVALENT DEFOCUS
         defocusCorrectionFactor = (1e6/(4*sqrt(3)))*((PARAMS.PupilSize/2000)^2);
         defocus875(end+1,:) = meanC(4)./defocusCorrectionFactor;
     end
 end
-
-rgbUnq = unique(rgbAll,'rows');
 
 %% SEARCH INDIVIDUAL CONE WEIGHTS
 
@@ -78,45 +76,18 @@ else
 end
 coneWeightsFolder = [dataPath 'data' slash 'coneWeightsErrorSpatFilter' slash 'colorMechPredictions' slash];
 
-% NORMALIZE LUMINANCE VALUES OF RGB SO MAX IS 1
-rgbLumNorm = [];
-rgbLumNorm(:,1) = (rgbUnq(:,1).^2.5)./0.2442;
-rgbLumNorm(:,2) = (rgbUnq(:,2).^2.7)./0.1037;
-rgbLumNorm(:,3) = (rgbUnq(:,3).^2.3)./1;
-rgbLumNorm(rgbLumNorm>1) = 1;
+RMSEall = zeros([length(wLM) length(wLprop)]); % INITIALIZE ERROR SURFACE
 
-conditionsOrderedNorm = [0.25 0.00 1.00; ...
-                         0.50 0.00 1.00; ...
-                         1.00 0.00 1.00; ...
-                         1.00 0.00 0.50; ...
-                         1.00 0.00 0.25; ...
-                         0.25 0.50 1.00; ...
-                         0.50 0.50 1.00; ...
-                         1.00 0.50 1.00; ...
-                         1.00 0.50 0.50; ...
-                         1.00 0.50 0.25; ...
-                         1.00 1.00 1.00];
-
-for i = 1:size(conditionsOrderedNorm,1)
-    ind(i) = find(abs(rgbLumNorm(:,1)-conditionsOrderedNorm(i,1))<0.01 & ...
-                  abs(rgbLumNorm(:,2)-conditionsOrderedNorm(i,2))<0.01 & ...
-                  abs(rgbLumNorm(:,3)-conditionsOrderedNorm(i,3))<0.01);
-end
-
-RMSEall = zeros([length(wLM) length(wLprop)]);
-
-for l = 1:length(wLM)
-    parfor k = 1:length(wLprop)
+for l = 1:length(wLM) % LOOP OVER RATIO OF L+M TO S
+    parfor k = 1:length(wLprop) % LOOP OVER L TO M RATIO
         wL = wLM(l)*wLprop(k);
         wM = wLM(l)-wL;
         % GENERATE PREDICTIONS OF DEFOCUS USING HELPER FUNCTION
         [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZspatFilterPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL wM wS],dataPath);
+        % TAG EVERY TRIAL BY OPTICAL DISTANCE FOR FITTING LAGS AND LEADS
         optDistTag = imresize(optDistUnq',size(defocus875mean),'nearest');
         % FIT LAGS AND LEADS
         [pFit,RMSE(k)] = ARCfitLagLead(defocus875predTmp(:),defocus875mean(:),optDistTag(:),true,objFunc);
-        if k==1
-            [pFitFlat,RMSEflat(k)] = ARCfitLagLead(optDistTag(:),defocus875mean(:),optDistTag(:),true,objFunc);
-        end
         
         display(['Weights = [' num2str(wL) ' ' num2str(wM) ' ' num2str(wS)]);
     end
