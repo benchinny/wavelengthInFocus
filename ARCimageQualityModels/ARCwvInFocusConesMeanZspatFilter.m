@@ -1,26 +1,23 @@
 function wvInFocus = ARCwvInFocusConesMeanZspatFilter(subjNum,stimNum,wLMS,dataPath)
 
-if ispc
-    slash = '\';
-else
-    slash = '/';
-end
-foldernameCones = [dataPath 'data' slash 'coneImages' slash];
+% FOLDER WITH PRE-GENERATED CONE IMAGES
+foldernameCones = fullfile(dataPath,'data','coneImages');
 
-wave = 380:4:780;
-nFocus = length(wave);
+wave = 380:4:780; % SAMPLED WAVELENGTHS IN MODEL
+nFocus = length(wave); % NUMBER OF WAVELENGTHS MODELED
 
 % USE THE SAME ORIGINAL (PRE-OPTICS) IMAGE EACH TIME--THIS ONE HAPPENS TO
 % LIVE IN THE FOLDER FOR SUBJECT 10, BUT IT REALLY DOESN'T MATTER SINCE ALL
 % SUBJECTS SAW THE SAME ON-SCREEN STIMULUS
-fnameConeRspNoLCA = ['subj10block3stimulus1' 'focusInd1noLCA'];
-absorptionsOrig = load([foldernameCones 'S10' slash fnameConeRspNoLCA]);
+fnameConeRspNoLCA = 'subj10block3stimulus1focusInd1noLCA';
+absorptionsOrig = load(fullfile(dataPath,'data','coneImages','S10',fnameConeRspNoLCA));
 absorptionsOrig = absorptionsOrig.absorptions;
 coneImgOrig = sum(absorptionsOrig,3);
 
 % LOAD SPATIAL FILTER
-load([dataPath 'data' slash 'modelParams' slash 'freqFilterARC.mat']);
+load(fullfile(dataPath,'data','modelParams','freqFilterARC.mat'));
 
+% MASK FOR SIMULATING 'HOLE' IN S-CONE IMAGE
 [SconeMaskSupportXX, SconeMaskSupportYY] = meshgrid(-90:91,-90:91);
 SconeMask = ones(size(SconeMaskSupportXX));
 SconeMask(sqrt(SconeMaskSupportXX.^2 + SconeMaskSupportYY.^2)<22.5) = 0;
@@ -34,44 +31,35 @@ SconeMask(:,178:182) = 1;
 SconeMask(1:5,:) = 1;
 SconeMask(178:182,:) = 1;
 
-if wLMS(3) == 0
+if wLMS(3) == 0 % IF NOT BLUE-YELLOW MECHANISM, NO MASK
     SconeMask = ones(size(SconeMask));
 end
-
+% OTHERWISE, APPLY S-CONE MASK
 coneImgOrig = coneImgOrig.*SconeMask;
 
+% FILTER CONE IMAGE ACCORDING TO FREQUENCIES KNOWN TO DRIVE ACCOMMODATION
 coneImgOrigFFT = fftshift(fft2(coneImgOrig));
 coneImgOrigFilteredFFT = coneImgOrigFFT.*freqFilterARC;
 coneImgOrigFiltered = real(ifft2(ifftshift(coneImgOrigFilteredFFT)));
 
-coneImgOrigFFT2 = fft2(fftshift(coneImgOrig));
-freqFilterARCfft2 = fftshift(freqFilterARC);
-coneImgOrigFilteredFFT2 = coneImgOrigFFT2.*freqFilterARCfft2;
-coneImgOrigFiltered2 = real(ifftshift(ifft2(coneImgOrigFilteredFFT2)));
-
-% % Put the image center in (1, 1) and take the transform.
-% imgFFT = fft2(fftshift(img));
-% % Multiply the transformed otf and the image.
-% % Then invert and put the image center in  the center of the matrix
-% filteredIMG = abs(ifftshift(ifft2(otf .* imgFFT)));
-
-peakCorr = [];
-for i = 1:nFocus
+peakCorr = []; % INITIALIZE VECTOR FOR IMAGE QUALITY
+for i = 1:nFocus % LOOP OVER WAVELENGTHS IN FOCUS
     fnameConeRsp = ['subj' num2str(subjNum) 'stimulus' num2str(stimNum) 'focusInd' num2str(i)];
-    load([foldernameCones 'S' num2str(subjNum) slash fnameConeRsp]);
+    load(fullefile(foldernameCones,'S',num2str(subjNum),fnameConeRsp));
+    % APPLY CONE WEIGHTS AND SUM
     absorptions(:,:,1) = SconeMask.*absorptions(:,:,1).*wLMS(1);
     absorptions(:,:,2) = SconeMask.*absorptions(:,:,2).*wLMS(2);
     absorptions(:,:,3) = SconeMask.*absorptions(:,:,3).*wLMS(3);
     coneImg = sum(absorptions,3);
-
+    % FILTER SIGNAL ACCORDING TO FREQUENCIES KNOWN TO DRIVE ACCOMMODATION
     coneImgFFT = fftshift(fft2(coneImg));
     coneImgFilteredFFT = coneImgFFT.*freqFilterARC;
     coneImgFiltered = real(ifft2(ifftshift(coneImgFilteredFFT)));
-
-    % peakCorr(i) = max(max(abs(normxcorr2(coneImgFiltered,coneImgOrigFiltered))));
-    peakCorr(i) = max(max(normxcorr2(coneImgFiltered,coneImgOrigFiltered)));
+    % COMPUTE IMAGE QUALITY ACCORDING TO X-CORRELATION
+    peakCorr(i) = max(max(abs(normxcorr2(coneImgFiltered,coneImgOrigFiltered))));
 end
 
+% IDENTIY WAVELENGTH THAT IS BEST TO PUT IN FOCUS
 [~,indPeakPeak] = max(peakCorr);
 wvInFocus = wave(indPeakPeak);
 
