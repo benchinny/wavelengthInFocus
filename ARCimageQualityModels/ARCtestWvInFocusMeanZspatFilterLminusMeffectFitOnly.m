@@ -4,6 +4,16 @@ function ARCtestWvInFocusMeanZspatFilterLminusMeffectFitOnly(subjNum,dataPath)
 
 objFunc = 'RMS'; % ERROR FUNCTION FOR FITTING
 
+% LIST OF ALL SUBJECTS
+subjNumListAll = [1 3 5 10 16 17 18 20];
+% FIND subjNum POSITION IN ARRAY
+indLCA = find(subjNumListAll==subjNum);
+% LOAD PRE-SAVED LCA PARAMETERS
+load(fullfile(dataPath,'data','PresavedFigureData','LCAparams.mat'),'q1bestAll','q2bestAll','q3bestAll');
+q1 = q1bestAll(indLCA);
+q2 = q2bestAll(indLCA);
+q3 = q3bestAll(indLCA);
+
 if subjNum==10
     subjName = 'S20-OD';
     blockNumAll = 3:8;
@@ -62,6 +72,21 @@ for k = 1:length(blockNumAll) % LOOP OVER BLOCK NUMBER
         defocus875(end+1,:) = meanC(4)./defocusCorrectionFactor;
     end
 end
+
+% EXCLUDE DATA FOR WHICH PARTICIPANT WAS ACCOMMODATING OUTSIDE OF
+% VISIBLE RANGE
+% DEFOCUS AT 550NM
+defocus550 = defocus875+humanWaveDefocusParameterizedARC(550,875,q1,q2,q3);
+% DEVIATION FROM STIMULUS DISTANCE AT BOTH 550NM AND 875NM
+diffFromOptDist875 = defocus875-optDistAll;
+diffFromOptDist550 = defocus550-optDistAll;
+% 'GOOD INDICES' AT WHICH SUBJECT IS ACCOMMODATING WITHIN VISIBLE RANGE
+indGood = abs(diffFromOptDist550)<2 & ...
+          humanWaveDefocusInvertParameterizedARC(875,diffFromOptDist875,q1,q2,q3)>380 & ...
+          humanWaveDefocusInvertParameterizedARC(875,diffFromOptDist875,q1,q2,q3)<780;
+defocus875 = defocus875(indGood);
+rgbAll = rgbAll(indGood,:);
+optDistAll = optDistAll(indGood);
 
 %% SEARCH INDIVIDUAL CONE WEIGHTS
 

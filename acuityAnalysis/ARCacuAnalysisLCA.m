@@ -255,8 +255,6 @@ if nBoots>1
                 [~,indLCAboots] = max(PCfitBoots);
                 defocusLCAmeasuredTmp(rgbAcuCnd) = PCfitSupportBoots(indLCAboots);        
             end
-            epsilonPC = 0.999;
-            PCfitBoots(PCfitBoots>epsilonPC) = epsilonPC;
         end
         defocusLCAmeasuredBoots(:,j) = defocusLCAmeasuredTmp;
     end
