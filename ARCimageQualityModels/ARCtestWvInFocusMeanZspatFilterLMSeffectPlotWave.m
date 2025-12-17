@@ -1,64 +1,77 @@
 function [aic, pFit, wvMeanAll, wvPredAll, dfPredPurple, wLMmin, wLpropMin] = ARCtestWvInFocusMeanZspatFilterLMSeffectPlotWave(subjNum,modelType,dataPath)
 
-if ispc
-    slash = '\';
-else
-    slash = '/';
-end
-coneWeightsFolder = [dataPath 'data' slash 'coneWeightsErrorSpatFilter' slash 'colorMechPredictions' slash];
-modelCompFolder = [dataPath 'data' slash 'AICmodelComparisons' slash];
+% WHERE THE PRE-FIT CONE WEIGHTS ARE STORED
+coneWeightsFolder = fullfile(dataPath,'data','coneWeightsErrorSpatFilter','colorMechPredictions');
 
-objFunc = 'RMS';
+objFunc = 'RMS'; % OBJECTIVE FUNCTION FOR EVALUATING FIT
 
 % LOAD CONE WEIGHTS
 if strcmp(modelType,'LMS') % IF BLUE-YELLOW OPPONENT MODEL
-    wS = -1;
+    % THIS VALUE WAS GOOD TO SEARCH OVER A WIDE RANGE OF (W_L+W_M)/W_S
+    % VALUES
+    wS = -1; 
+    % FOR THE FOLLOWING TWO SUBJECTS, A MUCH HIGHER (W_L+W_M)/W_S RATIO WAS
+    % REQUIRED, SO wS WAS FIXED TO A LOWER VALUE SO THAT THE GRID SEARCH
+    % COULD SEARCH OVER HIGHER RATIOS
     if subjNum==20
         wS = -0.25;
     end
     if subjNum==5
         wS = -0.5;
     end
-    load([coneWeightsFolder 'S' num2str(subjNum) 'wvInFocusModelResultsDonutx2' num2str(round(-wS*10)) '.mat'],'RMSEall','wS','wLM','wLprop');
+    % LOAD PRE-FIT CONE WEIGHTS
+    load(fullfile(coneWeightsFolder,['S' num2str(subjNum) 'wvInFocusModelResultsDonutx2' num2str(round(-wS*10)) '.mat']),'RMSEall','wS','wLM','wLprop');
     
+    % MAKE A MESHGRID FOR EASILY FINDING THE BEST FIT PRE-GENERATED PARAMETERS
     [wLpropGrid,wLMgrid] = meshgrid(wLprop,wLM);
-    
+    % INDEX IN GRID FOR BEST PARAMETERS
     indMin = RMSEall==min(RMSEall(:));
+    % BEST FIT PARAMETERS
     wLMmin = wLMgrid(indMin);
     wLpropMin = wLpropGrid(indMin);
+    % CONVERT BEST FIT PARAMETERS TO L, M, AND S WEIGHTS
     wL = wLMmin*wLpropMin;
     wM = wLMmin-wL;
-    nParams = 4;
+    nParams = 4; % FOR CALCULATING AIC LATER
 end
 
 if strcmp(modelType,'LM') % IF LUMINANCE MODEL WITH FREE WEIGHTS
-    wS = 0;
-    load([coneWeightsFolder 'S' num2str(subjNum) 'wvInFocusModelResults' num2str(round(-wS*10)) '.mat'],'RMSEall','wS','wLM','wLprop');
+    wS = 0; % ALWAYS 0 BY DEFINITION
+    % LOAD PRE-FIT CONE WEIGHTS
+    load(fullfile(coneWeightsFolder,['S' num2str(subjNum) 'wvInFocusModelResults' num2str(round(-wS*10)) '.mat']),'RMSEall','wS','wLM','wLprop');
     
+    % MAKE A MESHGRID FOR EASILY FINDING THE BEST FIT PRE-GENERATED PARAMETERS
     [wLpropGrid,wLMgrid] = meshgrid(wLprop,wLM);
-    
+    % INDEX IN GRID FOR BEST PARAMETERS
     indMin = RMSEall==min(RMSEall(:));
+    % BEST FIT PARAMETERS
     wLMmin = wLMgrid(indMin);
     wLpropMin = wLpropGrid(indMin);
+    % CONVERT BEST FIT PARAMETERS TO L AND M WEIGHTS
     wL = wLMmin*wLpropMin;
     wM = wLMmin-wL;
-    nParams = 3;
+    nParams = 3; % FOR CALCULATING AIC LATER
 end
 
 if strcmp(modelType,'LminusM') % IF RED-GREEN OPPONENT MODEL
-    wS = 0;
-    load([coneWeightsFolder 'S' num2str(subjNum) 'wvInFocusModelResultsLminusM.mat'],'RMSEall','wLM','wLprop');
+    wS = 0; % ALWAYS 0 BY DEFINITION
+    % LOAD PRE-FIT WEIGHTS
+    load(fullfile(coneWeightsFolder,['S' num2str(subjNum) 'wvInFocusModelResultsLminusM.mat']),'RMSEall','wLM','wLprop');
     
+    % MAKE A MESHGRID FOR EASILY FINDING THE BEST FIT PRE-GENERATED PARAMETERS
     [wLpropGrid,wLMgrid] = meshgrid(wLprop,wLM);
-    
+    % INDEX IN GRID FOR BEST PARAMETERS
     indMin = RMSEall==min(RMSEall(:));
+    % BEST FIT PARAMETERS
     wLMmin = wLMgrid(indMin);
     wLpropMin = wLpropGrid(indMin);
+    % CONVERT TO L AND M WEIGHTS
     wL = wLMmin*wLpropMin;
     wM = -(wLMmin-wL);    
-    nParams = 3;
+    nParams = 3; % FOR CALCULATING AIC LATER
 end
 
+% WE DON'T REALLY USE THIS IN THE PAPER
 if strcmp(modelType,'Lum') % IF LUMINANCE MODEL WITH V-LAMBDA
     wL = 0.72;
     wM = 0.28;
@@ -95,38 +108,41 @@ elseif subjNum==20
     blockNumAll = 2:7;
 end
 
-trialNumAll = 1:36;
+trialNumAll = 1:36; % SAME NUMBER OF TRIALS FOR ALL SUBJECTS
 
-defocus875 = [];
-optDistAll = [];
-rgbAll = [];
+defocus875 = []; % DEFOCUS ABERRATION AT 875NM
+optDistAll = []; % OPTICAL DISTANCES
+rgbAll = []; % COLOR CONDITIONS
 
 % LOADING EMPIRCAL DATA TO PLOT WITH PREDICTIONS
-for k = 1:length(blockNumAll)
+for k = 1:length(blockNumAll) % LOOP OVER BLOCKS
+    % LOAD EXPERIMENT DATA
     AFCp = ARCloadFileBVAMS(subjNum+10,blockNumAll(k),dataPath);
+    % 1.2255 IS THE SCALE FACTOR FOR CONVERTING BVAMS POWER CHANGE TO
+    % DEFOCUS AT EYE
     optDistAll = [optDistAll; AFCp.meanv00./1.2255];
-    rgbAll = [rgbAll; AFCp.rgb100];
-    for l = 1:length(trialNumAll)
+    rgbAll = [rgbAll; AFCp.rgb100]; % CONCATENATE COLOR CONDITIONS
+    for l = 1:length(trialNumAll) % LOOP OVER TRIALS
         % LOAD ZERNIKE TABLE AND TIMESTAMPS
         [ZernikeTable, ~, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumAll(k),trialNumAll(l),0,dataPath);
 
         NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
         c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65. 
         PARAMS = struct;
-        indBadPupil = table2array(ZernikeTable(:,5))==0;
+        indBadPupil = table2array(ZernikeTable(:,5))==0; % FIND BLINKS
         PARAMS.PupilSize=mean(table2array(ZernikeTable(~indBadPupil,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)
-        PARAMS.PupilFitSize=mean(table2array(ZernikeTable(~indBadPupil,5))); 
-        PARAMS.PupilFieldSize=PARAMS.PupilSize*2; %automatically compute the field size
         c(:,3:NumCoeffs)=table2array(ZernikeTable(:,11:width(ZernikeTable)));
-        indBad = c(:,4)==0;
-        c(indBad,4) = mean(c(~indBad,4));
-        meanC = mean(c(1:end,:),1); % TAKE MEAN OF COEFFICIENTS  
+        indBad = c(:,4)==0; % FIND BLINKS IN DEFOCUS VECTOR
+        c(indBad,4) = mean(c(~indBad,4)); % REPLACE BLINK TIME POINTS
+        meanC = mean(c(1:end,:),1); % TAKE MEAN OF COEFFICIENTS
+        % STANDARD CORRECTION FACTOR FOR GOING FROM COEFFICIENT TO
+        % EQUIVALENT DEFOCUS
         defocusCorrectionFactor = (1e6/(4*sqrt(3)))*((PARAMS.PupilSize/2000)^2);
         defocus875(end+1,:) = meanC(4)./defocusCorrectionFactor;
     end
 end
 
-rgbUnq = unique(rgbAll,'rows');
+rgbUnq = unique(rgbAll,'rows'); % UNIQUE RGB VALUES
 
 % NORMALIZE RGB VALUES SO MAX LUMINANCE IS 1
 rgbLumNorm = [];
@@ -135,6 +151,8 @@ rgbLumNorm(:,2) = (rgbUnq(:,2).^2.7)./0.1037;
 rgbLumNorm(:,3) = (rgbUnq(:,3).^2.3)./1;
 rgbLumNorm(rgbLumNorm>1) = 1;
 
+% ORDER OF CONDITIONS FOR PLOTTING: MORE BLUE TO MORE RED WITHOUT GREEN,
+% THEN MORE BLUE TO MORE RED WITH GREEN
 conditionsOrderedNorm = [0.25 0.00 1.00; ...
                          0.50 0.00 1.00; ...
                          1.00 0.00 1.00; ...
@@ -147,23 +165,22 @@ conditionsOrderedNorm = [0.25 0.00 1.00; ...
                          1.00 0.50 0.25; ...
                          1.00 1.00 1.00];
 
-diffFromOptDist = defocus875-optDistAll;
 % EXCLUDE DATA FOR WHICH PARTICIPANT WAS ACCOMMODATING OUTSIDE OF
 % VISIBLE RANGE
+diffFromOptDist = defocus875-optDistAll;
 indGood = humanWaveDefocusInvertARC(875,diffFromOptDist,subjNum)>380 & ...
           humanWaveDefocusInvertARC(875,diffFromOptDist,subjNum)<780;
 defocus875 = defocus875(indGood);
 rgbAll = rgbAll(indGood,:);
 optDistAll = optDistAll(indGood);
 
+% INDICES FOR SORTING CONDITIONS ACCORDING TO PLOT
 for i = 1:size(conditionsOrderedNorm,1)
     ind(i) = find(abs(rgbLumNorm(:,1)-conditionsOrderedNorm(i,1))<0.01 & ...
                   abs(rgbLumNorm(:,2)-conditionsOrderedNorm(i,2))<0.01 & ...
                   abs(rgbLumNorm(:,3)-conditionsOrderedNorm(i,3))<0.01);
 end
 
-RMSEall = zeros([length(wL) length(wM)]);
-markerPlotSpeed = 'sod';
 wvMeanAll = zeros([10 3]);
 wvPredAll = zeros([10 3]);
 
@@ -172,52 +189,34 @@ for l = 1:length(wL)
         % IMPORTANT THINGS HAPPENING IN HELPER FUNCTION: GENERATE
         % PREDICTIONS OF DEFOCUS FOR EACH CONDITION
         [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZspatFilterPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL(l) wM(k) wS],dataPath);
+        % VECTOR OF OPTICAL DISTANCES FOR TAGGING FOR FITTING LAGS AND
+        % LEADS
         optDistTag = imresize(optDistUnq',size(defocus875mean),'nearest');
         % FIT LAGS AND LEADS
         [pFit,RMSE(k)] = ARCfitLagLead(defocus875predTmp(:),defocus875mean(:),optDistTag(:),true,objFunc);
         
-        if k==1
-            [pFitFlat,RMSEflat(k)] = ARCfitLagLead(optDistTag(:),defocus875mean(:),optDistTag(:),true,objFunc);
-            RMSE0 = load([coneWeightsFolder 'S' num2str(subjNum) 'wvInFocusModelResults0.mat'],'RMSEall');
-            RMSElum = min(RMSE0.RMSEall(1,:));
-        end
-        
         % SORTING DATA FOR PLOTTING
         defocus875pred = [];
         defocus875mean2fit = [];
-        % figure;
-        % set(gcf,'Position',[437 314 729 420]);
-        % subplot(1,2,1);
-        % hold on;
         % 'NO GREEN' CONDITIONS ARE INDICES 1 TO 5
         for i = 1:size(defocus875predTmp,2)
-            % hold on;
+            % PREDICTIONS (NEED TO CONVERT FROM DEFOCUS TO WAVELENGTH)
             dfPred1to5 = -(defocus875predTmp(ind(1:5),i)-optDistUnq(i)*pFit(1)-pFit(2));
             wvPred1to5 = humanWaveDefocusInvertARC(875,-(dfPred1to5+optDistUnq(i)),subjNum);
+            % ACTUAL (NEED TO CONVERT FROM DEFOCUS TO WAVELENGTH)
             dfMean1to5 = -defocus875mean(ind(1:5),i);
             wvMean1to5 = humanWaveDefocusInvertARC(875,-(dfMean1to5+optDistUnq(i)),subjNum);
-            if i==2
+            if i==2 % STORE AND RETURN PREDICTION FOR USE IN ACUITY MODELING
                dfPredPurple = dfPred1to5(3);
             end
-            % plot(1:5,wvPred1to5,'k-');
-            % plot(1:length(ind),defocus875mean(ind,i),'k-');
             for j = 1:5
-                % plot(j,wvMean1to5(j),['k' markerPlotSpeed(i)],'MarkerFaceColor',conditionsOrderedNorm(j,:), ...
-                %     'MarkerSize',10);
+                % USE THIS VALUE TO CALCULATE AIC LATER
                 defocus875mean2fit(j,i) = defocus875mean(ind(j),i);
             end
-            % title(['Subject ' num2str(subjNum) ', Distance = ' num2str(optDistUnq(i)) ', Weights = [' num2str(wL(l)) ' ' num2str(wM(k))]);
-            % title(['RMSE = ' num2str(RMSE,3) ', RMSE_{flat} = ' num2str(RMSEflat,3) ', RMSE_{lum} = ' num2str(RMSElum,3)])
+            % STORE MEAN DATA AND PREDICTIONS
             wvMeanAll(1:5,i) = wvMean1to5;
             wvPredAll(1:5,i) = wvPred1to5;
         end
-        % set(gca,'FontSize',15);
-        % set(gca,'XTick',[]);
-        % xlabel('Condition');
-        % ylabel('Defocus at 875nm (D)');
-        % xlim([0 6]);
-
-        % subplot(1,2,2);
         % 'GREEN CONDITIONS ARE INDICES 6 TO 10
         for i = 1:size(defocus875predTmp,2)
             % hold on;
@@ -254,8 +253,6 @@ for l = 1:length(wL)
 
     end
 end
-
-% saveas(gcf,[modelCompFolder 'fitStackSpatFilter' modelType num2str(subjNum)],'png');
 
 errorIndividual = defocus875mean2fit(:)-defocus875pred(:);
 for i = 1:200
