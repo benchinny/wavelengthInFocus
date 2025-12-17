@@ -45,7 +45,7 @@ coneImgOrigFiltered = real(ifft2(ifftshift(coneImgOrigFilteredFFT)));
 peakCorr = []; % INITIALIZE VECTOR FOR IMAGE QUALITY
 for i = 1:nFocus % LOOP OVER WAVELENGTHS IN FOCUS
     fnameConeRsp = ['subj' num2str(subjNum) 'stimulus' num2str(stimNum) 'focusInd' num2str(i)];
-    load(fullefile(foldernameCones,'S',num2str(subjNum),fnameConeRsp));
+    load(fullfile(foldernameCones,['S' num2str(subjNum)],fnameConeRsp));
     % APPLY CONE WEIGHTS AND SUM
     absorptions(:,:,1) = SconeMask.*absorptions(:,:,1).*wLMS(1);
     absorptions(:,:,2) = SconeMask.*absorptions(:,:,2).*wLMS(2);

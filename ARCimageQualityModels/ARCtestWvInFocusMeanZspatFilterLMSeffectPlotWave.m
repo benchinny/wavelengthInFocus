@@ -5,6 +5,16 @@ coneWeightsFolder = fullfile(dataPath,'data','coneWeightsErrorSpatFilter','color
 
 objFunc = 'RMS'; % OBJECTIVE FUNCTION FOR EVALUATING FIT
 
+% LIST OF ALL SUBJECTS
+subjNumListAll = [1 3 5 10 16 17 18 20];
+% FIND subjNum POSITION IN ARRAY
+indLCA = find(subjNumListAll==subjNum);
+% LOAD PRE-SAVED LCA PARAMETERS
+load(fullfile(dataPath,'data','PresavedFigureData','LCAparams.mat'),'q1bestAll','q2bestAll','q3bestAll');
+q1 = q1bestAll(indLCA);
+q2 = q2bestAll(indLCA);
+q3 = q3bestAll(indLCA);
+
 % LOAD CONE WEIGHTS
 if strcmp(modelType,'LMS') % IF BLUE-YELLOW OPPONENT MODEL
     % THIS VALUE WAS GOOD TO SEARCH OVER A WIDE RANGE OF (W_L+W_M)/W_S
@@ -168,8 +178,8 @@ conditionsOrderedNorm = [0.25 0.00 1.00; ...
 % EXCLUDE DATA FOR WHICH PARTICIPANT WAS ACCOMMODATING OUTSIDE OF
 % VISIBLE RANGE
 diffFromOptDist = defocus875-optDistAll;
-indGood = humanWaveDefocusInvertARC(875,diffFromOptDist,subjNum)>380 & ...
-          humanWaveDefocusInvertARC(875,diffFromOptDist,subjNum)<780;
+indGood = humanWaveDefocusInvertParameterizedARC(875,diffFromOptDist,q1,q2,q3)>380 & ...
+          humanWaveDefocusInvertParameterizedARC(875,diffFromOptDist,q1,q2,q3)<780;
 defocus875 = defocus875(indGood);
 rgbAll = rgbAll(indGood,:);
 optDistAll = optDistAll(indGood);
@@ -202,10 +212,10 @@ for l = 1:length(wL)
         for i = 1:size(defocus875predTmp,2)
             % PREDICTIONS (NEED TO CONVERT FROM DEFOCUS TO WAVELENGTH)
             dfPred1to5 = -(defocus875predTmp(ind(1:5),i)-optDistUnq(i)*pFit(1)-pFit(2));
-            wvPred1to5 = humanWaveDefocusInvertARC(875,-(dfPred1to5+optDistUnq(i)),subjNum);
+            wvPred1to5 = humanWaveDefocusInvertParameterizedARC(875,-(dfPred1to5+optDistUnq(i)),q1,q2,q3);
             % ACTUAL (NEED TO CONVERT FROM DEFOCUS TO WAVELENGTH)
             dfMean1to5 = -defocus875mean(ind(1:5),i);
-            wvMean1to5 = humanWaveDefocusInvertARC(875,-(dfMean1to5+optDistUnq(i)),subjNum);
+            wvMean1to5 = humanWaveDefocusInvertParameterizedARC(875,-(dfMean1to5+optDistUnq(i)),q1,q2,q3);
             if i==2 % STORE AND RETURN PREDICTION FOR USE IN ACUITY MODELING
                dfPredPurple = dfPred1to5(3);
             end
@@ -219,47 +229,40 @@ for l = 1:length(wL)
         end
         % 'GREEN CONDITIONS ARE INDICES 6 TO 10
         for i = 1:size(defocus875predTmp,2)
-            % hold on;
+            % PREDICTIONS (NEED TO CONVERT FROM DEFOCUS TO WAVELENGTH)
             dfPred6to10 = -(defocus875predTmp(ind(6:10),i)-optDistUnq(i)*pFit(1)-pFit(2));
-            wvPred6to10 = humanWaveDefocusInvertARC(875,-(dfPred6to10+optDistUnq(i)),subjNum);
+            wvPred6to10 = humanWaveDefocusInvertParameterizedARC(875,-(dfPred6to10+optDistUnq(i)),q1,q2,q3);
+            % ACTUAL (NEED TO CONVERT FROM DEFOCUS TO WAVELENGTH)
             dfMean6to10 = -defocus875mean(ind(6:10),i);
-            wvMean6to10 = humanWaveDefocusInvertARC(875,-(dfMean6to10+optDistUnq(i)),subjNum);
+            wvMean6to10 = humanWaveDefocusInvertParameterizedARC(875,-(dfMean6to10+optDistUnq(i)),q1,q2,q3);
+            % BREAK OUT CONTROL CONDITION TO RETURN SEPARATELY
             dfMean11 = -defocus875mean(ind(11),i);
-            wvMean11 = humanWaveDefocusInvertARC(875,-(dfMean11+optDistUnq(i)),subjNum);
-            % plot([0 length(ind)],optDistUnq(i)-(optDistUnq(i).*pFitFlat(1)+pFitFlat(2)).*[1 1],'k--','LineWidth',1);
-            % plot(1:5,wvPred6to10,'k-');
+            wvMean11 = humanWaveDefocusInvertParameterizedARC(875,-(dfMean11+optDistUnq(i)),q1,q2,q3);
+            % STORE ALL PREDICTIONS (ONLY NEED TO DO THIS IN SECOND LOOP)
             defocus875pred(:,i) = defocus875predTmp(ind,i)-optDistUnq(i)*pFit(1)-pFit(2);
-            % plot(1:length(ind),defocus875mean(ind,i),'k-');
+            % USE THIS VALUE TO CALCULATE AIC LATER
             for j = 6:11
-                if j<11
-                    % plot(j-5,wvMean6to10(j-5),['k' markerPlotSpeed(i)],'MarkerFaceColor',conditionsOrderedNorm(j,:), ...
-                    %      'MarkerSize',10);
-                end
                 defocus875mean2fit(j,i) = defocus875mean(ind(j),i);
             end
-            % plot(6,-(defocus875predTmp(ind(11),i)-optDistUnq(i)*pFit(1)-pFit(2)),'kp','MarkerSize',12);
+            % STORE MEAN DATA AND PREDICTIONS
             wvMeanAll(6:10,i) = wvMean6to10;
             wvPredAll(6:10,i) = wvPred6to10;  
             wvMeanAll(11,i) = wvMean11;
         end
-        % set(gca,'FontSize',15);
-        % set(gca,'XTick',[]);
-        % xlabel('Condition');
-        % ylabel('Defocus at 875nm (D)');
-        % title(['RMSE = ' num2str(RMSE,3) ', RMSE_{flat} = ' num2str(RMSEflat,3) ', RMSE_{lum} = ' num2str(RMSElum,3)]);
-        % xlim([0 6]);
-        % saveas(gcf,[coneWeightsFolder 'LplusMminusSpredCont' num2str(subjNum) 'weight' num2str(k)],'png');
         display(['Weights = [' num2str(wL(l)) ' ' num2str(wM(k)) ' ' num2str(wS)]);
-
     end
 end
 
+% CALCULATING AIC--FIRST CALCULATE DIFFERENCE BETWEEN MEAN DEFOCUS AND
+% PREDICTIONS
 errorIndividual = defocus875mean2fit(:)-defocus875pred(:);
+% ESTIMATE STD DEV OF RESIDUALS
 for i = 1:200
    [stdTmp(i),LLtmp(i)] = ARCfitStdGauss(errorIndividual);
 end
 [~,bestInd] = min(LLtmp);
 estResidualStd = stdTmp(bestInd);
+% CALCULATE LOG-LIKELIHOOD, THEN AIC
 LL = sum(log(normpdf(defocus875mean2fit(:),defocus875pred(:),estResidualStd)));
 aic = 2*nParams-2*LL;
 
