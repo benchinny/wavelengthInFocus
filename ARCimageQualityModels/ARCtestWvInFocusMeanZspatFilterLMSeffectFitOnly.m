@@ -14,6 +14,7 @@ q1 = q1bestAll(indLCA);
 q2 = q2bestAll(indLCA);
 q3 = q3bestAll(indLCA);
 
+% TAG SUBJECT FILE / BLOCK NUMBERS
 if subjNum==10
     subjName = 'S20-OD';
     blockNumAll = 3:8;

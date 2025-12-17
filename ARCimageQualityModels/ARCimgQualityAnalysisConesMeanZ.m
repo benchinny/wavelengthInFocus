@@ -18,7 +18,6 @@ d = displaySet(d,'ViewingDistance',1);
 % WHICH IS WHAT THE BVAMS HAS
 d = displaySet(d,'dpi',378); 
 
-bUseBVAMScal = true; % if using BVAMS calibration data
 bPlotStim = false;
 
 if ispc
@@ -34,14 +33,14 @@ stimPath = [dataPath 'stimuli' slash];
 % PATH TO SAVE
 savePath = [dataPath 'data' slash 'coneImages' slash 'S'];
 
-if bUseBVAMScal % LOAD CALIBRATION DATA
-    load([calPath 'redPrimaryJuly0624_initialPositionFocus3_100.mat']);
-    d.spd(:,1) = energy;
-    load([calPath 'greenPrimaryJuly0624_initialPositionFocus3_100.mat']);
-    d.spd(:,2) = energy;
-    load([calPath 'bluePrimaryJuly0624_initialPositionFocus3_100.mat']);
-    d.spd(:,3) = energy;
-end
+% LOAD BVAMS CALIBRATION DATA
+load([calPath 'redPrimaryJuly0624_initialPositionFocus3_100.mat']);
+d.spd(:,1) = energy;
+load([calPath 'greenPrimaryJuly0624_initialPositionFocus3_100.mat']);
+d.spd(:,2) = energy;
+load([calPath 'bluePrimaryJuly0624_initialPositionFocus3_100.mat']);
+d.spd(:,3) = energy;
+
 % ISETBIO DISPLAY STRUCT HAS DEFAULT GAMMA OF 2.2, SO NEED TO UNDO IT, THEN
 % APPLY OUR EMPIRICALLY DERIVED GAMMA FROM CALIBRATION MEASUREMENTS
 d.gamma(:,1) = (d.gamma(:,1).^(1/2.2)).^2.5;
@@ -54,6 +53,7 @@ load T_xyz1931; % load color matching functions
 % DEFINE WAVELENGTH VECTOR: 380 TO 780 WITH 4NM INCREMENTS
 wave = S(1):S(2):S(1)+S(2)*(S(3)-1);
 
+% FILE NUMBERS FOR DIFFERENT SUBJECTS (CORRESPONDING TO EACH BLOCK)
 if subjNum==3
    blockNums = 12:17;
 elseif subjNum==10
@@ -85,6 +85,8 @@ cAll = []; % INITIALIZE MATRIX FOR STORING COEFFICIENTS
 optDistAll = []; % FOR CONCATENATING OPTICAL DISTANCES PER TRIAL
 rgbAll = []; % FOR CONCATENATING RGB VALUES PER TRIAL
 
+% GET THE AVERAGE HIGHER-ORDER ABERRATIONS FOR THIS SUBJECT ACROSS ALL
+% TRIALS
 for l = 1:length(blockNums) % LOOP OVER BLOCK
     blockNumInd = l; % HELPS WITH READABILITY
     blockNumTmp = blockNums(blockNumInd); % GRAB BLOCK
@@ -185,9 +187,8 @@ for k = 1:size(rgb00,1) % LOOP OVER COLOR CONDITIONS
             'measured wavelength', wave2(i), ...
             'zcoeffs', zCoeffs, 'measured pupil', PARAMS.PupilSize, ...
             'name', sprintf('human-%d', PARAMS.PupilSize),'spatial samples',size(I,2));
-        % NOT SURE WHY PUPIL SIZE ALSO NEEDS TO BE SET HERE, BUT THE
-        % ISETBIO PSFS WON'T ALIGN WITH AUSTIN'S CODE UNLESS WE SET IT
-        % HERE, IF I RECALL CORRECTLY
+        % MAKE SURE THE calcpupilMM FIELD MATCHES THE ACTUAL PUPIL SIZE IN
+        % THE EXPERIMENT
         wvfP.calcpupilMM = PARAMS.PupilSize;
         % SET CUSTOM LCA FUNCTION PER SUBJECT--ISETBIO WANTS IT TO BE SET
         % IN A PARTICULAR FORMAT
@@ -259,16 +260,12 @@ for k = 1:size(rgb00,1) % LOOP OVER COLOR CONDITIONS
         paddingYRpsf = round((size(siPSFData.psf,1)-size(s.data.photons,1))/2);
         indNotPadded = {(paddingYRpsf+1):(size(siPSFData.psf,1)-paddingYRpsf) ...
                         (paddingXCpsf+1):(size(siPSFData.psf,2)-paddingXCpsf)};
-        % I HAD TO WRITE NEW CODE TO SET PSF BECAUSE I COULDN'T FIGURE OUT
-        % HOW TO DO WHAT I WANTED WITHIN DEFAULT ISETBIO FRAMEWORK. THIS
-        % CODE WILL ONLY WORK WITH THE 'isetbioChinVersion' VERSION OF
-        % ISETBIO.
+        % REPLACE OTF FIELD WITH A NEW OTF CALCULATED FROM THE PSFS WE
+        % JUST CALCULATED. COULDN'T FIGURE OUT HOW TO MAKE ISETBIO DO
+        % THIS AUTOMATICALLY, SO I DID IT MANUALLY (AND CHECKED THE
+        % OUTPUT!)
         oi.optics.OTF = []; % INITIALIZE ARRAY FOR STORING OTFS
         for j = 1:size(siPSFData.psf,3) % LOOP OVER WAVELENGTHS
-            % REPLACE OTF FIELD WITH A NEW OTF CALCULATED FROM THE PSFS WE
-            % JUST CALCULATED. COULDN'T FIGURE OUT HOW TO MAKE ISETBIO DO
-            % THIS AUTOMATICALLY, SO I DID IT MANUALLY (AND CHECKED THE
-            % OUTPUT!)
             oi.optics.OTF.OTF(:,:,j) = fft2(fftshift(squeeze(siPSFData.psf(indNotPadded{1},indNotPadded{2},j))));
         end
 
