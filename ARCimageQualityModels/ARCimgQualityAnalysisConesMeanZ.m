@@ -1,27 +1,22 @@
 function oi = ARCimgQualityAnalysisConesMeanZ(subjNum,dataPath)
 
-% NOTE SUBJECT NUMBER CONVENTION: SUBTRACT 10 FROM subjNum TO GET ACTUAL
-% SUBJECT NUMBER. subjNum VALUES <=10 WERE INTENTIONALLY NOT USED FOR
-% ACTUAL PARTICIPANTS. NOTE ALSO THAT PARTICIPANTS WHO DID NOT PASS
-% SCREENING OR HAD TO BE EXCLUDED FROM THE ACTUAL ANALYSIS ARE STILL
-% INCLUDED IN THIS FUNCTION. 
-
-% subjNum values for participants who passed screening: 11, 13, 15, 20, 26,
-% 27, 28, 30. That is, subjects S1, S3, S5, S10, S16, S17, S18, S20. 
+% subjNum values for participants who passed screening: 1, 3, 5, 10, 16,
+% 17, 18, 20
 
 %% Initialize and clear
 ieInit;
 
 %% Set up display struct and build Ben's stimulus
 
-subjNumEncode = subjNum+10;
-bPlotCoefficients = false;
-
 % Setting up display properties
 d = displayCreate('OLED-Samsung');
 d = displaySet(d, 'name', 'my display');
-d = displaySet(d,'ViewingDistance',1); % simulated screen distance
-d = displaySet(d,'dpi',378); % simulated screen distance
+% SIMULATED SCREEN DISTANCE--IT'S ARBITRARY SINCE THE BVAMS HAS
+% NON-STANDARD OPTICAL PROPERTIES
+d = displaySet(d,'ViewingDistance',1);
+% 378 DOTS PER INCH YIELDS APPROXIMATELY 260 PIXELS PER VISUAL DEGREE,
+% WHICH IS WHAT THE BVAMS HAS
+d = displaySet(d,'dpi',378); 
 
 bUseBVAMScal = 1; % if using BVAMS calibration data
 
@@ -31,11 +26,14 @@ else
     slash = '/';
 end
 
+% PATH TO CALIBRATION DATA
 calPath = [dataPath 'BVAMS_calibration_files' slash 'Ben_calibration_July_6_2024' slash];
+% PATH TO STIMULUS SPATIAL PATTERN
 stimPath = [dataPath 'stimuli' slash];
+% PATH TO SAVE
 savePath = [dataPath 'data' slash 'coneImages' slash 'S'];
 
-if bUseBVAMScal
+if bUseBVAMScal % LOAD CALIBRATION DATA
     load([calPath 'redPrimaryJuly0624_initialPositionFocus3_100.mat']);
     d.spd(:,1) = energy;
     load([calPath 'greenPrimaryJuly0624_initialPositionFocus3_100.mat']);
@@ -43,6 +41,8 @@ if bUseBVAMScal
     load([calPath 'bluePrimaryJuly0624_initialPositionFocus3_100.mat']);
     d.spd(:,3) = energy;
 end
+% ISETBIO DISPLAY STRUCT HAS DEFAULT GAMMA OF 2.2, SO NEED TO UNDO IT, THEN
+% APPLY OUR EMPIRICALLY DERIVED GAMMA FROM CALIBRATION MEASUREMENTS
 d.gamma(:,1) = (d.gamma(:,1).^(1/2.2)).^2.5;
 d.gamma(:,2) = (d.gamma(:,2).^(1/2.2)).^2.7;
 d.gamma(:,3) = (d.gamma(:,3).^(1/2.2)).^2.3;
@@ -50,64 +50,47 @@ d.gamma(:,3) = (d.gamma(:,3).^(1/2.2)).^2.3;
 % COLOR MATCHING FUNCTIONS
 S = [380 4 101]; % weird convention used by Brainard lab for defining wavelengths
 load T_xyz1931; % load color matching functions
-T_sensorXYZ = 683*SplineCmf(S_xyz1931,T_xyz1931,S); % interpolate and scale
-wave = S(1):S(2):S(1)+S(2)*(S(3)-1); % define wavelength vector
-% DEFOCUSES TO LOOK AT
-Dall = -humanWaveDefocus(wave);
-% WAVELENGTHS TO LOOK AT
-% wvAll = humanWaveDefocusInvert(-Dall);
+% DEFINE WAVELENGTH VECTOR: 380 TO 780 WITH 4NM INCREMENTS
+wave = S(1):S(2):S(1)+S(2)*(S(3)-1);
 
 %%
 
 if subjNum==3
-    subjName = 'S13-OD';
-    blockNums = 12:17;
-    trialNums = [[1:36]' [1:36]' [1:36]' [1:36]' [1:36]' [1:36]'];
-    % blockNums = [2 3];
-    % trialNums = [[1:20]' [1:20]']; 
-    nTrialTotal = 216;
+   blockNums = 12:17;
+   trialNums = [[1:36]' [1:36]' [1:36]' [1:36]' [1:36]' [1:36]'];
+   subjName = ['S' num2str(subjNum+10) '-OD'];
 elseif subjNum==10
-    subjName = 'S20-OD';
-    blockNums = 3:8;
-    trialNums = [[1:36]' [1:36]' [1:36]' [1:36]' [1:36]' [1:36]'];
-    % blockNums = [2 3];
-    % trialNums = [[1:20]' [1:20]'];     
-    nTrialTotal = 216;
+   blockNums = 3:8;
+   trialNums = [[1:36]' [1:36]' [1:36]' [1:36]' [1:36]' [1:36]']; 
+   subjName = ['S' num2str(subjNum+10) '-OD'];
 elseif subjNum==1
    blockNums = 11:16;
    trialNums = [[1:36]' [1:36]' [1:36]' [1:36]' [1:36]' [1:36]']; 
    subjName = ['S' num2str(subjNum+10) '-OD'];
-   nTrialTotal = 216;
 elseif subjNum==5
    blockNums = 3:8;
    trialNums = [[1:36]' [1:36]' [1:36]' [1:36]' [1:36]' [1:36]']; 
    subjName = ['S' num2str(subjNum+10) '-OD'];
-   nTrialTotal = 216;   
 elseif subjNum==9
    blockNums = 2:7;
    trialNums = [[1:36]' [1:36]' [1:36]' [1:36]' [1:36]' [1:36]']; 
    subjName = ['S' num2str(subjNum+10) '-OD'];
-   nTrialTotal = 216;      
 elseif subjNum==16
    blockNums = 2:7;
    trialNums = [[1:36]' [1:36]' [1:36]' [1:36]' [1:36]' [1:36]'];
    subjName = ['S' num2str(subjNum+10) '-OD'];
-   nTrialTotal = 216;
 elseif subjNum==17
    blockNums = 2:7;
    trialNums = [[1:36]' [1:36]' [1:36]' [1:36]' [1:36]' [1:36]'];
    subjName = ['S' num2str(subjNum+10) '-OD'];
-   nTrialTotal = 216;
 elseif subjNum==18
    blockNums = 2:7;
    trialNums = [[1:36]' [1:36]' [1:36]' [1:36]' [1:36]' [1:36]'];
    subjName = ['S' num2str(subjNum+10) '-OD'];
-   nTrialTotal = 216; 
 elseif subjNum==20
    blockNums = 2:7;
    trialNums = [[1:36]' [1:36]' [1:36]' [1:36]' [1:36]' [1:36]'];
    subjName = ['S' num2str(subjNum+10) '-OD'];
-   nTrialTotal = 216;      
 end
 
 %%
@@ -119,7 +102,7 @@ rgbAll = [];
 for l = 1:length(blockNums) % LOOP OVER BLOCK
     blockNumInd = l;
     blockNumTmp = blockNums(blockNumInd);
-    AFCp = ARCloadFileBVAMS(subjNumEncode,blockNumTmp,dataPath); % LOAD BVAMS DATA
+    AFCp = ARCloadFileBVAMS(subjNum+10,blockNumTmp,dataPath); % LOAD BVAMS DATA
     rgbAll = [rgbAll; AFCp.rgb100];
     for k = 1:36 % LOOP OVER TRIAL
         trialNumTmp = trialNums(k,blockNumInd);
@@ -144,102 +127,6 @@ end
 indBad = cAll(:,4)==0;
 meanC = mean(cAll(~indBad,:),1); % TAKE MEAN OF COEFFICIENTS
 rgb00 = unique(rgbAll,'rows');
-
-%% PLOTTING EACH COEFFICIENT VS DEFOCUS 
-
-if bPlotCoefficients
-    figure;
-    set(gcf,'Position',[163 358 1304 588]);
-    for i = 1:10
-        subplot(2,5,i);
-        hist(cAll(~indBad,i+2),linspace(-0.5,2,101));
-        axis square;
-    end
-    
-    figure;
-    set(gcf,'Position',[117 149 1393 773]);
-    subplot(2,1,1);
-    hold on;
-    for i = 1:65
-        bar(i,mean(cAll(~indBad,i)));
-    end
-    formatFigure('Zernike polynomial #','Mean coefficient');
-    subplot(2,1,2);
-    hold on;
-    for i = 1:65
-        bar(i,std(cAll(~indBad,i)));
-    end
-    formatFigure('Zernike polynomial #','Std dev coefficient');
-    
-    coeffs2compare = [3 5:13];
-    figure;
-    set(gcf,'Position',[117 149 1393 773]);
-    for i = 1:length(coeffs2compare)
-       subplot(2,5,i);
-       plot(cAll(~indBad,4),cAll(~indBad,coeffs2compare(i)),'k.');
-       % ylim([-0.25 0.25]);
-       axis square;
-       if i==1
-          formatFigure('Defocus coefficient',['Coefficient ' num2str(coeffs2compare(i))],'Astigmatism');
-       elseif i==2
-          formatFigure('Defocus coefficient',['Coefficient ' num2str(coeffs2compare(i))],'Astigmatism');
-       elseif i==3
-          formatFigure('Defocus coefficient',['Coefficient ' num2str(coeffs2compare(i))],'Trefoil 0');
-       elseif i==4
-          formatFigure('Defocus coefficient',['Coefficient ' num2str(coeffs2compare(i))],'Coma Y');  
-       elseif i==5
-          formatFigure('Defocus coefficient',['Coefficient ' num2str(coeffs2compare(i))],'Coma X');
-       elseif i==6
-          formatFigure('Defocus coefficient',['Coefficient ' num2str(coeffs2compare(i))],'Trefoil 30');
-       elseif i==7 || i==8
-          formatFigure('Defocus coefficient',['Coefficient ' num2str(coeffs2compare(i))],'');
-       elseif i==9
-          formatFigure('Defocus coefficient',['Coefficient ' num2str(coeffs2compare(i))],'Spherical aberration');      
-       else
-          formatFigure('Defocus coefficient',['Coefficient ' num2str(coeffs2compare(i))]);
-       end
-    end
-
-    % PLOTTING EACH COEFFICIENT VS OPTICAL DISTANCE
-    
-    optDistUnq = unique(optDistAll);
-    
-    figure;
-    set(gcf,'Position',[117 149 1393 773]);
-    for i = 1:length(coeffs2compare)
-       subplot(2,5,i);
-       hold on;
-       for j = 1:length(optDistUnq)
-           indOptDist = abs(optDistAll-optDistUnq(j))<0.001;
-           errorbar(optDistUnq(j),mean(cAll(~indBad & indOptDist,coeffs2compare(i))), ...
-                    std(cAll(~indBad & indOptDist,coeffs2compare(i))),'ko', ...
-                    'MarkerSize',10,'MarkerFaceColor','w','LineWidth',1);
-       end
-       axis square;
-       xlim([1 4]);
-       if i==1
-          formatFigure('Optical distance (D)',['Coefficient ' num2str(coeffs2compare(i))],'Astigmatism');
-       elseif i==2
-          formatFigure('Optical distance (D)',['Coefficient ' num2str(coeffs2compare(i))],'Astigmatism');
-       elseif i==3
-          formatFigure('Optical distance (D)',['Coefficient ' num2str(coeffs2compare(i))],'Trefoil 0');
-       elseif i==4
-          formatFigure('Optical distance (D)',['Coefficient ' num2str(coeffs2compare(i))],'Coma Y');  
-       elseif i==5
-          formatFigure('Optical distance (D)',['Coefficient ' num2str(coeffs2compare(i))],'Coma X');
-       elseif i==6
-          formatFigure('Optical distance (D)',['Coefficient ' num2str(coeffs2compare(i))],'Trefoil 30');
-       elseif i==7 || i==8
-          formatFigure('Optical distance (D)',['Coefficient ' num2str(coeffs2compare(i))],'');
-       elseif i==9
-          formatFigure('Optical distance (D)',['Coefficient ' num2str(coeffs2compare(i))],'Spherical aberration');      
-       else
-          formatFigure('Optical distance (D)',['Coefficient ' num2str(coeffs2compare(i))]);
-       end   
-    end
-end
-
-%%
 
 for k = 1 % LOOP OVER TRIAL
     % recreate stimulus
@@ -281,7 +168,7 @@ for k = 1 % LOOP OVER TRIAL
     % formatFigure('Wavelength (\lambda)','Photons');
     % axis square;
     
-    %% Computing peak correlation for different wavelengths in focus
+    % Computing peak correlation for different wavelengths in focus
     
     wave2 = 380:4:780;
 
@@ -365,8 +252,6 @@ for k = 1 % LOOP OVER TRIAL
         % key line for computing absorptions
         absorptions = cMosaic.computeSingleFrame(oi, 'fullLMS', true);            
         
-        % absorptions = absorptions(55:128,6:177,:);
-
         display(['Peak correlation loop ' num2str(i) ' stimulus ' num2str(k)]);
         absorptions = single(absorptions);
         S = struct;
