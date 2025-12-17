@@ -140,36 +140,24 @@ wave = S(1):S(2):S(1)+S(2)*(S(3)-1); % define wavelength vector
 
 % PARAMETERS OF WAVEFRONT ANALYSIS
 PARAMS.PupilSize = 7; %default values - will be replaced depending on choices below
-PARAMS.PupilFieldSize =6; %default values - will be replaced depending on choices below
-PARAMS.PupilFitSize = 7; %default values - will be replaced depending on choices below
 
 % GET ZERNIKE COEFFICIENTS FOR PARTICIPANT
 [cAcc, ~, ~] = ARCnlz_mainExpSortColorAbb(subjNum+10,dataPath);
 
 indBad = cAcc(:,4)==0 | cAcc(:,4)<-10; % REMOVE BLINKS
 meanCacc = mean(cAcc(~indBad,:),1); % TAKE MEAN OF COEFFICIENTS
+meanC = meanCacc;
 
 dataFolder = [dataPath 'data' slash 'csvFiles' slash 'SUBJ' slash];
 
-cAll = [];
-
-% ---THIS BLOCK IS UNUSUED (USES MEASURED RATHER THAN PREDICTED DEFOCUS---
+% GETTING PUPIL SIZE ROBUSTLY
 wvfFiles = ARCacuAnalysisWvfSubj(subjNum, dataPath);
 for i = 1:length(wvfFiles)
     ZernikeTable = readtable([dataFolder wvfFiles{i}]);
-    NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
-    c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65. 
     indBadPupil = table2array(ZernikeTable(:,5))==0; % GET RID OF BLINKS IN PUPIL SIZE VECTOR!
     PARAMS = struct;
     PARAMS.PupilSize=mean(table2array(ZernikeTable(~indBadPupil,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)    
-    PARAMS.PupilSize=mean(table2array(ZernikeTable(:,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)
-    PARAMS.PupilFitSize=mean(table2array(ZernikeTable(:,5))); 
-    PARAMS.PupilFieldSize=PARAMS.PupilSize*2; %automatically compute the field size
-    c(:,3:NumCoeffs)=table2array(ZernikeTable(:,11:width(ZernikeTable)));
-    cAll = [cAll; c];
 end
-
-meanC = meanCacc;
 
 dprimeMetric = [];
 defocusScaleFactor = 0.5774; % FOR 4MM PUPIL SIZE
