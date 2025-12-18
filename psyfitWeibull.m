@@ -1,21 +1,17 @@
-function [mFit,sFit,bFit,Tfit,PCdta,PCfit,negLL] = psyfitWeibull(Xstd,Xcmp,RcmpChs,mFix,sFix,bFix,DPcrt,nIntrvl,bPLOT,xLbl,yLbl,color,shape,figh)
+function [aFit,bFit,Tfit,PCdta,PCfit,negLL] = psyfitWeibull(X,RC,aFix,bFix,PCcrt,bPLOT,xLbl,yLbl,color,shape,figh)
 
-% function [mFit,sFit,bFit,Tfit,PCdta,PCfit,negLL] = psyfitWeibull(Xstd,Xcmp,RcmpChs,mFix,sFix,bFix,DPcrt,nIntrvl,bPLOT,xLbl,yLbl,color,shape,figh)
+% function [aFit,bFit,Tfit,PCdta,PCfit,negLL] = psyfitWeibull(X,RC,aFix,bFix,PCcrt,bPLOT,xLbl,yLbl,color,shape,figh)
 %
 % fit generalized weibull function to data
 %
-% Xstd:      std X values                    [nTrl x 1]
-% Xcmp:      cmp X values                    [nTrl x 1]
-% RcmpChs:   subject responses (0 or 1)      [nTrl x 1]
-%            coded as cmp vs std chosen
-%            1 -> cmp chosen
-%            0 -> std chosen
-% mFix:      fixed value of mu             default = []
-% sFix:      fixed value of sigma          default = []
-%            NOTE! sFix represents SD of underlying decision variable
-% bFix:      fixed value of beta           default = []
-% DPcrt:     criterion dprime corresponding to threshold
-% nIntrvl:   number of intervals
+% X:         stimulus values                 [nTrl x 1]
+% RC:        subject responses (0 or 1)      [nTrl x 1]
+%            coded as correct vs incorrect
+%            1 -> correct
+%            0 -> incorrect
+% aFix:      fixed value of alpha parameter
+% bFix:      fixed value of beta           
+% PCcrt:     criterion performance corresponding to threshold
 % bPLOT:     1 -> plot
 %            0 -> not
 % xLbl:      plot x-label
@@ -24,20 +20,17 @@ function [mFit,sFit,bFit,Tfit,PCdta,PCfit,negLL] = psyfitWeibull(Xstd,Xcmp,RcmpC
 % shape:     plot shape
 % figh:      plot figure handle
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% mFit:     mean      fit
-% sFit:     sigma     fit
+% aFit:     alpha     fit
 % bFit:     beta      fit
-% Tfit:     threshold fit (corresponding to criterion d')
+% Tfit:     threshold fit
 % PCdta:    percent correct for the raw data
-% PCfit:    percent correct for the fit at each Xcmp
+% PCfit:    percent correct for the fit at each X
 % negLL:    negative log-likelihood of fit
 
 % INPUT HANDLING
-if ~exist('mFix','var')    || isempty(mFix);      mFix    =  []; end
-if ~exist('sFix','var')    || isempty(sFix);      sFix    =  []; end
+if ~exist('aFix','var')    || isempty(aFix);      aFix    =  []; end
 if ~exist('bFix','var')    || isempty(bFix);      bFix    =  []; end
-if ~exist('DPcrt','var')   || isempty(DPcrt),     DPcrt   =   1; end
-if ~exist('nIntrvl','var') || isempty(nIntrvl),   nIntrvl =   1; end
+if ~exist('PCcrt','var')   || isempty(PCcrt),     PCcrt   =0.85; end
 if ~exist('bPLOT','var')   || isempty(bPLOT),     bPLOT   =   0; end
 if ~exist('xLbl','var');                          xLbl    =  []; end
 if ~exist('yLbl','var');                          yLbl    =  []; end
@@ -45,18 +38,14 @@ if ~exist('color','var');                         color   = 'k'; end
 if ~exist('shape','var');                         shape   = 'o'; end
 if ~exist('figh','var');                          figh    =  []; end
 
-if nIntrvl == 0, error(['psyfitWeibull: WARNING! nIntrvl = 0. Function call has probably not been updated to accommodate nIntrvl input param. CHECK CODE!!!']); end
-
 % INPUT CHECKING
-if size(Xstd,2)    ~= 1, Xstd    = Xstd(:);    end
-if size(Xcmp,2)    ~= 1, Xcmp    = Xcmp(:);    end
-if size(RcmpChs,2) ~= 1, RcmpChs = RcmpChs(:); end
-if length(Xstd) ~= length(Xcmp)  && length(Xstd) ~= 1, error(['psyfitWeibull: WARNING! Xstd and Xcmp sizes do not match. Fix it!']); end
-if length(Xcmp) ~= length(RcmpChs),                    error(['psyfitWeibull: WARNING! Xcmp and RcmpChs sizes do not match. Fix it!']); end
+if size(X,2)  ~= 1, X  = X(:);    end
+if size(RC,2) ~= 1, RC = RC(:); end
+if length(X)  ~= length(RC), error(['psyfitWeibull: WARNING! X and RC sizes do not match. Fix it!']); end
 
 % SET LOWER AND UPPER BOUNDS ON PARAMETERS
-pLB     = [0 0.02.*(max(Xcmp(:))-min(Xcmp(:))) 0.35];
-pUB     = [0 2.00.*(max(Xcmp(:))-min(Xcmp(:))) 3.00];
+pLB     = [0.02.*(max(X(:))-min(X(:))) 0.35];
+pUB     = [2.00.*(max(X(:))-min(X(:))) 3.00];
 
 % SET FMINCON OPTIONS
 minFuncType = 'fmincon';
@@ -75,35 +64,31 @@ elseif strcmp(minFuncType,'fminsearch')
 end
 
 % SET INITIAL PARAMETER VALUES
-m0  = 0;
-s0  = sFix;
+a0  = aFix;
 b0  = bFix;
-if isempty(m0); m0 = 0; end
-if isempty(s0); s0 = diff(minmaxLocal(abs(Xcmp)))./6;        s0 = s0  + .1.*s0.*randn; end
+if isempty(a0); a0 = diff(minmaxLocal(abs(X)))./6;      a0 = a0  + .1.*a0.*randn; end
 if isempty(b0); b0 = 1;                                 b0 = b0  + .1.*b0.*randn; end
-p0 = [m0 s0 b0];
+p0 = [a0 b0];
 
 % MINIMIZE NEGATIVE LOG-LIKELIHOOD
 if strcmp(minFuncType,'fmincon')
-    [pFit,negLL] = fmincon(   @(p) psyfitWeibullNegLL(p,Xcmp,RcmpChs,mFix,sFix,bFix,nIntrvl),p0,[],[],[],[],pLB,pUB,[],opts);
+    [pFit,negLL] = fmincon(   @(p) psyfitWeibullNegLL(p,X,RC,aFix,bFix),p0,[],[],[],[],pLB,pUB,[],opts);
 elseif strcmp(minFuncType,'fminsearch')
-    [pFit,negLL] = fminsearch(@(p) psyfitWeibullNegLL(p,Xcmp,RcmpChs,mFix,sFix,bFix,nIntrvl),p0,opts);
+    [pFit,negLL] = fminsearch(@(p) psyfitWeibullNegLL(p,X,RC,aFix,bFix),p0,opts);
 end
 
 % FINAL FIT PARAMETERS
-if isempty(mFix); mFit = pFit(1); else; mFit = mFix; end
-if isempty(sFix); sFit = pFit(2); else; sFit = sFix; end
-if isempty(bFix); bFit = pFit(3); else; bFit = bFix; end
+if isempty(aFix); aFit = pFit(1); else; aFit = aFix; end
+if isempty(bFix); bFit = pFit(2); else; bFit = bFix; end
 
 % FIT THE FUNCTION
-XstdUnq = unique(Xstd);
-XcmpUnq = unique(Xcmp);
+Xunq = unique(X);
 
-% NEW FUNCTION... HANDLES nIntrvl
-[PCfit,Tfit] = psyfitWeibullfunc(XstdUnq,XcmpUnq,mFit,sFit,bFit,DPcrt,nIntrvl);
+% MAKE FIT WITH THRESHOLDS
+[PCfit,Tfit] = psyfitWeibullfunc(Xunq,aFit,bFit,PCcrt);
 
 % RAW DATA- COMPUTE PERCENT COMPARISON CHOSEN
-[PCdta,XstdUnq,XcmpUnq] = psyPercentChosen(Xstd,Xcmp,RcmpChs);
+[PCdta,~,Xunq] = psyPercentChosen(zeros(size(X)),X,RC);
 
 %%%%%%%%%%%%%%%%
 % PLOT RESULTS %
@@ -116,18 +101,17 @@ if bPLOT
 	figure(figh);  hold on
     end
     % PLOT FIT (IN HI-RES)
-    XcmpPlt = linspace(1.5.*min(Xcmp-mean(Xcmp))+mean(Xcmp),1.5.*max(Xcmp-mean(Xcmp))+mean(Xcmp),201);
-    [PCplt,T]=psyfitWeibullfunc(Xstd,XcmpPlt,mFit,sFit,bFit,DPcrt,nIntrvl,0); hold on;
-    % [PCplt,T]=psyfuncgengauss(Xstd,XcmpPlt,mFit,sFit,bFit,DPcrt,0); hold on;
+    XcmpPlt = linspace(1.5.*min(X-mean(X))+mean(X),1.5.*max(X-mean(X))+mean(X),201);
+    [PCplt,T]=psyfitWeibullfunc(XcmpPlt,aFit,bFit,PCcrt); hold on;
     plot(XcmpPlt,PCplt,'color',color,'linewidth',1.5);
     % PLOT DATA
     if strcmp(shape,'-') || strcmp(shape,'--') shape = 'o'; end
-    plot(XcmpUnq,PCdta,shape,'color',color,'linewidth',2,'markersize',15,'markerface','w');
+    plot(Xunq,PCdta,shape,'color',color,'linewidth',2,'markersize',15,'markerface','w');
     % WRITE STUFF TO SCREEN
     if isempty(figh)
-    writeText(1-.1,.1,{['n=' num2str(numel(RcmpChs))]},'ratio',18,'right')
+    writeText(1-.1,.1,{['n=' num2str(numel(RC))]},'ratio',18,'right')
     end
-    formatFigure([xLbl],[yLbl],['T=' num2str(T,'%.2f') ': \mu=' num2str(mFit,'%1.2f') ',\sigma=' num2str(sFit,'%1.2f') ',\beta=' num2str(bFit,'%1.2f')]);
-    xlim(minmaxLocal(Xcmp)+[-.1 .1]); ylim([0 1])
+    formatFigure([xLbl],[yLbl],['T=' num2str(T,'%.2f') ': ,\sigma=' num2str(aFit,'%1.2f') ',\beta=' num2str(bFit,'%1.2f')]);
+    xlim(minmaxLocal(X)+[-.1 .1]); ylim([0 1])
     axis square
 end

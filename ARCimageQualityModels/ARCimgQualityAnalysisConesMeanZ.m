@@ -17,6 +17,9 @@ d = displaySet(d,'ViewingDistance',1);
 % 378 DOTS PER INCH YIELDS APPROXIMATELY 260 PIXELS PER VISUAL DEGREE,
 % WHICH IS WHAT THE BVAMS HAS
 d = displaySet(d,'dpi',378); 
+% GET RID OF ALL UNNECESSARY FIELDS
+d.dixel = [];
+d.mainimage = [];
 
 bPlotStim = false;
 

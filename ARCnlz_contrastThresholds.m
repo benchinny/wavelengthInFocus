@@ -15,6 +15,8 @@ end
 foldername = [dataPath 'data' slash 'ARC' slash];
 
 fitType = 'weibull';
+% CRITERION PERFORMANCE AT WHICH THRESHOLD IS DEFINED
+thresholdCriterion = 0.85;
 
 if subjNum==10
     filenames = {
@@ -146,16 +148,16 @@ if strcmp(fitType,'weibull')
               abs(AFCpAll.rgb(:,2)-rgbUnq(i,2))<0.001 & ...
               abs(AFCpAll.rgb(:,3)-rgbUnq(i,3))<0.001;
         % FIT PSYCHOMETRIC FUNCTION
-        [mFit,sFit,bFit,Tfit,PCdta,PCfit,negLL] = psyfitWeibull(zeros(size(AFCpAll.contrast(ind))),AFCpAll.contrast(ind),AFCpAll.rspAcu(ind)==AFCpAll.stimOrientation(ind),[],[],[],1.48,2,0);
+        [aFit,bFit,Tfit,PCdta] = psyfitWeibull(AFCpAll.contrast(ind),AFCpAll.rspAcu(ind)==AFCpAll.stimOrientation(ind),[],[],thresholdCriterion);
         thresholds(i) = Tfit;
         contrastIncr = 0.1:0.01:1;
         % PLOT PSYCHOMETRIC FUNCTION
-        [PCplt,~]=psyfitWeibullfunc(zeros(size(contrastIncr)),contrastIncr,mFit,sFit,bFit,1.48,2,0);
+        [PCplt,~]=psyfitWeibullfunc(contrastIncr,aFit,bFit,thresholdCriterion);
         if bPLOT
             subplot(2,2,i);
             hold on;
-            plot([1 1].*(Tfit),[min(contrastIncr) 1].*0.85,'k--','LineWidth',1);
-            plot([min(contrastIncr) 1].*(Tfit),[1 1].*0.85,'k--','LineWidth',1);
+            plot([1 1].*(Tfit),[min(contrastIncr) 1].*thresholdCriterion,'k--','LineWidth',1);
+            plot([min(contrastIncr) 1].*(Tfit),[1 1].*thresholdCriterion,'k--','LineWidth',1);
             plot(contrastIncr,PCplt,'-','Color',rgbUnq(i,:),'LineWidth',1);
             plot(unique(AFCpAll.contrast(ind)),PCdta,'o','Color',rgbUnq(i,:),'LineWidth',1,'MarkerSize',10,'MarkerFaceColor','w');
             axis square;

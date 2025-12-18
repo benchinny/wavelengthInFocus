@@ -1,29 +1,25 @@
-function negLL = psyfitWeibullNegLL(param,Xcmp,RcmpChs,mFix,sFix,bFix,nIntrvl)
+function negLL = psyfitWeibullNegLL(param,X,RC,aFix,bFix)
 
-% function negLL = psyfitWeibullNegLL(param,Xcmp,RcmpChs,mFix,sFix,bFix,nIntrvl)
+% function negLL = psyfitWeibullNegLL(param,X,RC,aFix,bFix)
 %
 %   example call:
 %
 % computes negative log likelihood
 %
-% param:          parameters for gengaussfunc
-% Xcmp:           comparison values
-% RcmpChs:        responses
-%                 1 -> comparison chosen
-%                 0 -> standard   chosen
-% mFix:           fixed mean  parameter value
-% sFix:           fixed sigma parameter value
+% param:          parameters for psyfitWeibullfunc
+% X:              stimulus values
+% RC:             responses
+%                 1 -> correct
+%                 0 -> incorrect
+% aFix:           fixed sigma parameter value
 % bFix:           fixed beta  parameter value
-% nIntrvl:        number of intervals
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % negLL:          negative log-likelihood
 
 
-if  exist('mFix','var')    && ~isempty(mFix)    param(1) = mFix; end
-if  exist('sFix','var')    && ~isempty(sFix)    param(2) = sFix; end
-if  exist('bFix','var')    && ~isempty(bFix)    param(3) = bFix; end
-if ~exist('nIntrvl','var') ||  isempty(nIntrvl) nIntrvl  =    1; end
+if  exist('aFix','var')    && ~isempty(aFix)    param(1) = aFix; end
+if  exist('bFix','var')    && ~isempty(bFix)    param(2) = bFix; end
 
-% NEW FUNCTION... ACCEPTS nIntrvl INPUT
-negLL = -(sum(log(     psyfitWeibullfunc([],Xcmp(RcmpChs==1),param(1),param(2),param(3),[],nIntrvl) )) + ...
-          sum(log( 1 - psyfitWeibullfunc([],Xcmp(RcmpChs==0),param(1),param(2),param(3),[],nIntrvl) )) );
+% COMPUTES LOG PROBABILITY OF EVERY TRIAL AND SUMS ACROSS TRIALS
+negLL = -(sum(log(     psyfitWeibullfunc(X(RC==1),param(1),param(2),[]) )) + ...
+          sum(log( 1 - psyfitWeibullfunc(X(RC==0),param(1),param(2),[]) )) );
