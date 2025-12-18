@@ -1,4 +1,4 @@
-function oi = ARCimgQualityAnalysisConesMeanZ(subjNum,dataPath)
+function oi = ARCconeImgGeneration(subjNum,dataPath)
 
 % subjNum values for participants who passed screening: 1, 3, 5, 10, 16,
 % 17, 18, 20
@@ -46,9 +46,9 @@ d.spd(:,3) = energy;
 
 % ISETBIO DISPLAY STRUCT HAS DEFAULT GAMMA OF 2.2, SO NEED TO UNDO IT, THEN
 % APPLY OUR EMPIRICALLY DERIVED GAMMA FROM CALIBRATION MEASUREMENTS
-d.gamma(:,1) = (d.gamma(:,1).^(1/2.2)).^2.5;
-d.gamma(:,2) = (d.gamma(:,2).^(1/2.2)).^2.7;
-d.gamma(:,3) = (d.gamma(:,3).^(1/2.2)).^2.3;
+d.gamma(:,1) = (linspace(0,1,1024)').^2.5;
+d.gamma(:,2) = (linspace(0,1,1024)').^2.7;
+d.gamma(:,3) = (linspace(0,1,1024)').^2.3;
 
 % COLOR MATCHING FUNCTIONS
 S = [380 4 101]; % weird convention used by Brainard lab for defining wavelengths
