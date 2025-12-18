@@ -4,30 +4,42 @@ function [trialData, defocus, strehl, TimeStamp] = ARCloadFileFIAT(subjName,bloc
 % SENSOR--EVERYTHING THAT HAPPENS HERE IS SPECIFIC TO THE NAMING AND
 % ORGANIZATION CONVENTIONS
 
-strehl = [];
+% IF USING EXTENDED ANALYSIS, WHICH WILL OUTPUT THE DEFOCUS YIELDING BEST
+% STREHL AS ITS DEFINITION OF ACCOMMODATION (NOT PART OF MAIN ANALYSIS)
+strehl = []; 
+
 if ispc
     slash = '\';
 else
     slash = '/';
 end
-dataFolder = [dataPath 'data' slash 'csvFiles' slash];
 
+% FOLDER CONTAINING CSV FILES
+% dataFolder = [dataPath 'data' slash 'csvFiles' slash];
+dataFolder = fullfile(dataPath,'data','csvFiles');
+
+% GET ALL FILE NAMES IN FOLDER
 dirAll = dir(dataFolder);
-
 filenamesAll = {dirAll.name};
 
+% 'TEMPLATE' OF FILENAME WE'RE LOOKING FOR (INCLUDES BLOCK AND TRIAL
+% NUMBER)
 filenameTmp = [subjName '-Block_' num2str(blockNum) '-Trial_' num2str(trialNum)];
 
+% FIND THE INDEX OF THE FILE WE'RE LOOKING FOR IN OUR LIST OF FILE NUMBERS
 if bExtended % IF USING EXTENDED ANALYSIS
     ind = find(contains(filenamesAll,filenameTmp) & contains(filenamesAll,'FullPupil'));
 else
     ind = find(contains(filenamesAll,filenameTmp) & ~contains(filenamesAll,'FullPupil'));
 end
 
+% GRAB THE ACTUAL NAME OF OUR FILE
 filename = filenamesAll{ind};
 
-trialData = readtable([dataFolder filename]);
+% READ IN DATA
+trialData = readtable(fullfile(dataFolder,filename));
 
+% READING IN ACCOMMODATION
 if bExtended
    strehl = trialData.Defocus_MaxStrehl;
    defocus = trialData.RMS_LCACorrected_;
@@ -35,6 +47,7 @@ else
    defocus = trialData.Defocus_LCACorrected_;
 end
 
+% STORE TIMESTAMPS
 TimeStamp = trialData.TimeStamp;
 
 end

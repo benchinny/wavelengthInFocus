@@ -1,11 +1,12 @@
 %% LOADING OWENS (1980) RAW DATA
 
+dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 perfVsSFstr = 'Owens_1980_';
-folderName = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/modelParams/';
+folderName = fullfile(dataPath,'data','modelParams');
 
 dataOwens1980 = [];
 for i = 1:4
-    dataOwens1980table = readtable([folderName perfVsSFstr num2str(i)]);
+    dataOwens1980table = readtable(fullfile(folderName,[perfVsSFstr num2str(i)]));
     dataOwens1980array = table2array(dataOwens1980table);
     dataOwens1980unq = unique(dataOwens1980array,'rows');
     dataOwens1980unq(dataOwens1980unq>100) = 100;
@@ -36,7 +37,7 @@ end
 %% TRY FITTING FUNCTION TO OWENS (1980) DATA
 
 dataOwens1980mean = mean(dataOwens1980,3);
-dataOwensContSF = linspace(75/223,75,223);
+dataOwensContSF = linspace(75/182,75,182);
 
 lgsORspline = 'lgs';
 
@@ -76,9 +77,9 @@ set(gca,'YTick',[25 50 75 100]);
 
 %% BUILDING 2D FILTER
 
-dataOwensContSF = linspace(75/111,75,111);
+dataOwensContSF = linspace(75/91,75,91);
 
-dataOwensContSFfftSupport = [fliplr(-dataOwensContSF) 0 dataOwensContSF];
+dataOwensContSFfftSupport = [fliplr(-dataOwensContSF) 0 dataOwensContSF(1:end-1)];
 
 [SFX, SFY] = meshgrid(dataOwensContSFfftSupport);
 
@@ -88,4 +89,5 @@ freqFilterARC = 0.01.*a1.*exp(-0.5.*((log(SFdst) - log(m1))./s1).^2);
 
 %%
 
-save('/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkeley.edu/Shared drives/CIVO_BVAMS/data/modelParams/freqFilterARCfinch.mat','freqFilterARC');
+% UNCOMMENT TO SAVE FILTER
+% save(fullfile(dataPath,'data','modelParams','freqFilterARC.mat'),'freqFilterARC');
