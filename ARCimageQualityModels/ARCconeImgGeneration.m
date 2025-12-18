@@ -212,10 +212,6 @@ for k = 1:size(rgb00,1) % LOOP OVER COLOR CONDITIONS
             defocusFromLCA = max(abs([humanWaveDefocusS5(wave2(i),min(wave)) ...
                                       humanWaveDefocusS5(wave2(i),max(wave))]));  
             wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS5); 
-        elseif subjNum==9
-            defocusFromLCA = max(abs([humanWaveDefocusS9(wave2(i),min(wave)) ...
-                                      humanWaveDefocusS9(wave2(i),max(wave))]));  
-            wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS9); 
         elseif subjNum==10
             defocusFromLCA = max(abs([humanWaveDefocusS10(wave2(i),min(wave)) ...
                                       humanWaveDefocusS10(wave2(i),max(wave))]));  

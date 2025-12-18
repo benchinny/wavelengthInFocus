@@ -4,8 +4,6 @@ function [q1bestAll, q2bestAll, q3bestAll] = ARCanalyzeLCAall(dataPath,bPLOT)
 
 % dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 
-rng(1); % INITIALIZE SAME RANDOM SEED
-
 %% MAKE FIGURE 7E
 
 % LIST OF SUBJECTS TO ANALYZE
@@ -22,7 +20,7 @@ defocusLCAmeasuredBootsAll = [];
 
 for i = 1:length(subjNumAll)
     % ANALYZING LCA FOR EACH PARTICIPANT
-    [defocusLCAmeasured, q1best, q2best, q3best,defocusLCAmeasuredBoots,~] = ARCanalyzeLCA(subjNumAll(i),0,100,dataPath);
+    [defocusLCAmeasured, q1best, q2best, q3best,defocusLCAmeasuredBoots,~] = ARCanalyzeLCA(subjNumAll(i),0,500,dataPath);
     % STORING THREE DEFOCUS VALUES FOR RED, GREEN, AND BLUE
     defocusLCAmeasuredAll(i,:) = defocusLCAmeasured;
     % STORING PARAMETERS
@@ -75,9 +73,10 @@ if bPLOT
     end
     % axis square;
     xlim([440 875]);
-    % ylim([-1.5 2]);
+    ylim([-5 -1]);
     formatFigure('Wavelength (\lambda)','Defocus (D)');
     legend('','','','','','','','','','','','','','','','','S1','S2','S3','S4','S5','S6','S7','S8','Location','SouthEast');
 end
 
-% save(fullfile([dataPath '\data\PresavedFigureData\LCAparams.mat']),'q1bestAll','q2bestAll','q3bestAll');
+% UNCOMMENT LINE BELOW TO SAVE
+save(fullfile([dataPath '\data\PresavedFigureData\LCAparams.mat']),'q1bestAll','q2bestAll','q3bestAll');

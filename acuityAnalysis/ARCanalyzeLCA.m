@@ -7,6 +7,8 @@ function [defocusLCAmeasured, q1best, q2best, q3best,defocusLCAmeasuredBoots,Dgr
 % nBoots: number of bootstraps
 % dataPath: data path
 
+rng(1); % INITIALIZE SAME RANDOM SEED
+
 % DATA DIRECTORY
 dataDirectory = fullfile(dataPath,'data','ARC');
 

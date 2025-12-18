@@ -7,12 +7,7 @@ function thresholds = ARCnlz_contrastThresholds(subjNum,bPLOT,dataPath)
 %  dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 
 rng(1); % FIX RANDOM SEED
-if ispc % GETTING PATHS RIGHT
-    slash = '\';
-else
-    slash = '/';
-end
-foldername = [dataPath 'data' slash 'ARC' slash];
+foldername = fullfile(dataPath,'data','ARC');
 
 fitType = 'weibull';
 % CRITERION PERFORMANCE AT WHICH THRESHOLD IS DEFINED
@@ -116,7 +111,7 @@ elseif subjNum==20
 end
 
 for i = 1:length(filenames) % LOOP OVER FILENAMES
-    load([foldername filenames{i}]); % LOAD
+    load(fullfile(foldername,filenames{i})); % LOAD
     lengthRsp = length(AFCp.rspAcu); % RESPONSES
     AFCp.t3 = AFCp.t3(1:lengthRsp,:,:); % STIMULUS APPEARANCE TIME
     AFCp.rgb = AFCp.rgb(1:lengthRsp,:); % STIMULUS COLOR
