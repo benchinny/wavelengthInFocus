@@ -1,4 +1,4 @@
-function [q1bestAll, q2bestAll, q3bestAll] = ARCacuAnalysisLCAall(dataPath,bPLOT)
+function [q1bestAll, q2bestAll, q3bestAll] = ARCanalyzeLCAall(dataPath,bPLOT)
 
 % FOR ANALYZING LCA DATA OF ALL PARTICIPANTS WHO PASSED SCREENING
 
@@ -22,7 +22,7 @@ defocusLCAmeasuredBootsAll = [];
 
 for i = 1:length(subjNumAll)
     % ANALYZING LCA FOR EACH PARTICIPANT
-    [defocusLCAmeasured, q1best, q2best, q3best,defocusLCAmeasuredBoots,~] = ARCacuAnalysisLCA(subjNumAll(i),0,100,dataPath);
+    [defocusLCAmeasured, q1best, q2best, q3best,defocusLCAmeasuredBoots,~] = ARCanalyzeLCA(subjNumAll(i),0,100,dataPath);
     % STORING THREE DEFOCUS VALUES FOR RED, GREEN, AND BLUE
     defocusLCAmeasuredAll(i,:) = defocusLCAmeasured;
     % STORING PARAMETERS

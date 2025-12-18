@@ -1,6 +1,6 @@
 %% LOAD MAIN EXPERIMENT FILES
 
-function [wvInFocusCell, optDistCnd, rgbLumNormCnd] = ARCnlz_mainExpSortColor(subjNum,dataPath)
+function [wvInFocusCell, optDistCnd, rgbLumNormCnd] = ARCnlz_mainExpCalcWvInFocus(subjNum,dataPath)
 
 % subjNum values for participants who passed screening: S1, S3, S5, S10, S16, S17, S18, S20. 
 
@@ -10,10 +10,8 @@ function [wvInFocusCell, optDistCnd, rgbLumNormCnd] = ARCnlz_mainExpSortColor(su
 % The 'c' variable contains the raw traces of every coefficient 
 % on each of the 65 Zernike terms. 
 
-% LIST OF ALL POSSIBLE SUBJECTS
-subjNumAll = [1 3 5 10 16 17 18 20];
-% COMPUTE LCA PARAMETERS FOR ALL SUBJECTS
-[q1bestAll, q2bestAll, q3bestAll] = ARCacuAnalysisLCAall(dataPath,0);
+% COMPUTE LCA PARAMETERS FOR SUBJECT
+[~, q1best, q2best, q3best,~,~,~,~] = ARCanalyzeLCA(subjNum,0,100,dataPath);
 
 if subjNum==1
    blockNums = 11:16;
@@ -62,7 +60,7 @@ for i = 1:length(blockNums)
     AFCp = ARCloadFileBVAMS(subjNum+10,blockNumTmp,dataPath); % LOAD EXPERIMENT FILE
     for j = 1:length(trialNumsTmp) % LOOP OVER TRIALS
         % THIS LOADS THE WAVEFRONT DATA
-        [ZernikeTable, ~, ~] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumsTmp(j),0,dataPath);
+        [ZernikeTable, ~, ~] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumsTmp(j),dataPath);
         NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
         c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65.
         indBadPupil = table2array(ZernikeTable(:,5))==0; % GET RID OF BLINKS IN PUPIL SIZE VECTOR!
@@ -81,7 +79,7 @@ end
 % STANDARD CONVERSION FROM 4TH ZERNIKE COEFFICIENT TO EQUIVALENT DEFOCUS 
 defocusCorrectionFactor = (1e6/(4*sqrt(3)))*((PARAMS.PupilSize/2000)^2);
 % GETTING DEFOCUS AT 550NM and 875NM (875NM IS WHAT WAS MEASURED)
-defocusAt550 = humanWaveDefocusParameterizedARC(550,875,q1bestAll(subjNumAll==subjNum),q2bestAll(subjNumAll==subjNum),q3bestAll(subjNumAll==subjNum))+meanC(:,4)./defocusCorrectionFactor;
+defocusAt550 = humanWaveDefocusParameterizedARC(550,875,q1best,q2best,q3best)+meanC(:,4)./defocusCorrectionFactor;
 
 % SORTING CONDITIONS BY COLOR
 lumScaleRGB = [4.0888 9.6669 1]; % SCALE FACTOR FOR NORMALIZING RGB TO 1
@@ -126,10 +124,10 @@ for j = 1:length(optDistToCheckAll) % LOOP OVER STIM DISTANCE
         % EXCLUDE DATA FOR WHICH PARTICIPANT WAS ACCOMMODATING OUTSIDE OF
         % VISIBLE RANGE
         indGood = abs(diffFromOptDist)<2 & ...
-                  humanWaveDefocusInvertParameterizedARC(550,diffFromOptDist,q1bestAll(subjNumAll==subjNum),q2bestAll(subjNumAll==subjNum),q3bestAll(subjNumAll==subjNum))>380 & ...
-                  humanWaveDefocusInvertParameterizedARC(550,diffFromOptDist,q1bestAll(subjNumAll==subjNum),q2bestAll(subjNumAll==subjNum),q3bestAll(subjNumAll==subjNum))<780;
+                  humanWaveDefocusInvertParameterizedARC(550,diffFromOptDist,q1best,q2best,q3best)>380 & ...
+                  humanWaveDefocusInvertParameterizedARC(550,diffFromOptDist,q1best,q2best,q3best)<780;
         % CONVERT FROM DEFOCUS AT 550NM TO WAVELENGTH IN FOCUS
-        wvInFocusCell{end+1} =  humanWaveDefocusInvertParameterizedARC(550,diffFromOptDist(indGood),q1bestAll(subjNumAll==subjNum),q2bestAll(subjNumAll==subjNum),q3bestAll(subjNumAll==subjNum));
+        wvInFocusCell{end+1} =  humanWaveDefocusInvertParameterizedARC(550,diffFromOptDist(indGood),q1best,q2best,q3best);
         optDistCnd(end+1,:) = optDistToCheckAll(j);
         rgbLumNormCnd(end+1,:) = conditionsOrderedNorm(i,:);
     end
