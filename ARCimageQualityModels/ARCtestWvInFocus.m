@@ -28,7 +28,7 @@ for Sindex = 1:length(wSunq)
                     wvInFocus(k,l) = ARCwvInFocusCones(subjNum,blockNumAll(k),trialNumAll(l),[wL wM wS]);
                     display(['wLind = ' num2str(wLunq(i)) ', wMind = ' num2str(wMunq(j)) ', wSind = ' num2str(wSunq(Sindex)) ', block number ' num2str(blockNumAll(k)) ', trial number ' num2str(trialNumAll(l))]);  
                     % LOAD ZERNIKE TABLE AND TIMESTAMPS
-                    [ZernikeTable, ~, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumAll(k),trialNumAll(l),0);
+                    [ZernikeTable, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumAll(k),trialNumAll(l),0);
             
                     NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
                     c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65. 

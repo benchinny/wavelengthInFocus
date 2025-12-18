@@ -81,7 +81,7 @@ trialNumTmp = 1;
 
 AFCp = ARCloadFileBVAMS(subjNum,blockNumTmp); % LOAD BVAMS DATA
 % LOAD ZERNIKE TABLE AND TIMESTAMPS
-[ZernikeTable, ~, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumTmp,0);
+[ZernikeTable, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumTmp,0);
 % GET THE TIMESTAMP CORRESPONDING TO THE HALFWAY POINT
 t = seconds(TimeStamp)-min(seconds(TimeStamp));
 tHalfway = max(t)/2;

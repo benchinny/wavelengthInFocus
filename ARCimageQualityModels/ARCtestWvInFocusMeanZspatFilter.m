@@ -48,7 +48,7 @@ for k = 1:length(blockNumAll)
     optDistAll = [optDistAll; AFCp.meanv00./1.2255];
     for l = 1:length(trialNumAll)
         % LOAD ZERNIKE TABLE AND TIMESTAMPS
-        [ZernikeTable, ~, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumAll(k),trialNumAll(l),0);
+        [ZernikeTable, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumAll(k),trialNumAll(l),0);
 
         NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
         c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65. 

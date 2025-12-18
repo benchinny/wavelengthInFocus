@@ -9,7 +9,7 @@ if strcmp(subj,'S12-OD')
     vs = 17;
 end
 
-[ZernikeTable, ~, ~, ~, trialTagIndex] = ARCloadFileFIATallInstances(subj,vs,0);
+[ZernikeTable, ~, ~, trialTagIndex] = ARCloadFileFIATallInstances(subj,vs,0);
 NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
 c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65.
 indBadPupil = table2array(ZernikeTable(:,5))==0;

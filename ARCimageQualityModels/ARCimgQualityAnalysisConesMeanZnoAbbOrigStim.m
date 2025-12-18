@@ -118,7 +118,7 @@ for l = 1:length(blockNums) % LOOP OVER BLOCK
         trialNumTmp = trialNums(k,blockNumInd);
         
         % LOAD ZERNIKE TABLE AND TIMESTAMPS
-        [ZernikeTable, ~, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumTmp,0);
+        [ZernikeTable, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumTmp,0);
 
         NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
         c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65. 

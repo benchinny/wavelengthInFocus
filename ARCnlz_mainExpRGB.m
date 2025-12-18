@@ -89,7 +89,7 @@ for i = 1:length(blockNums)
     trialNumsTmp = trialNums{i};
     AFCp = ARCloadFileBVAMS(subjNum,blockNumTmp);
     for j = 1:length(trialNumsTmp)
-        [ZernikeTable, ~, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumsTmp(j),0);
+        [ZernikeTable, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumsTmp(j),0);
         NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
         c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65.
         indBadPupil = table2array(ZernikeTable(:,5))==0;
@@ -345,7 +345,7 @@ for i = 1:length(blockNums)
     trialNumsTmp = trialNums{i};
     AFCp = ARCloadFileBVAMS(subjNum,blockNumTmp);
     for j = 1:length(trialNumsTmp)
-        [ZernikeTable, ~, ~, ~] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumsTmp(j),0);
+        [ZernikeTable, ~, ~] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumsTmp(j),0);
         NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
         c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65.
         indBadPupil = table2array(ZernikeTable(:,5))==0;
@@ -381,7 +381,7 @@ ylabel('Raw refractive power (D)');
 
 %% LOAD RECORDINGS DURING ACUITY TASK
 
-[ZernikeTable, ~, ~, ~] = ARCloadFileFIATallInstances('S12-OD',10,0);
+[ZernikeTable, ~, ~] = ARCloadFileFIATallInstances('S12-OD',10,0);
 NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
 c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65.
 indBadPupil = table2array(ZernikeTable(:,5))==0;

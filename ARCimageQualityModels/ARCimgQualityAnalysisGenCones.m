@@ -55,7 +55,7 @@ end
 trialNumTmp = 1;
 
 % LOAD ZERNIKE TABLE AND TIMESTAMPS
-[ZernikeTable, ~, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumTmp,0);
+[ZernikeTable, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumTmp,0);
 % GET THE TIMESTAMP CORRESPONDING TO THE HALFWAY POINT
 t = seconds(TimeStamp)-min(seconds(TimeStamp));
 tHalfway = max(t)/2;

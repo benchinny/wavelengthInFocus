@@ -62,7 +62,7 @@ for i = 1:length(blockNums)
     AFCp = ARCloadFileBVAMS(subjNum+10,blockNumTmp,dataPath); % LOAD EXPERIMENT FILE
     for j = 1:length(trialNumsTmp) % LOOP OVER TRIALS
         % THIS LOADS THE WAVEFRONT DATA
-        [ZernikeTable, ~, ~, ~] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumsTmp(j),0,dataPath);
+        [ZernikeTable, ~, ~] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumsTmp(j),0,dataPath);
         NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
         c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65.
         indBadPupil = table2array(ZernikeTable(:,5))==0; % GET RID OF BLINKS IN PUPIL SIZE VECTOR!
