@@ -151,22 +151,7 @@ T_sensorXYZ = 683*SplineCmf(S_xyz1931,T_xyz1931,S); % interpolate and scale
 wave = S(1):S(2):S(1)+S(2)*(S(3)-1); % define wavelength vector
 
 % GET ZERNIKE COEFFICIENTS FOR PARTICIPANT
-[cAcc, ~, ~] = ARCnlz_mainExpSortColorAbb(subjNum+10,dataPath);
-
-indBad = cAcc(:,4)==0 | cAcc(:,4)<-10; % REMOVE BLINKS
-meanCacc = mean(cAcc(~indBad,:),1); % TAKE MEAN OF COEFFICIENTS
-meanC = meanCacc;
-
-dataFolder = fullfile(dataPath,'data','csvFiles','SUBJ');
-
-% GETTING PUPIL SIZE ROBUSTLY
-wvfFiles = ARCacuAnalysisWvfSubj(subjNum, dataPath);
-for i = 1:length(wvfFiles)
-    ZernikeTable = readtable(fullfile(dataFolder,wvfFiles{i}));
-    indBadPupil = table2array(ZernikeTable(:,5))==0; % GET RID OF BLINKS IN PUPIL SIZE VECTOR!
-    PARAMS = struct;
-    PARAMS.PupilSize=mean(table2array(ZernikeTable(~indBadPupil,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)    
-end
+[~, ~, ~, PupilSize, meanC] = ARCnlzLoadDefocusAbb(subjNum+10,dataPath);
 
 dprimeMetric = []; % INITIALIZING VECTOR FOR STORING D-PRIME VALUES
 defocusScaleFactor = 0.5774; % FOR 4MM PUPIL SIZE
@@ -187,10 +172,10 @@ parfor i = 1:length(defocusForStim)
     zCoeffs = [0 meanC(1:end-1)];
     wvfP = wvfCreate('calc wavelengths', wave, ...
         'measured wavelength', 875, ...
-        'zcoeffs', zCoeffs, 'measured pupil', PARAMS.PupilSize, ...
-        'name', sprintf('human-%d', PARAMS.PupilSize),'spatial samples',size(I1,2));
+        'zcoeffs', zCoeffs, 'measured pupil', PupilSize, ...
+        'name', sprintf('human-%d', PupilSize),'spatial samples',size(I1,2));
     % MAKE SURE THIS VARIABLE IS SET TO THE ACTUAL PUPIL SIZE
-    wvfP.calcpupilMM = PARAMS.PupilSize;
+    wvfP.calcpupilMM = PupilSize;
     % SET ZERNIKE COEFFICIENT ACCORDING TO STIMULUS DISTANCE
     wvfP = wvfSet(wvfP, 'zcoeff', -defocusForStim(i)*defocusScaleFactor, 'defocus');
     % SET CUSTOM LCA FUNCTION PER SUBJECT--ISETBIO WANTS IT TO BE SET
