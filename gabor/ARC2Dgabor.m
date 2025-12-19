@@ -4,8 +4,6 @@ function [gRGB,G] = ARC2Dgabor(x,y,x0,y0,frqCpd,A,ortDeg,phsDeg,sigmaX,sigmaY,rg
 %
 %   example call: [gRGB G] = ARC2Dgabor(smpPos(128,128),[],0,0,[9],[1],[-15],[0],0.187,0.187,[0.56 0 1.00],1,1,0,1);
 %
-% implementation based on Geisler_GaborEquations.pdf in /VisionNotes
-%
 % x:          x position  in visual degrees matrix
 %             []    -> 1 deg patch size, 128 smpPerDeg
 %             [n]   -> 1 deg patch size,   n smpPerDeg
@@ -43,6 +41,13 @@ function [gRGB,G] = ARC2Dgabor(x,y,x0,y0,frqCpd,A,ortDeg,phsDeg,sigmaX,sigmaY,rg
 % g:          gabor
 % G:          gabor in frequency domain 
 %             where G = fftshift(fft2(fftshift(g)))./sqrt(numel(g));
+
+% IF CROPPING CIRCLE AROUND STIMULUS
+bCircCrop = true;
+if bCircCrop
+    % RADIUS OF STIMULUS TO CROP
+    cropRadius = 0.49;
+end
 
 if ~exist('bPLOT','var') || isempty(bPLOT) bPLOT = 0; end
 if isempty(x) || isempty(y)
@@ -139,10 +144,9 @@ end
 DC = 0.5;
 % TURN CONTRAST IMAGE INTO LUMINANCE IMAGE
 gLum = g.*DC + DC;
-% CROP CIRCLE?
-bCircCrop = true;
+% IF CROPPING CIRCLE
 if bCircCrop
-    indCrop = sqrt(x.^2+y.^2) < 0.49;
+    indCrop = sqrt(x.^2+y.^2) < cropRadius;
     gLum(~indCrop) = 0;
 end
 
