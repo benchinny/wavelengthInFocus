@@ -20,6 +20,8 @@ if strcmp(modelType,'LMS')
     % WEIGHT VALUES FOR GRID SEARCH
     wLM = 0.4:0.05:1.4; % ratio of (L+M) to S
     wLprop = 0.25:(0.1/3):0.85; % ratio of L to M
+    % FOR THESE TWO SUBJECTS, IF wS = 1, THE SEARCH WILL BUMP UP AGAINST
+    % THE EDGE OF THE GRID
     if subjNum==5
         wS = 0.5;
     elseif subjNum==20

@@ -9,6 +9,7 @@ function [unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport,best
 
 % WHERE THE ACUITY DATA RESIDE
 dataDirectory = fullfile(dataPath,'data','ARC');
+% SPECIFY 95% CONFIDENCE INTERVALS
 confIntBounds = [0.025 0.975];
 
 % FILENAMES FOR DATA

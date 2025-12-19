@@ -243,6 +243,9 @@ parfor i = 1:length(defocusForStim)
     % OUTPUT!) 
     oi.optics.OTF = []; % INITIALIZE ARRAY FOR STORING OTFS
     for j = 1:size(siPSFData.psf,3) % LOOP OVER WAVELENGTHS
+        % NOTE THAT WE APPLY fftshift TO THE PSF SO THAT ITS CENTER IS
+        % IN INDEX (1,1) OF THE IMAGE (TOP LEFT). fft2 EXPECTS THE
+        % SIGNAL ORIGIN TO BE IN THIS LOCATION.        
         oi.optics.OTF.OTF(:,:,j) = fft2(fftshift(squeeze(siPSFData.psf(indNotPadded{1},indNotPadded{2},j))));
     end
     oig1 = oiCompute(oi, s1); % compute optical image of stimulus
