@@ -11,7 +11,7 @@ function [wvInFocusCell, optDistCnd, rgbLumNormCnd] = ARCnlz_mainExpCalcWvInFocu
 % on each of the 65 Zernike terms. 
 
 % COMPUTE LCA PARAMETERS FOR SUBJECT
-[~, q1best, q2best, q3best,~,~,~,~] = ARCanalyzeLCA(subjNum,0,100,dataPath);
+[~, q1best, q2best, q3best,~,~,~,~] = ARCnlzLCA(subjNum,0,100,dataPath);
 
 if subjNum==1
    blockNums = 11:16;

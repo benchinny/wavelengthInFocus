@@ -18,7 +18,7 @@ function D = humanWaveDefocusS17(waveRef,wave)
 
 % Constants for formula to compute defocus in diopters (D) as a function of
 % wavelength for human eye. Fit to data from subject S17 using
-% ARCanalyzeLCA with random seed set at 1.
+% ARCnlzLCA with random seed set at 1.
 
 q1 = 2.0000;
 q2 = 0.5025;    

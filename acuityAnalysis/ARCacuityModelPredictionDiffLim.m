@@ -118,7 +118,7 @@ dataFolder = '/Users/benjaminchin/Library/CloudStorage/GoogleDrive-bechin@berkel
 
 cAll = [];
 
-% HARD CODED MODEL PREDICTIONS FROM ARCtestWvInFocusMeanZspatFilterLMSeffectFitOnly
+% HARD CODED MODEL PREDICTIONS FROM ARCwvInFocusModelFit
 modelPrediction875nmPurpleAt2pt5all = [1.36 1.756 1.864 1.633 1.463 1.815 1.355 1.603];
 % modelPrediction875nmPurpleAt2pt5all = [1.461 1.851 1.957 1.892 1.216 1.837 1.511 1.561];
 

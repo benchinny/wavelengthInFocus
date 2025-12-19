@@ -1,6 +1,6 @@
 %% LOADING DATA
 
-function ARCtestWvInFocusMeanZspatFilterLMSeffectFitOnly(subjNum,dataPath)
+function ARCwvInFocusModelFit(subjNum,dataPath)
 
 objFunc = 'RMS'; % OBJECTIVE FUNCTION FOR FITTING
 % LM     : LUMINANCE MODEL WITH FITTED WEIGHTS
