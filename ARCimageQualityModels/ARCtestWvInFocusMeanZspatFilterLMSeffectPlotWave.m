@@ -89,6 +89,7 @@ if strcmp(modelType,'Lum') % IF LUMINANCE MODEL WITH V-LAMBDA
     nParams = 2;
 end
 
+% SPECIFY BLOCKS FOR DIFFERENT SUBJECTS
 if subjNum==10
     subjName = 'S20-OD';
     blockNumAll = 3:8;
@@ -152,6 +153,21 @@ for k = 1:length(blockNumAll) % LOOP OVER BLOCKS
     end
 end
 
+% EXCLUDE DATA FOR WHICH PARTICIPANT WAS ACCOMMODATING OUTSIDE OF
+% VISIBLE RANGE
+% DEFOCUS AT 550NM
+defocus550 = defocus875+humanWaveDefocusParameterizedARC(550,875,q1,q2,q3);
+% DEVIATION FROM STIMULUS DISTANCE AT BOTH 550NM AND 875NM
+diffFromOptDist875 = defocus875-optDistAll;
+diffFromOptDist550 = defocus550-optDistAll;
+% 'GOOD INDICES' AT WHICH SUBJECT IS ACCOMMODATING WITHIN VISIBLE RANGE
+indGood = abs(diffFromOptDist550)<2 & ...
+          humanWaveDefocusInvertParameterizedARC(875,diffFromOptDist875,q1,q2,q3)>380 & ...
+          humanWaveDefocusInvertParameterizedARC(875,diffFromOptDist875,q1,q2,q3)<780;
+defocus875 = defocus875(indGood);
+rgbAll = rgbAll(indGood,:);
+optDistAll = optDistAll(indGood);
+
 rgbUnq = unique(rgbAll,'rows'); % UNIQUE RGB VALUES
 
 % NORMALIZE RGB VALUES SO MAX LUMINANCE IS 1
@@ -174,21 +190,6 @@ conditionsOrderedNorm = [0.25 0.00 1.00; ...
                          1.00 0.50 0.50; ...
                          1.00 0.50 0.25; ...
                          1.00 1.00 1.00];
-
-% EXCLUDE DATA FOR WHICH PARTICIPANT WAS ACCOMMODATING OUTSIDE OF
-% VISIBLE RANGE
-% DEFOCUS AT 550NM
-defocus550 = defocus875+humanWaveDefocusParameterizedARC(550,875,q1,q2,q3);
-% DEVIATION FROM STIMULUS DISTANCE AT BOTH 550NM AND 875NM
-diffFromOptDist875 = defocus875-optDistAll;
-diffFromOptDist550 = defocus550-optDistAll;
-% 'GOOD INDICES' AT WHICH SUBJECT IS ACCOMMODATING WITHIN VISIBLE RANGE
-indGood = abs(diffFromOptDist550)<2 & ...
-          humanWaveDefocusInvertParameterizedARC(875,diffFromOptDist875,q1,q2,q3)>380 & ...
-          humanWaveDefocusInvertParameterizedARC(875,diffFromOptDist875,q1,q2,q3)<780;
-defocus875 = defocus875(indGood);
-rgbAll = rgbAll(indGood,:);
-optDistAll = optDistAll(indGood);
 
 % INDICES FOR SORTING CONDITIONS ACCORDING TO PLOT
 for i = 1:size(conditionsOrderedNorm,1)
