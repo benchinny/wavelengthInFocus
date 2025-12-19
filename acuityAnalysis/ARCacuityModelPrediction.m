@@ -5,25 +5,17 @@ function [dprimeMetric, dprime, dprimeCI] = ARCacuityModelPrediction(subjNum,Lum
 %% Initialize and clear
 ieInit;
 
-% Set up display struct and build Ben's stimulus
-
-if ispc
-    slash = '\';
-else
-    slash = '/';
-end
-
 % SET UP FOLDERS FOR SAVING AND LOADING MODEL PREDICTIONS FROM EXP1
-saveFolder = [dataPath 'data' slash 'acuityModeling' slash];
-folderExp1 = [dataPath 'data' slash 'PresavedFigureData' slash];
+saveFolder = fullfile(dataPath,'data','acuityModeling');
+folderExp1 = fullfile(dataPath,'data','PresavedFigureData');
 
 if strcmp(LumOrChrom,'Chrom') % IF GENERATING CHROMATIC PREDICTIONS
     % LOAD BLUE-YELLOW PREDICTIONS
-    load([folderExp1 'wvMeanAndPredDonutx2.mat'],'dfPredPurpleAll','aicAll');
+    load(fullfile(folderExp1,'wvMeanAndPredDonutx2.mat'),'dfPredPurpleAll','aicAll');
     dfPredPurpleBYAll = dfPredPurpleAll;
     aicBYall = aicAll;
     % LOAD RED-GREEN PREDICTIONS
-    load([folderExp1 'wvMeanAndPredLminusM.mat'],'dfPredPurpleAll','aicAll');
+    load(fullfile(folderExp1,'wvMeanAndPredLminusM.mat'),'dfPredPurpleAll','aicAll');
     dfPredPurpleRGAll = dfPredPurpleAll;
     aicRGall = aicAll;    
     % USE AIC TO DETERMINE BETTER CHROMATIC MODEL FOR EACH SUBJECT
@@ -36,7 +28,7 @@ if strcmp(LumOrChrom,'Chrom') % IF GENERATING CHROMATIC PREDICTIONS
     savePredName = 'acuityModelingPredictionS';
 elseif strcmp(LumOrChrom,'Lum') % IF USING LUMINANCE MODEL PREDICTIONS
     % LOAD THE LUMINANCE MODEL PREDICTIONS
-    load([folderExp1 'wvMeanAndPredLM.mat'],'dfPredPurpleAll','aicAll');
+    load(fullfile(folderExp1,'wvMeanAndPredLM.mat'),'dfPredPurpleAll','aicAll');
     modelPrediction875nmPurpleAt2pt5all = dfPredPurpleAll;
     % FOR SAVING FILE
     savePredName = 'acuityModelingPredictionLumS';
@@ -49,22 +41,25 @@ d = displayCreate('OLED-Samsung');
 d = displaySet(d, 'name', 'my display');
 d = displaySet(d,'ViewingDistance',1); % simulated screen distance
 d = displaySet(d,'dpi',378); % simulated screen distance
+% GET RID OF ALL UNNECESSARY FIELDS
+d.dixel = [];
+d.mainimage = [];
 
 bUseBVAMScal = 1; % if using BVAMS calibration data
 
 if bUseBVAMScal
-    drivePath = [dataPath 'BVAMS_calibration_files' slash 'Ben_calibration_July_6_2024' slash];
-    load([drivePath 'redPrimaryJuly0624_initialPositionFocus3_100.mat']);
+    calPath = fullfile(dataPath,'BVAMS_calibration_files','Ben_calibration_July_6_2024');
+    load(fullfile(calPath,'redPrimaryJuly0624_initialPositionFocus3_100.mat'));
     d.spd(:,1) = energy;
-    load([drivePath 'greenPrimaryJuly0624_initialPositionFocus3_100.mat']);
+    load(fullfile(calPath,'greenPrimaryJuly0624_initialPositionFocus3_100.mat'));
     d.spd(:,2) = energy;
-    load([drivePath 'bluePrimaryJuly0624_initialPositionFocus3_100.mat']);
+    load(fullfile(calPath,'bluePrimaryJuly0624_initialPositionFocus3_100.mat'));
     d.spd(:,3) = energy;
 end
-% ASSIGN MEASURED GAMMA VALUES FROM DISPLAY CALIBRATION
-d.gamma(:,1) = (d.gamma(:,1).^(1/2.2)).^2.5;
-d.gamma(:,2) = (d.gamma(:,2).^(1/2.2)).^2.7;
-d.gamma(:,3) = (d.gamma(:,3).^(1/2.2)).^2.3;
+% APPLY OUR EMPIRICALLY DERIVED GAMMA FROM CALIBRATION MEASUREMENTS
+d.gamma(:,1) = (linspace(0,1,1024)').^2.5;
+d.gamma(:,2) = (linspace(0,1,1024)').^2.7;
+d.gamma(:,3) = (linspace(0,1,1024)').^2.3;
 
 % Ben's stimulus
 rVal = 0.56;
@@ -148,12 +143,12 @@ indBad = cAcc(:,4)==0 | cAcc(:,4)<-10; % REMOVE BLINKS
 meanCacc = mean(cAcc(~indBad,:),1); % TAKE MEAN OF COEFFICIENTS
 meanC = meanCacc;
 
-dataFolder = [dataPath 'data' slash 'csvFiles' slash 'SUBJ' slash];
+dataFolder = fullfile(dataPath,'data','csvFiles','SUBJ');
 
 % GETTING PUPIL SIZE ROBUSTLY
 wvfFiles = ARCacuAnalysisWvfSubj(subjNum, dataPath);
 for i = 1:length(wvfFiles)
-    ZernikeTable = readtable([dataFolder wvfFiles{i}]);
+    ZernikeTable = readtable(fullfile(dataFolder,wvfFiles{i}));
     indBadPupil = table2array(ZernikeTable(:,5))==0; % GET RID OF BLINKS IN PUPIL SIZE VECTOR!
     PARAMS = struct;
     PARAMS.PupilSize=mean(table2array(ZernikeTable(~indBadPupil,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)    
@@ -284,7 +279,7 @@ xlabel('Wavelength in focus (nm)');
 ylabel('D-prime metric');
 set(gca,'FontSize',15);
 
-save([saveFolder savePredName num2str(subjNum)],'dprimeMetric','defocusForStim', ...
+save(fullfile(saveFolder,[savePredName num2str(subjNum)]),'dprimeMetric','defocusForStim', ...
     'modelPrediction875nmPurpleAt2pt5','dprime','dprimeCI','unqFocDst','wvInFocusForStim');
 
 end

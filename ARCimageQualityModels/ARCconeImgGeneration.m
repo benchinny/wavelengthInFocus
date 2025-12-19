@@ -6,6 +6,10 @@ function oi = ARCconeImgGeneration(subjNum,dataPath)
 %% Initialize and clear
 ieInit;
 
+% WHETHER OR NOT TO PLOT STIMULUS
+bPlotStim = false;
+bSave = false;
+
 %% Set up display struct and build Ben's stimulus
 
 % Setting up display properties
@@ -21,30 +25,21 @@ d = displaySet(d,'dpi',378);
 d.dixel = [];
 d.mainimage = [];
 
-bPlotStim = false;
-
-if ispc
-    slash = '\';
-else
-    slash = '/';
-end
-
 % PATH TO CALIBRATION DATA
-calPath = [dataPath 'BVAMS_calibration_files' slash 'Ben_calibration_July_6_2024' slash];
+calPath = fullfile(dataPath,'BVAMS_calibration_files','Ben_calibration_July_6_2024');
 % PATH TO STIMULUS SPATIAL PATTERN
-stimPath = [dataPath 'stimuli' slash];
+stimPath = fullfile(dataPath,'stimuli');
 % PATH TO SAVE
-savePath = [dataPath 'data' slash 'coneImages' slash 'S'];
+savePath = fullfile(dataPath,'data','coneImages');
 
 % LOAD BVAMS CALIBRATION DATA
-load([calPath 'redPrimaryJuly0624_initialPositionFocus3_100.mat']);
+load(fullfile(calPath,'redPrimaryJuly0624_initialPositionFocus3_100.mat'));
 d.spd(:,1) = energy;
-load([calPath 'greenPrimaryJuly0624_initialPositionFocus3_100.mat']);
+load(fullfile(calPath,'greenPrimaryJuly0624_initialPositionFocus3_100.mat'));
 d.spd(:,2) = energy;
-load([calPath 'bluePrimaryJuly0624_initialPositionFocus3_100.mat']);
+load(fullfile(calPath,'bluePrimaryJuly0624_initialPositionFocus3_100.mat'));
 d.spd(:,3) = energy;
 
-% ISETBIO DISPLAY STRUCT HAS DEFAULT GAMMA OF 2.2, SO NEED TO UNDO IT, THEN
 % APPLY OUR EMPIRICALLY DERIVED GAMMA FROM CALIBRATION MEASUREMENTS
 d.gamma(:,1) = (linspace(0,1,1024)').^2.5;
 d.gamma(:,2) = (linspace(0,1,1024)').^2.7;
@@ -127,7 +122,7 @@ for k = 1:size(rgb00,1) % LOOP OVER COLOR CONDITIONS
     gVal = rgb00(k,2);
     bVal = rgb00(k,3);
     % READ IN STIMULUS SPATIAL PATTERN
-    im = imread([stimPath '/word_image_01.png']);
+    im = imread(fullfile(stimPath,'word_image_01.png'));
     im = double(im); % CONVERT TO DOUBLE FOR INCREASED PRECISION)
     % IN THE IMAGE THE BLUE CHANNEL IS AT MAXIMUM VALUE, SO WE USE THIS
     % PATTERN AS THE 'TEMPLATE'
@@ -289,7 +284,9 @@ for k = 1:size(rgb00,1) % LOOP OVER COLOR CONDITIONS
         % NAME FOR SAVING
         fnameCone = ['subj' num2str(subjNum) 'stimulus' num2str(k) 'focusInd' num2str(i)];
         % UNCOMMENT LINE BELOW TO SAVE NEW CONE IMAGES
-        % save([savePath num2str(subjNum) '/' fnameCone '.mat'],"-fromstruct",S);
+        if bSave
+           save(fullfile(savePath,['S' num2str(subjNum)],[fnameCone '.mat']),"-fromstruct",S);
+        end
     end
 end
 
