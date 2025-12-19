@@ -1,4 +1,4 @@
-function [defocus875,rgbAll,optDistAll,PupilSize,meanC] = ARCnlzLoadDefocusAbb(subjNum,dataPath)
+function [defocus875,rgbAll,optDistAll,PupilSize,meanC,q1,q2,q3] = ARCnlzLoadDefocusAbb(subjNum,dataPath)
 
 % function for loading relevant wavefront data from a subject and
 % processing it for analysis by other functions (e.g. modeling, weight

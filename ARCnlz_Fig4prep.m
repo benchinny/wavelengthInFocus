@@ -1,0 +1,23 @@
+%% GENERATE MODEL PREDICTIONS TOGETHER WITH ACTUAL DATA
+
+dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
+subjNum = [1 3 5 10 16 17 18 20];
+wvMeanAll = []; % MEASURED WAVELENGTH IN FOCUS
+wvPredAll = []; % PREDICTED WAVELENGTH IN FOCUS
+aicAll = []; % AIC VALUES FOR MODEL EVALUATION
+dfPredPurpleAll = []; % PREDICTION FOR THE ACUITY TASK (USED FOR FIG 5)
+wLMminAll = []; % FIT RATIO OF (L+M) TO S CONE WEIGHTS
+wLpropMinAll = []; % RATIO OF L TO M CONE WEIGHTS
+pFitAll = []; % LAG AND LEAD PARAMETERS
+modelType = 'LminusM';
+
+for i = 1:length(subjNum)
+    [aic, pFit, wvMean, wvPred, dfPredPurple, wLMmin, wLpropMin] = ARCwvInFocusModelSort(subjNum(i),modelType,dataPath);
+    wvMeanAll(:,:,i) = wvMean;
+    wvPredAll(:,:,i) = wvPred;
+    aicAll(i) = aic;
+    dfPredPurpleAll(i) = dfPredPurple;
+    wLMminAll(i) = wLMmin;
+    wLpropMinAll(i) = wLpropMin;
+    pFitAll(:,i) = pFit;
+end 

@@ -5,16 +5,6 @@ coneWeightsFolder = fullfile(dataPath,'data','coneWeightsErrorSpatFilter','color
 
 objFunc = 'RMS'; % OBJECTIVE FUNCTION FOR EVALUATING FIT
 
-% LIST OF ALL SUBJECTS
-subjNumListAll = [1 3 5 10 16 17 18 20];
-% FIND subjNum POSITION IN ARRAY
-indLCA = find(subjNumListAll==subjNum);
-% LOAD PRE-SAVED LCA PARAMETERS
-load(fullfile(dataPath,'data','PresavedFigureData','LCAparams.mat'),'q1bestAll','q2bestAll','q3bestAll');
-q1 = q1bestAll(indLCA);
-q2 = q2bestAll(indLCA);
-q3 = q3bestAll(indLCA);
-
 % LOAD CONE WEIGHTS
 if strcmp(modelType,'LMS') % IF BLUE-YELLOW OPPONENT MODEL
     % THIS VALUE WAS GOOD TO SEARCH OVER A WIDE RANGE OF (W_L+W_M)/W_S
@@ -89,84 +79,8 @@ if strcmp(modelType,'Lum') % IF LUMINANCE MODEL WITH V-LAMBDA
     nParams = 2;
 end
 
-% SPECIFY BLOCKS FOR DIFFERENT SUBJECTS
-if subjNum==10
-    subjName = 'S20-OD';
-    blockNumAll = 3:8;
-elseif subjNum==3
-    subjName = 'S13-OD';
-    blockNumAll = 12:17;
-elseif subjNum==1
-    subjName = 'S11-OD';
-    blockNumAll = 11:16;
-elseif subjNum==5
-    subjName = 'S15-OD';
-    blockNumAll = 3:8;
-elseif subjNum==9
-    subjName = 'S19-OD';
-    blockNumAll = 2:7;
-elseif subjNum==16
-    subjName = 'S26-OD';
-    blockNumAll = 2:7;
-elseif subjNum==17
-    subjName = 'S27-OD';
-    blockNumAll = 2:7;
-elseif subjNum==18
-    subjName = 'S28-OD';
-    blockNumAll = 2:7;
-elseif subjNum==20
-    subjName = 'S30-OD';
-    blockNumAll = 2:7;
-end
-
-trialNumAll = 1:36; % SAME NUMBER OF TRIALS FOR ALL SUBJECTS
-
-defocus875 = []; % DEFOCUS ABERRATION AT 875NM
-optDistAll = []; % OPTICAL DISTANCES
-rgbAll = []; % COLOR CONDITIONS
-
-% LOADING EMPIRCAL DATA TO PLOT WITH PREDICTIONS
-for k = 1:length(blockNumAll) % LOOP OVER BLOCKS
-    % LOAD EXPERIMENT DATA
-    AFCp = ARCloadFileBVAMS(subjNum+10,blockNumAll(k),dataPath);
-    % 1.2255 IS THE SCALE FACTOR FOR CONVERTING BVAMS POWER CHANGE TO
-    % DEFOCUS AT EYE
-    optDistAll = [optDistAll; AFCp.meanv00./1.2255];
-    rgbAll = [rgbAll; AFCp.rgb100]; % CONCATENATE COLOR CONDITIONS
-    for l = 1:length(trialNumAll) % LOOP OVER TRIALS
-        % LOAD ZERNIKE TABLE AND TIMESTAMPS
-        [ZernikeTable, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumAll(k),trialNumAll(l),dataPath);
-
-        NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
-        c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65. 
-        PARAMS = struct;
-        indBadPupil = table2array(ZernikeTable(:,5))==0; % FIND BLINKS
-        PARAMS.PupilSize=mean(table2array(ZernikeTable(~indBadPupil,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)
-        c(:,3:NumCoeffs)=table2array(ZernikeTable(:,11:width(ZernikeTable)));
-        indBad = c(:,4)==0; % FIND BLINKS IN DEFOCUS VECTOR
-        c(indBad,4) = mean(c(~indBad,4)); % REPLACE BLINK TIME POINTS
-        meanC = mean(c(1:end,:),1); % TAKE MEAN OF COEFFICIENTS
-        % STANDARD CORRECTION FACTOR FOR GOING FROM COEFFICIENT TO
-        % EQUIVALENT DEFOCUS
-        defocusCorrectionFactor = (1e6/(4*sqrt(3)))*((PARAMS.PupilSize/2000)^2);
-        defocus875(end+1,:) = meanC(4)./defocusCorrectionFactor;
-    end
-end
-
-% EXCLUDE DATA FOR WHICH PARTICIPANT WAS ACCOMMODATING OUTSIDE OF
-% VISIBLE RANGE
-% DEFOCUS AT 550NM
-defocus550 = defocus875+humanWaveDefocusParameterizedARC(550,875,q1,q2,q3);
-% DEVIATION FROM STIMULUS DISTANCE AT BOTH 550NM AND 875NM
-diffFromOptDist875 = defocus875-optDistAll;
-diffFromOptDist550 = defocus550-optDistAll;
-% 'GOOD INDICES' AT WHICH SUBJECT IS ACCOMMODATING WITHIN VISIBLE RANGE
-indGood = abs(diffFromOptDist550)<2 & ...
-          humanWaveDefocusInvertParameterizedARC(875,diffFromOptDist875,q1,q2,q3)>380 & ...
-          humanWaveDefocusInvertParameterizedARC(875,diffFromOptDist875,q1,q2,q3)<780;
-defocus875 = defocus875(indGood);
-rgbAll = rgbAll(indGood,:);
-optDistAll = optDistAll(indGood);
+% LOAD DEFOCUS VALUES, COLOR CONDITIONS, AND OPTICAL DISTANCES
+[defocus875,rgbAll,optDistAll,~,~,q1,q2,q3] = ARCnlzLoadDefocusAbb(subjNum,dataPath);
 
 rgbUnq = unique(rgbAll,'rows'); % UNIQUE RGB VALUES
 
