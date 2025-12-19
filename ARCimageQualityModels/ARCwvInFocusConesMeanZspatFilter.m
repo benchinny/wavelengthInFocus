@@ -17,15 +17,24 @@ coneImgOrig = sum(absorptionsOrig,3);
 % LOAD SPATIAL FILTER
 load(fullfile(dataPath,'data','modelParams','freqFilterARC.mat'));
 
-% MASK FOR SIMULATING 'HOLE' IN S-CONE IMAGE
+% MASK FOR SIMULATING 'HOLE' IN S-CONE IMAGE. START OUT WITH SUPPORT.
 [SconeMaskSupportXX, SconeMaskSupportYY] = meshgrid(-90:91,-90:91);
+% START WITH A MASK WITH NO HOLE
 SconeMask = ones(size(SconeMaskSupportXX));
+% MAKE HOLE IN CENTER. THIS IS A HARD EDGE.
 SconeMask(sqrt(SconeMaskSupportXX.^2 + SconeMaskSupportYY.^2)<22.5) = 0;
+% NOW TO MAKE THE EDGE SOFT. WE ARE GOING TO CONVOLVE A BLUR KERNEL WITH
+% THE ENTIRE MASK. START WITH THE SUPPORT OVER THE KERNEL.
 [softEdgeSupportXX, softEdgeKernSupportYY] = meshgrid(linspace(-1,1,9));
+% USE A 2D GAUSSIAN TO MAKE THE KERNEL
 softEdgeKernCol = mvnpdf([softEdgeSupportXX(:) softEdgeKernSupportYY(:)],[0 0],[0.3^2 0; 0 0.3^2]); 
 softEdgeKern = reshape(softEdgeKernCol,size(softEdgeSupportXX))./sum(softEdgeKernCol(:));
+% CONVOLVE
 SconeMaskSoft = conv2(SconeMask,softEdgeKern);
+% REMOVE PADDING AT EDGES FROM THE RESULT OF THE CONVOLUTION
 SconeMask = SconeMaskSoft(5:186,5:186);
+% THE CONVOLUTION WILL CAUSE SOME VALUES TO BE BETWEEN 0 AND 1 AT THE
+% EDGES. WE WANT THESE VALUES TO BE EXACTLY 1.
 SconeMask(:,1:5) = 1;
 SconeMask(:,178:182) = 1;
 SconeMask(1:5,:) = 1;

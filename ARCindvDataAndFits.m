@@ -2,17 +2,11 @@
 
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 
-if ispc
-    slash = '\';
-else
-    slash = '/';
-end
-
 % PRE-SAVED DATA FILES FOR VARIOUS MODELS:
 % wvMeanAndPredDonutx2: BLUE-YELLOW
 % wvMeanAndPredLminusM: RED-GREEN
 % wvMeanAndPredLM: LUMINANCE
-load([dataPath 'data' slash 'PresavedFigureData' slash 'wvMeanAndPredSfree.mat']);
+load(fullfile(dataPath,'data','PresavedFigureData','wvMeanAndPredDonutx2.mat'));
 
 wvPredAllSubj = wvPredAll; % PREDICTIONS
 wvMeanAllSubj = wvMeanAll; % FITS

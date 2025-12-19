@@ -8,9 +8,6 @@ function D = humanWaveDefocusParameterizedARC(waveRef,wave,q1,q2,q3)
 %    This is a function fit to the data from Bedford and Wyszecki and Wald
 %    on human chromatic aberration.
 %
-%    This function contains examples of usage inline. To access, type 'edit
-%    humanWaveDefocus.m' into the Command Window.
-%
 % Inputs:
 %    wave - Vector. Wavelength vector, in nanometers.
 %

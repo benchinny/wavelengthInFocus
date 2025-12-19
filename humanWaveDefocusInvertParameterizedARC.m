@@ -8,7 +8,6 @@ function wave = humanWaveDefocusInvertParameterizedARC(waveRef,D,q1,q2,q3)
 %    This is an inversion of a function fit to the data from 
 %    Bedford and Wyszecki and Wald on human chromatic aberration.
 %
-%
 % Inputs:
 %    D    - Vector. Defocus vector.
 %
