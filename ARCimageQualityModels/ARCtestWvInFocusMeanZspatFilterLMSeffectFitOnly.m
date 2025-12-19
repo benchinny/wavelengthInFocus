@@ -1,8 +1,12 @@
 %% LOADING DATA
 
-function ARCtestWvInFocusMeanZspatFilterLMSeffectFitOnly(subjNum,wS,dataPath)
+function ARCtestWvInFocusMeanZspatFilterLMSeffectFitOnly(subjNum,dataPath)
 
 objFunc = 'RMS'; % OBJECTIVE FUNCTION FOR FITTING
+% LM     : LUMINANCE MODEL WITH FITTED WEIGHTS
+% LMS    : BLUE-YELLOW MODEL WITH FITTED WEIGHTS
+% LminusM: RED-GREEN MODEL WITH FITTED WEIGHTS
+LMorLMSorLminusM = 'LMS'; 
 
 % LIST OF ALL SUBJECTS
 subjNumListAll = [1 3 5 10 16 17 18 20];
@@ -91,23 +95,48 @@ optDistAll = optDistAll(indGood);
 
 %% SEARCH INDIVIDUAL CONE WEIGHTS
 
-% WEIGHT VALUES FOR GRID SEARCH
-wLM = 0.4:0.05:1.4; % ratio of (L+M) to S
-wLprop = 0.25:(0.1/3):0.85; % ratio of L to M
-
-if ispc
-    slash = '\';
+if strcmp(LMorLMSorLminusM,'LMS')
+    % WEIGHT VALUES FOR GRID SEARCH
+    wLM = 0.4:0.05:1.4; % ratio of (L+M) to S
+    wLprop = 0.25:(0.1/3):0.85; % ratio of L to M
+    if subjNum==5
+        wS = 0.5;
+    elseif subjNum==20
+        wS = 0.25;
+    else
+        wS = 1;
+    end
+    modelResultsFilename = 'wvInFocusModelResultsDonutx2';
+elseif strcmp(LMorLMSorLminusM,'LM')
+    % WEIGHT VALUES FOR GRID SEARCH
+    wLM = [0.5 1]; % ratio of (L+M) to S
+    wLprop = 0.25:(0.1/3):0.85; % ratio of L to M    
+    wS = 0;
+    modelResultsFilename = 'wvInFocusModelResults';
+elseif strcmp(LMorLMSorLminusM,'LminusM')
+    % WEIGHT VALUES FOR GRID SEARCH
+    wLM = [0.5 1]; % ratio of (L+M) to S
+    wLprop = 0.25:(0.1/3):0.85; % ratio of L to M    
+    wS = 0;
+    modelResultsFilename = 'wvInFocusModelResultsLminusM';
 else
-    slash = '/';
+    error('Specify valid model type!');
 end
-coneWeightsFolder = [dataPath 'data' slash 'coneWeightsErrorSpatFilter' slash 'colorMechPredictions' slash];
+
+coneWeightsFolder = fullfile(dataPath,'data','coneWeightsErrorSpatFilter','colorMechPredictions');
 
 RMSEall = zeros([length(wLM) length(wLprop)]); % INITIALIZE ERROR SURFACE
 
 for l = 1:length(wLM) % LOOP OVER RATIO OF L+M TO S
     parfor k = 1:length(wLprop) % LOOP OVER L TO M RATIO
-        wL = wLM(l)*wLprop(k);
-        wM = wLM(l)-wL;
+        % CONVERTING TO WEIGHTS ON L AND M
+        if strcmp(LMorLMSorLminusM,'LMS') || strcmp(LMorLMSorLminusM,'LM')
+            wL = wLM(l)*wLprop(k);
+            wM = wLM(l)-wL;
+        elseif strcmp(LMorLMSorLminusM,'LminusM')
+            wL = wLM(l)*wLprop(k);
+            wM = -(wLM(l)-wL); 
+        end
         % GENERATE PREDICTIONS OF DEFOCUS USING HELPER FUNCTION
         [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZspatFilterPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL wM wS],dataPath);
         % TAG EVERY TRIAL BY OPTICAL DISTANCE FOR FITTING LAGS AND LEADS
@@ -120,6 +149,6 @@ for l = 1:length(wLM) % LOOP OVER RATIO OF L+M TO S
     RMSEall(l,:) = RMSE;
 end
 
-save([coneWeightsFolder 'S' num2str(subjNum) 'wvInFocusModelResultsDonutx2' num2str(round(-wS*10)) '.mat'],'RMSEall','wS','wLM','wLprop');
+save([coneWeightsFolder 'S' num2str(subjNum) modelResultsFilename num2str(round(-wS*10)) '.mat'],'RMSEall','wS','wLM','wLprop');
 
 end
