@@ -1,94 +1,92 @@
 %%
 function [unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport,bestDist,bestDistCI,PCboots] = ARCacuityAnalyzeDataOnly(subjNum,bPLOT,dataPath)
 
-if ispc
-    slash = '\';
-else
-    slash = '/';
-end
-dataDirectory = [dataPath 'data' slash 'ARC' slash];
+% analyzes data from acuity experiment
+%
+% subjNum: subject ID. Valid numbers: 1, 3, 5, 10, 16, 17, 18, 20.
+% bPLOT  : plot or not
+% dataPath: path to data on local machine
 
+% WHERE THE ACUITY DATA RESIDE
+dataDirectory = fullfile(dataPath,'data','ARC');
+confIntBounds = [0.025 0.975];
+
+% FILENAMES FOR DATA
 if subjNum==3
     filenames = {
                   % % S3 PURPLE (ACTUAL)
-                  [dataDirectory 'S1013V19_AFC_RightACL0_2409201559.mat'] ...
-                  [dataDirectory 'S1013V19_AFC_RightACL0_2409201548.mat'] ...
-                  [dataDirectory 'S1013V19_AFC_RightACL0_2409201542.mat'] ...
-                  [dataDirectory 'S1013V19_AFC_RightACL0_2409201529.mat'] ...   
+                  'S1013V19_AFC_RightACL0_2409201559.mat' ...
+                  'S1013V19_AFC_RightACL0_2409201548.mat' ...
+                  'S1013V19_AFC_RightACL0_2409201542.mat' ...
+                  'S1013V19_AFC_RightACL0_2409201529.mat' ...   
                   };
 elseif subjNum==1
     filenames = {
                   % % S1 PURPLE (ACTUAL)
-                  [dataDirectory 'S1011V18_AFC_RightACL0_2411050943.mat'] ...
-                  [dataDirectory 'S1011V18_AFC_RightACL0_2411050928.mat'] ...
+                  'S1011V18_AFC_RightACL0_2411050943.mat' ...
+                  'S1011V18_AFC_RightACL0_2411050928.mat' ...
                   };
-elseif subjNum==9
-    filenames = {
-                  % S10 PURPLE
-                  [dataDirectory 'S1019V9_AFC_RightACL0_2410041308.mat'] ...
-                  [dataDirectory 'S1019V9_AFC_RightACL0_2410041301.mat'] ...
-                  [dataDirectory 'S1019V9_AFC_RightACL0_2410041254.mat'] ...
-                  [dataDirectory 'S1019V9_AFC_RightACL0_2410041248.mat'] ...
-                  };    
 elseif subjNum==10
     filenames = {
                   % S10 PURPLE
-                  [dataDirectory 'S1020V10_AFC_RightACL0_2409111552.mat'] ...
-                  [dataDirectory 'S1020V10_AFC_RightACL0_2409111600.mat'] ...
-                  [dataDirectory 'S1020V10_AFC_RightACL0_2409111607.mat'] ...
-                  [dataDirectory 'S1020V10_AFC_RightACL0_2409111615.mat'] ...
+                  'S1020V10_AFC_RightACL0_2409111552.mat' ...
+                  'S1020V10_AFC_RightACL0_2409111600.mat' ...
+                  'S1020V10_AFC_RightACL0_2409111607.mat' ...
+                  'S1020V10_AFC_RightACL0_2409111615.mat' ...
                   };
 elseif subjNum==5
     filenames = {
                   % S10 PURPLE
-                  [dataDirectory 'S1015V10_AFC_RightACL0_2410031638.mat'] ...
-                  [dataDirectory 'S1015V10_AFC_RightACL0_2410031631.mat'] ...
-                  [dataDirectory 'S1015V10_AFC_RightACL0_2410031615.mat'] ...
-                  [dataDirectory 'S1015V10_AFC_RightACL0_2410031608.mat'] ...
+                  'S1015V10_AFC_RightACL0_2410031638.mat' ...
+                  'S1015V10_AFC_RightACL0_2410031631.mat' ...
+                  'S1015V10_AFC_RightACL0_2410031615.mat' ...
+                  'S1015V10_AFC_RightACL0_2410031608.mat' ...
                   };    
 elseif subjNum==16
     filenames = {
                   % S16 PURPLE
-                  [dataDirectory 'S1026V8_AFC_RightACL0_2409231008.mat'] ...
-                  [dataDirectory 'S1026V8_AFC_RightACL0_2409231000.mat'] ...
-                  [dataDirectory 'S1026V8_AFC_RightACL0_2409230953.mat'] ...
-                  [dataDirectory 'S1026V8_AFC_RightACL0_2409230946.mat'] ...    
+                  'S1026V8_AFC_RightACL0_2409231008.mat' ...
+                  'S1026V8_AFC_RightACL0_2409231000.mat' ...
+                  'S1026V8_AFC_RightACL0_2409230953.mat' ...
+                  'S1026V8_AFC_RightACL0_2409230946.mat' ...    
                   };    
 elseif subjNum==17
     filenames = {
                   % S17 PURPLE
-                  [dataDirectory 'S1027V9_AFC_RightACL0_2410081135.mat'] ...
-                  [dataDirectory 'S1027V9_AFC_RightACL0_2410081141.mat'] ...
-                  [dataDirectory 'S1027V9_AFC_RightACL0_2410081208.mat'] ...
-                  [dataDirectory 'S1027V9_AFC_RightACL0_2410081214.mat'] ...    
+                  'S1027V9_AFC_RightACL0_2410081135.mat' ...
+                  'S1027V9_AFC_RightACL0_2410081141.mat' ...
+                  'S1027V9_AFC_RightACL0_2410081208.mat' ...
+                  'S1027V9_AFC_RightACL0_2410081214.mat' ...    
                   }; 
 elseif subjNum==18
     filenames = {
                   % S17 PURPLE
-                  [dataDirectory 'S1028V9_AFC_RightACL0_2411051411.mat'] ...
-                  [dataDirectory 'S1028V9_AFC_RightACL0_2411051420.mat'] ...
-                  [dataDirectory 'S1028V9_AFC_RightACL0_2411151223.mat'] ...
-                  [dataDirectory 'S1028V9_AFC_RightACL0_2411151217.mat'] ...    
+                  'S1028V9_AFC_RightACL0_2411051411.mat' ...
+                  'S1028V9_AFC_RightACL0_2411051420.mat' ...
+                  'S1028V9_AFC_RightACL0_2411151223.mat' ...
+                  'S1028V9_AFC_RightACL0_2411151217.mat' ...    
                   }; 
 elseif subjNum==20
     filenames = {
                   % S17 PURPLE
-                  [dataDirectory 'S1030V8_AFC_RightACL0_2411151125.mat'] ...
-                  [dataDirectory 'S1030V8_AFC_RightACL0_2411151134.mat'] ...
-                  [dataDirectory 'S1030V8_AFC_RightACL0_2411151143.mat'] ...
-                  [dataDirectory 'S1030V8_AFC_RightACL0_2411151152.mat'] ...    
+                  'S1030V8_AFC_RightACL0_2411151125.mat' ...
+                  'S1030V8_AFC_RightACL0_2411151134.mat' ...
+                  'S1030V8_AFC_RightACL0_2411151143.mat' ...
+                  'S1030V8_AFC_RightACL0_2411151152.mat' ...    
                   };         
 end
 
-rgb = [];
-meanFocstmOptDst = [];
-focStmOptDstIncr = [];
-rspAcu = [];
-stimOrientation = [];
+rgb = []; % COLOR CONDITIONS
+meanFocstmOptDst = []; % DISTANCE OF ACCOMMODATIVE STIMULUS
+focStmOptDstIncr = []; % DISTANCE OF ACUITY STIMULUS RELATIVE TO ACCOMMODATIVE STIMULUS
+rspAcu = []; % RESPONSES: 1 FOR -15 DEG, 2 FOR 15 DEG
+stimOrientation = []; % STIMULUS ORIENTATION: 1 FOR -15 DEG, 2 FOR 15 DEG
 
 % SORTING DATA
 for i = 1:length(filenames)
-    load(filenames{i});
+    % LOAD DATA
+    load(fullfile(dataDirectory,filenames{i}));
+    % STACK RELEVANT VARIABLES FROM EACH FILE
     rgb = [rgb; AFCp.rgb];
     meanFocstmOptDst = [meanFocstmOptDst; AFCp.meanFocstmOptDst];
     focStmOptDstIncr = [focStmOptDstIncr; AFCp.focStmOptDstIncr];
@@ -96,53 +94,71 @@ for i = 1:length(filenames)
     stimOrientation = [stimOrientation; AFCp.stimOrientation];
 end
 
-if size(unique(rgb,'rows'),1)>1
-   error('ARCacuAnalysisPilot: code does not handle multiple colors yet!');
-else
-   rgbUnq = unique(rgb,'rows');
-end
+% UNIQUE COLOR CONDITIONS
+rgbUnq = unique(rgb,'rows');
 
-unqFocDst = unique(focStmOptDstIncr);
+unqFocDst = unique(focStmOptDstIncr); % UNIQUE DISTANCES
+% SCALE FACTOR FOR GOING FROM OPTOTUNE POWER CHANGE TO DEFOCUS AT EYE
 scaleFac = 0.816;
 
-for i = 1:length(unqFocDst)
-%    PC(i) = sum(rspAcu(focStmOptDstIncr==unqFocDst(i) & meanFocstmOptDst==meanFocInt)==stimOrientation(focStmOptDstIncr==unqFocDst(i) & meanFocstmOptDst==meanFocInt))./sum(focStmOptDstIncr==unqFocDst(i) & meanFocstmOptDst==meanFocInt); 
-     PC(i) = sum(rspAcu(focStmOptDstIncr==unqFocDst(i))==stimOrientation(focStmOptDstIncr==unqFocDst(i)))./sum(focStmOptDstIncr==unqFocDst(i));
-     PCci(:,i) = binoinv([0.025 0.975],sum(focStmOptDstIncr==unqFocDst(i)),PC(i))./sum(focStmOptDstIncr==unqFocDst(i));
+for i = 1:length(unqFocDst) % LOOP OVER UNIQUE DISTANCE INCREMENTS OF ACUITY STIMULUS
+     ind = focStmOptDstIncr==unqFocDst(i);
+     % COMPUTE PROPORTION CORRECT
+     PC(i) = sum(rspAcu(ind)==stimOrientation(ind))./sum(ind);
+     % COMPUTE 95% CONFIDENCE INTERVALS
+     PCci(:,i) = binoinv(confIntBounds,sum(ind),PC(i))./sum(ind);
 end
 
 % FITTING SPLINE
 PCfitSupport = min(unqFocDst.*scaleFac):0.01:max(unqFocDst.*scaleFac);
 PCfit = spline(unqFocDst.*scaleFac,PC,PCfitSupport);
+% EXTRACT BEST DISTANCE
 [~,indBest] = max(PCfit);
 bestDist = PCfitSupport(indBest);
 
-nBoots = 1000;
+% BOOTSTRAPPING
+nBoots = 1000; % HOW MANY BOOTSTRAPS
 if nBoots>0
     for j = 1:nBoots % BOOTSTRAPPING
         for i = 1:length(unqFocDst)
             indAnalysis = focStmOptDstIncr==unqFocDst(i);
+            % RESAMPLE INDICES (USING FIND TO CONVERT FROM BOOLEAN TO
+            % NUMBER)
             indBoots = randsample(find(indAnalysis),sum(indAnalysis),'true');
+            % COMPUTING PROPORTION CORRECT
             PCboots(i,j) = sum(rspAcu(indBoots)==stimOrientation(indBoots))./length(indBoots);
         end
+        % FITTING SPLINE
         PCfitSupportBoots = min(unqFocDst.*scaleFac):0.01:max(unqFocDst.*scaleFac);
         PCfitBoots = spline(unqFocDst.*scaleFac,PCboots(:,j),PCfitSupportBoots);
+        % FIND DISTANCE OF BEST ACUITY FOR EACH BOOTSTRAP
         [~,indBoots] = max(PCfitBoots);
         defocusMeasuredBoots(j) = PCfitSupportBoots(indBoots);
     end
 end
-bestDistCI = quantile(defocusMeasuredBoots,[0.025 0.975]);
+% 95% CONFIDENCE INTERVALS ON BEST DISTANCE
+bestDistCI = quantile(defocusMeasuredBoots,confIntBounds);
 
-% CONVERTING TO D-PRIME
-epsilonPC = 0.99;
-PCfitDP = PCfit;
+% FIRST, CONVERT PROPORTION CORRECT FITS TO D-PRIME
+epsilonPC = 0.99; % ARTIFICIAL CAP TO PREVENT INFINITE D-PRIMES
+PCfitDP = PCfit; % RENAME TO MAKE IT CLEAR WE'RE FITTING D-PRIME
+% CAP PERFORMANCE TO PREVENT INFINITE D-PRIMES
 PCfitDP(PCfitDP>epsilonPC) = epsilonPC;
+% EQUATION FOR D-PRIME
 dprimeFitAll = 2*norminv(PCfitDP);
+
+% NOW, CALCULATE D-PRIME FOR ACTUAL DATA POINTS
 PCforDP = PC;
+% CAP PERFORMANCE TO PREVENT INFINITE D-PRIMES
 PCforDP(PCforDP>epsilonPC) = epsilonPC;
+% APPLY FORMULA FOR D-PRIME
 dprime = 2*norminv(PCforDP);
+
+% NOW, CALCULATE D-PRIME FOR CONFIDENCE INTERVALS
 PCciForDP = PCci;
+% CAP PERFORMANCE TO PREVENT INFINITE D-PRIMES
 PCciForDP(PCciForDP>epsilonPC) = epsilonPC;
+% APPLY FORMULA FOR D-PRIME
 dprimeCI = 2*norminv(PCciForDP);
 
 if bPLOT
