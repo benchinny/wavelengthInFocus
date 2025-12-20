@@ -51,69 +51,9 @@ load T_xyz1931; % load color matching functions
 % DEFINE WAVELENGTH VECTOR: 380 TO 780 WITH 4NM INCREMENTS
 wave = S(1):S(2):S(1)+S(2)*(S(3)-1);
 
-% FILE NUMBERS FOR DIFFERENT SUBJECTS (CORRESPONDING TO EACH BLOCK)
-if subjNum==3
-   blockNums = 12:17;
-elseif subjNum==10
-   blockNums = 3:8;
-elseif subjNum==1
-   blockNums = 11:16;
-elseif subjNum==5
-   blockNums = 3:8;
-elseif subjNum==9
-   blockNums = 2:7;
-elseif subjNum==16
-   blockNums = 2:7;
-elseif subjNum==17
-   blockNums = 2:7;
-elseif subjNum==18
-   blockNums = 2:7;
-elseif subjNum==20
-   blockNums = 2:7;
-end
+% LOAD COLOR CONDITIONS, PUPIL SIZE, AND MEAN ABERRATIONS
+[~,rgbAll,~,PupilSize,meanC,~,~,~] = ARCnlzLoadDefocusAbb(subjNum,dataPath);
 
-% ALL SUBJECTS HAD THE SAME NUMBER OF TRIALS
-trialNums = [[1:36]' [1:36]' [1:36]' [1:36]' [1:36]' [1:36]'];
-% FOR LOADING DATA LATER
-subjName = ['S' num2str(subjNum+10) '-OD'];
-
-%%
-
-cAll = []; % INITIALIZE MATRIX FOR STORING COEFFICIENTS
-optDistAll = []; % FOR CONCATENATING OPTICAL DISTANCES PER TRIAL
-rgbAll = []; % FOR CONCATENATING RGB VALUES PER TRIAL
-
-% GET THE AVERAGE HIGHER-ORDER ABERRATIONS FOR THIS SUBJECT ACROSS ALL
-% TRIALS
-for l = 1:length(blockNums) % LOOP OVER BLOCK
-    blockNumInd = l; % HELPS WITH READABILITY
-    blockNumTmp = blockNums(blockNumInd); % GRAB BLOCK
-    AFCp = ARCloadFileBVAMS(subjNum+10,blockNumTmp,dataPath); % LOAD BVAMS DATA
-    rgbAll = [rgbAll; AFCp.rgb100]; % STACK COLOR CONDITIONS
-    for k = 1:36 % LOOP OVER TRIAL
-        trialNumTmp = trialNums(k,blockNumInd); % GRAB TRIAL NUMBERS
-        
-        % LOAD ZERNIKE TABLE AND TIMESTAMPS
-        [ZernikeTable, ~, TimeStamp] = ARCloadFileFIAT(subjName,blockNumTmp,trialNumTmp,dataPath);
-
-        NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
-        c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65. 
-        PARAMS = struct;
-        indBadPupil = table2array(ZernikeTable(:,5))==0; % IDENTIFY BLINKS
-        % STORE PUPIL SIZE (SHOULD BE 4MM FOR EVERYTHING)
-        PARAMS.PupilSize=mean(table2array(ZernikeTable(~indBadPupil,5))); 
-        % GRAB ALL ZERNIKE COEFFICIENTS
-        c(:,3:NumCoeffs)=table2array(ZernikeTable(:,11:width(ZernikeTable)));
-        % STACK OPTICAL DISTANCES. DIVIDE BY 1.2255 TO ACCOUNT FOR BVAMS
-        % CALIBRATION RELATING OPTOTUNE DEFOCUS CHANGE TO DEFOCUS AT EYE
-        optDistTmp = (AFCp.meanv00(k)./1.2255).*ones([size(c,1) 1]);
-        optDistAll = [optDistAll; optDistTmp];
-        cAll = [cAll; c]; % STORE ALL COEFFICIENTS
-    end
-end
-
-indBad = cAll(:,4)==0; % LOOK FOR BLINKS IN DEFOCUS ABERRATION VECTOR
-meanC = mean(cAll(~indBad,:),1); % TAKE MEAN OF COEFFICIENTS
 rgb00 = unique(rgbAll,'rows'); % GET UNIQUE COLOR CONDITIONS
 
 for k = 1:size(rgb00,1) % LOOP OVER COLOR CONDITIONS
@@ -170,7 +110,7 @@ for k = 1:size(rgb00,1) % LOOP OVER COLOR CONDITIONS
     % FOCUS'. THIS IS A DISTINCT VARIABLE FROM 'wave', WHICH IS THE
     % WAVELENGTHS OVER WHICH THE STIMULUS IS DEFINED. I HAVE MADE THEM THE
     % SAME, BUT THEY DON'T NECESSARILY HAVE TO BE (E.G. IF YOU JUST WANT TO
-    % LOOK WHAT HAPPENS WHEN A SPECIFIC WAVELENGTH IS IN FOCUS)
+    % LOOK AT WHAT HAPPENS WHEN A SPECIFIC WAVELENGTH IS IN FOCUS)
     wave2 = 380:4:780;
 
     for i = 1:length(wave2) % LOOP OVER WAVELENGTHS IN FOCUS
@@ -183,11 +123,11 @@ for k = 1:size(rgb00,1) % LOOP OVER COLOR CONDITIONS
         % CREATE ISETBIO WAVEFRONT OBJECT
         wvfP = wvfCreate('calc wavelengths', wave, ...
             'measured wavelength', wave2(i), ...
-            'zcoeffs', zCoeffs, 'measured pupil', PARAMS.PupilSize, ...
-            'name', sprintf('human-%d', PARAMS.PupilSize),'spatial samples',size(I,2));
+            'zcoeffs', zCoeffs, 'measured pupil', PupilSize, ...
+            'name', sprintf('human-%d', PupilSize),'spatial samples',size(I,2));
         % MAKE SURE THE calcpupilMM FIELD MATCHES THE ACTUAL PUPIL SIZE IN
         % THE EXPERIMENT
-        wvfP.calcpupilMM = PARAMS.PupilSize;
+        wvfP.calcpupilMM = PupilSize;
         % SET CUSTOM LCA FUNCTION PER SUBJECT--ISETBIO WANTS IT TO BE SET
         % IN A PARTICULAR FORMAT
         if subjNum==1
