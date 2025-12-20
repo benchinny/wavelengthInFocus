@@ -8,7 +8,7 @@ ieInit;
 
 % WHETHER OR NOT TO PLOT STIMULUS
 bPlotStim = false;
-bSave = false;
+bSave = true;
 
 %% Set up display struct and build Ben's stimulus
 
@@ -47,7 +47,6 @@ d.gamma(:,3) = (linspace(0,1,1024)').^2.3;
 
 % COLOR MATCHING FUNCTIONS
 S = [380 4 101]; % weird convention used by Brainard lab for defining wavelengths
-load T_xyz1931; % load color matching functions
 % DEFINE WAVELENGTH VECTOR: 380 TO 780 WITH 4NM INCREMENTS
 wave = S(1):S(2):S(1)+S(2)*(S(3)-1);
 
@@ -113,7 +112,7 @@ for k = 1:size(rgb00,1) % LOOP OVER COLOR CONDITIONS
     % LOOK AT WHAT HAPPENS WHEN A SPECIFIC WAVELENGTH IS IN FOCUS)
     wave2 = 380:4:780;
 
-    for i = 1:length(wave2) % LOOP OVER WAVELENGTHS IN FOCUS
+    parfor i = 1:length(wave2) % LOOP OVER WAVELENGTHS IN FOCUS
         % % IF YOU WANT TO COMPUTE FOR DIFFRACTION-LIMITED SCENARIO 
         % zCoeffs = [0 zeros(size(meanC(1:end-1)))];
 
