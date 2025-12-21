@@ -1,5 +1,24 @@
 function [aic, pFit, wvMeanAll, wvPredAll, dfPredPurple, wLMmin, wLpropMin] = ARCwvInFocusModelSort(subjNum,modelType,dataPath)
 
+% This function can plots fits of various models to data from the
+% accommodation experiment. Loads pre-fit parameters.
+%
+% subjNum: subject numbers. Valid numbers: 1, 3, 5, 10, 16, 17, 18, 20
+% modelType: model type. Valid strings: 
+%            'LMS': blue-yellow model 
+%            'LM' : luminance model with L-M ratio as free parameter
+%            'LminusM': red-green model
+%            'Lum': luminance model with V-lambda
+%
+% aic: AIC from model fit
+% pFit: fit parameters
+% wvMeanAll: wavelength-in-focus from data
+% wvPredAll: wavelength-in-focus from model
+% dfPredPurple: defocus prediction for purple condition with equal
+%               luminance red and blue at 2.5D (for acuity modeling later)
+% wLMmin: best-fit weight on the sum of L and M
+% wLpropMin: best fit ratio of L to M
+
 % WHERE THE PRE-FIT CONE WEIGHTS ARE STORED
 coneWeightsFolder = fullfile(dataPath,'data','coneWeightsErrorSpatFilter','colorMechPredictions');
 
@@ -56,7 +75,7 @@ end
 if strcmp(modelType,'LminusM') % IF RED-GREEN OPPONENT MODEL
     wS = 0; % ALWAYS 0 BY DEFINITION
     % LOAD PRE-FIT WEIGHTS
-    load(fullfile(coneWeightsFolder,['S' num2str(subjNum) 'wvInFocusModelResultsLminusM.mat']),'RMSEall','wLM','wLprop');
+    load(fullfile(coneWeightsFolder,['S' num2str(subjNum) 'wvInFocusModelResultsLminusM' num2str(round(-wS*10)) '.mat']),'RMSEall','wLM','wLprop');
     
     % MAKE A MESHGRID FOR EASILY FINDING THE BEST FIT PRE-GENERATED PARAMETERS
     [wLpropGrid,wLMgrid] = meshgrid(wLprop,wLM);
@@ -119,7 +138,7 @@ for l = 1:length(wL)
     for k = 1:length(wM)
         % IMPORTANT THINGS HAPPENING IN HELPER FUNCTION: GENERATE
         % PREDICTIONS OF DEFOCUS FOR EACH CONDITION
-        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZspatFilterPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL(l) wM(k) wS],dataPath);
+        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL(l) wM(k) wS],dataPath);
         % VECTOR OF OPTICAL DISTANCES FOR TAGGING FOR FITTING LAGS AND
         % LEADS
         optDistTag = imresize(optDistUnq',size(defocus875mean),'nearest');

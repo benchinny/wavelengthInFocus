@@ -1,7 +1,7 @@
 %% GENERATE MODEL PREDICTIONS TOGETHER WITH ACTUAL DATA
 
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
-modelType = 'LMS';
+modelType = 'LM';
 bSAVE = true;
 
 savePath = fullfile(dataPath,'data','PresavedFigureData/');

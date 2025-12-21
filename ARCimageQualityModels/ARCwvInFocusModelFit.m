@@ -61,7 +61,7 @@ for l = 1:length(wLM) % LOOP OVER RATIO OF L+M TO S
             wM = -(wLM(l)-wL); 
         end
         % GENERATE PREDICTIONS OF DEFOCUS USING HELPER FUNCTION
-        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZspatFilterPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL wM wS],dataPath);
+        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL wM wS],dataPath);
         % TAG EVERY TRIAL BY OPTICAL DISTANCE FOR FITTING LAGS AND LEADS
         optDistTag = imresize(optDistUnq',size(defocus875mean),'nearest');
         % FIT LAGS AND LEADS
@@ -72,6 +72,6 @@ for l = 1:length(wLM) % LOOP OVER RATIO OF L+M TO S
     RMSEall(l,:) = RMSE;
 end
 
-save([coneWeightsFolder 'S' num2str(subjNum) modelResultsFilename num2str(round(-wS*10)) '.mat'],'RMSEall','wS','wLM','wLprop');
+save(fullfile(coneWeightsFolder,['S' num2str(subjNum) modelResultsFilename num2str(round(-wS*10)) '.mat']),'RMSEall','wS','wLM','wLprop');
 
 end

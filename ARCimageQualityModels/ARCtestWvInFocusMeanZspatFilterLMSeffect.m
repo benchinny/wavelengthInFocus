@@ -115,7 +115,7 @@ for i = 1:size(conditionsOrderedNorm,1)
 end
 
 parfor k = 1:length(wLM)
-    [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZspatFilterPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wLM(k).*[1 1] -wS(k)]);
+    [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wLM(k).*[1 1] -wS(k)]);
     optDistTag = imresize(optDistUnq',size(defocus875mean),'nearest');
     [pFit,RMSE(k)] = ARCfitLagLead(defocus875predTmp(:),defocus875mean(:),optDistTag(:),true,objFunc);
     
@@ -188,7 +188,7 @@ for l = 1:length(wLM)
     parfor k = 1:length(wLprop)
         wL = wLM(l)*wLprop(k);
         wM = wLM(l)-wL;
-        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZspatFilterPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL wM wS]);
+        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL wM wS]);
         optDistTag = imresize(optDistUnq',size(defocus875mean),'nearest');
         [pFit,RMSE(k)] = ARCfitLagLead(defocus875predTmp(:),defocus875mean(:),optDistTag(:),true,objFunc);
         if k==1
@@ -237,7 +237,7 @@ RMSEall = zeros([length(wL) length(wM)]);
 
 for l = 1:length(wL)
     for k = 1:length(wM)
-        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZspatFilterPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL(l) wM(k) wS]);
+        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL(l) wM(k) wS]);
         optDistTag = imresize(optDistUnq',size(defocus875mean),'nearest');
         [pFit,RMSE(k)] = ARCfitLagLead(defocus875predTmp(:),defocus875mean(:),optDistTag(:),true,objFunc);
         

@@ -1,4 +1,4 @@
-function [RMSE, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCtestWvInFocusMeanZspatFilterPlotHelper(subjNum,defocus875,rgbAll,optDistAll,w,dataPath)
+function [RMSE, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelPlotHelper(subjNum,defocus875,rgbAll,optDistAll,w,dataPath)
 
 % LIST OF ALL SUBJECTS
 subjNumListAll = [1 3 5 10 16 17 18 20];
