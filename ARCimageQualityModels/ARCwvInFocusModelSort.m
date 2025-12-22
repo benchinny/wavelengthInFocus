@@ -1,6 +1,6 @@
 function [aic, pFit, wvMeanAll, wvPredAll, dfPredPurple, wLMmin, wLpropMin] = ARCwvInFocusModelSort(subjNum,modelType,dataPath)
 
-% This function can plots fits of various models to data from the
+% This function sorts data for plotting fits of various models to data from the
 % accommodation experiment. Loads pre-fit parameters.
 %
 % subjNum: subject numbers. Valid numbers: 1, 3, 5, 10, 16, 17, 18, 20

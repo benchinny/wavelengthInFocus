@@ -61,17 +61,15 @@ d = displaySet(d,'dpi',378); % simulated screen distance
 d.dixel = [];
 d.mainimage = [];
 
-bUseBVAMScal = 1; % if using BVAMS calibration data
+% CALIBRATION DATA
+calPath = fullfile(dataPath,'BVAMS_calibration_files','Ben_calibration_July_6_2024');
+load(fullfile(calPath,'redPrimaryJuly0624_initialPositionFocus3_100.mat'));
+d.spd(:,1) = energy;
+load(fullfile(calPath,'greenPrimaryJuly0624_initialPositionFocus3_100.mat'));
+d.spd(:,2) = energy;
+load(fullfile(calPath,'bluePrimaryJuly0624_initialPositionFocus3_100.mat'));
+d.spd(:,3) = energy;
 
-if bUseBVAMScal
-    calPath = fullfile(dataPath,'BVAMS_calibration_files','Ben_calibration_July_6_2024');
-    load(fullfile(calPath,'redPrimaryJuly0624_initialPositionFocus3_100.mat'));
-    d.spd(:,1) = energy;
-    load(fullfile(calPath,'greenPrimaryJuly0624_initialPositionFocus3_100.mat'));
-    d.spd(:,2) = energy;
-    load(fullfile(calPath,'bluePrimaryJuly0624_initialPositionFocus3_100.mat'));
-    d.spd(:,3) = energy;
-end
 % APPLY OUR EMPIRICALLY DERIVED GAMMA FROM CALIBRATION MEASUREMENTS
 d.gamma(:,1) = (linspace(0,1,1024)').^2.5;
 d.gamma(:,2) = (linspace(0,1,1024)').^2.7;
@@ -156,8 +154,6 @@ if bPLOT
     formatFigure('Wavelength (\lambda)','Photons');
     axis square;
 end
-
-%% Computing visual Strehl ratio
 
 % COLOR MATCHING FUNCTIONS
 S = [380 4 101]; % weird convention used by Brainard lab for specifying wavelengths
