@@ -23,11 +23,11 @@ if strcmp(modelType,'LMS')
     % FOR THESE TWO SUBJECTS, IF wS = 1, THE SEARCH WILL BUMP UP AGAINST
     % THE EDGE OF THE GRID
     if subjNum==5
-        wS = 0.5;
+        wS = -0.5;
     elseif subjNum==20
-        wS = 0.25;
+        wS = -0.25;
     else
-        wS = 1;
+        wS = -1;
     end
     modelResultsFilename = 'wvInFocusModelResultsDonutx2';
 elseif strcmp(modelType,'LM')

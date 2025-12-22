@@ -151,7 +151,7 @@ T_sensorXYZ = 683*SplineCmf(S_xyz1931,T_xyz1931,S); % interpolate and scale
 wave = S(1):S(2):S(1)+S(2)*(S(3)-1); % define wavelength vector
 
 % GET ZERNIKE COEFFICIENTS FOR PARTICIPANT
-[~, ~, ~, PupilSize, meanC] = ARCnlzLoadDefocusAbb(subjNum+10,dataPath);
+[~, ~, ~, PupilSize, meanC] = ARCnlzLoadDefocusAbb(subjNum,dataPath);
 
 dprimeMetric = []; % INITIALIZING VECTOR FOR STORING D-PRIME VALUES
 defocusScaleFactor = 0.5774; % FOR 4MM PUPIL SIZE
@@ -159,12 +159,20 @@ defocusScaleFactor = 0.5774; % FOR 4MM PUPIL SIZE
 subjNumAll = [1 3 5 10 16 17 18 20]; % LIST OF ALL SUBJECT IDS
 % GRAB PREDICTION OF MODEL AT 2.5D FOR THAT PARTICULAR SUBJECT (BASED ON
 % PRE-LOADED DATA EARLY IN THIS FUNCTION)
-modelPrediction875nmPurpleAt2pt5 = modelPrediction875nmPurpleAt2pt5all(subjNum=subjNumAll);
+modelPrediction875nmPurpleAt2pt5 = -modelPrediction875nmPurpleAt2pt5all(subjNum==subjNumAll);
 
 % MODEL ACUITY STIMULUS AT DIFFERENT DISTANCES
 defocusForStim = [0.6:0.1:4.4]-modelPrediction875nmPurpleAt2pt5;
+
+% LOAD PRE-SAVED LCA PARAMETERS
+load(fullfile(dataPath,'data','PresavedFigureData','LCAparams.mat'),'q1bestAll','q2bestAll','q3bestAll');
+q1 = q1bestAll(subjNum==subjNumAll);
+q2 = q2bestAll(subjNum==subjNumAll);
+q3 = q3bestAll(subjNum==subjNumAll);
+
 % CONVERT TO WAVELENGTH-IN-FOCUS
-wvInFocusForStim = humanWaveDefocusInvertARC(875,-defocusForStim,subjNum);
+wvInFocusForStim = humanWaveDefocusInvertParameterizedARC(875,-defocusForStim,q1,q2,q3);
+wave2 = wave;
 
 parfor i = 1:length(defocusForStim)
     % FORMAT ACCORDING TO WHAT ISETBIO EXPECTS (WAVEFRONT SENSOR LEAVES OUT
@@ -287,30 +295,32 @@ parfor i = 1:length(defocusForStim)
         imagesc(fftshift(ifft2(squeeze(oig1.optics.OTF.OTF(:,:,61))))); 
         axis square; 
         colormap gray;
-        display(['D-prime iteration ' num2str(i)]);
     end
+    display(['D-prime iteration ' num2str(i)]);
 end
 %% PREDICTIONS WITHOUT THE FUDGE DEPTH-OF-FOCUS FREE PARAMETER
 
 [unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport] = ARCacuityAnalyzeDataOnly(subjNum,0,dataPath);
 
-figure;
-set(gcf,'Position',[342 460 1052 440]);
-subplot(1,2,1);
-hold on;
-plot(defocusForStim+modelPrediction875nmPurpleAt2pt5,dprimeMetric,'-','Color',[0.56 0 1],'LineWidth',1);
-scaleFac = 0.816;
-dprimeScale = max(dprime(:)./max(dprimeMetric));
-errorbar(2.5+unqFocDst.*scaleFac,dprime./dprimeScale,(dprime-dprimeCI(1,:))./dprimeScale,(dprimeCI(2,:)-dprime)./dprimeScale,'o','Color',[0.56 0 1],'MarkerFaceColor','w','LineWidth',1.5,'MarkerSize',10);
-xlabel('Distance');
-ylabel('D-prime metric');
-set(gca,'FontSize',15);
-title(['Mean defocus at 875nm = ' num2str(modelPrediction875nmPurpleAt2pt5,3) 'D']);
-subplot(1,2,2);
-plot(wvInFocusForStim,dprimeMetric,'k-','LineWidth',1);
-xlabel('Wavelength in focus (nm)');
-ylabel('D-prime metric');
-set(gca,'FontSize',15);
+if bPLOT
+    figure;
+    set(gcf,'Position',[342 460 1052 440]);
+    subplot(1,2,1);
+    hold on;
+    plot(defocusForStim+modelPrediction875nmPurpleAt2pt5,dprimeMetric,'-','Color',[0.56 0 1],'LineWidth',1);
+    scaleFac = 0.816;
+    dprimeScale = max(dprime(:)./max(dprimeMetric));
+    errorbar(2.5+unqFocDst.*scaleFac,dprime./dprimeScale,(dprime-dprimeCI(1,:))./dprimeScale,(dprimeCI(2,:)-dprime)./dprimeScale,'o','Color',[0.56 0 1],'MarkerFaceColor','w','LineWidth',1.5,'MarkerSize',10);
+    xlabel('Distance');
+    ylabel('D-prime metric');
+    set(gca,'FontSize',15);
+    title(['Mean defocus at 875nm = ' num2str(modelPrediction875nmPurpleAt2pt5,3) 'D']);
+    subplot(1,2,2);
+    plot(wvInFocusForStim,dprimeMetric,'k-','LineWidth',1);
+    xlabel('Wavelength in focus (nm)');
+    ylabel('D-prime metric');
+    set(gca,'FontSize',15);
+end
 
 save(fullfile(saveFolder,[savePredName num2str(subjNum)]),'dprimeMetric','defocusForStim', ...
     'modelPrediction875nmPurpleAt2pt5','dprime','dprimeCI','unqFocDst','wvInFocusForStim');
