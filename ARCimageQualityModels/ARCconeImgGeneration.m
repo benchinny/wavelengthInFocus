@@ -3,6 +3,11 @@ function oi = ARCconeImgGeneration(subjNum,dataPath)
 % subjNum values for participants who passed screening: 1, 3, 5, 10, 16,
 % 17, 18, 20
 
+% MAKE SURE LENS TRANSMITTANCE IN ISETBIO IS DEFAULT! TO DO
+% THIS, GO INTO THE FUNCTION 'oiCalculateIrradiance' AND MAKE SURE THERE IS
+% NO LINE THAT SAYS 'transmittance = ones(size(transmittance));' RIGHT 
+% BEFORE LINE 87. 
+
 %% Initialize and clear
 ieInit;
 

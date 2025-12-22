@@ -1,6 +1,20 @@
 function [dprimeMetric, dprime, dprimeCI] = ARCacuityModelPrediction(subjNum,LumOrChrom,dataPath)
 
-% MAKE SURE LENS TRANSMITTANCE IN ISETBIO IS SET TO 1 EVERYWHERE!
+% function for generating model predictions for acuity data.
+%
+% subjNum: subject number
+% LumOrChrom: specify which model we are using to generate predictions.
+%             'Lum': luminance model.
+%             'Chrom': best chromatic model
+% dataPath  : path to folder where data lives
+%
+% dprimeMetric: d-prime predictions
+% dprime      : empirical d-primes
+% dprimeCI    : confidence intervals on empirical d-primes
+
+% MAKE SURE LENS TRANSMITTANCE IN ISETBIO IS SET TO 1 EVERYWHERE! TO DO
+% THIS, GO INTO THE FUNCTION 'oiCalculateIrradiance' AND ADD THE LINE
+% 'transmittance = ones(size(transmittance));' RIGHT BEFORE LINE 87. 
 
 %% Initialize and clear
 ieInit;
@@ -188,51 +202,24 @@ parfor i = 1:length(defocusForStim)
     % SET CUSTOM LCA FUNCTION PER SUBJECT--ISETBIO WANTS IT TO BE SET
     % IN A PARTICULAR FORMAT
     if subjNum==10
-        % CALCULATE MINIMUM AND MAXIMUM DEFOCUS FROM LCA FOR A
-        % PARTICULAR SUBJECT FOR THE RANGE OF WAVELENGTHS TO ANALYZE.
-        % THIS WILL ENSURE THAT THE MESH OVER THE PUPIL FUNCTION SPANS
-        % A SUFFICIENT RANGE (refSizeOfFieldMM). IF DEFOCUS IS LARGE
-        % ENOUGH, THE RANGE NEEDS TO BE REDUCED. 
-        defocusFromLCA = max(abs([humanWaveDefocusS10(wave(i),min(wave)) ...
-                                  humanWaveDefocusS10(wave(i),max(wave))]));
         wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS10);
-    elseif subjNum==3
-        defocusFromLCA = max(abs([humanWaveDefocusS3(wave(i),min(wave)) ...
-                                  humanWaveDefocusS3(wave(i),max(wave))]));        
+    elseif subjNum==3    
         wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS3);
-    elseif subjNum==5
-        defocusFromLCA = max(abs([humanWaveDefocusS5(wave(i),min(wave)) ...
-                                  humanWaveDefocusS5(wave(i),max(wave))]));        
+    elseif subjNum==5     
         wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS5);
-    elseif subjNum==1
-        defocusFromLCA = max(abs([humanWaveDefocusS1(wave(i),min(wave)) ...
-                                  humanWaveDefocusS1(wave(i),max(wave))]));        
+    elseif subjNum==1      
         wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS1);
-    elseif subjNum==16
-        defocusFromLCA = max(abs([humanWaveDefocusS16(wave(i),min(wave)) ...
-                                  humanWaveDefocusS16(wave(i),max(wave))]));        
+    elseif subjNum==16      
         wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS16);
-    elseif subjNum==17
-        defocusFromLCA = max(abs([humanWaveDefocusS17(wave(i),min(wave)) ...
-                                  humanWaveDefocusS17(wave(i),max(wave))]));        
+    elseif subjNum==17   
         wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS17); 
-    elseif subjNum==18
-        defocusFromLCA = max(abs([humanWaveDefocusS18(wave(i),min(wave)) ...
-                                  humanWaveDefocusS18(wave(i),max(wave))]));        
+    elseif subjNum==18      
         wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS18); 
     elseif subjNum==20
-        defocusFromLCA = max(abs([humanWaveDefocusS20(wave(i),min(wave)) ...
-                                  humanWaveDefocusS20(wave(i),max(wave))]));        
         wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS20);         
     end
-    % IF DEFOCUS IS LARGE ENOUGH, THE AREA OF THE PUPIL THE PSF IS
-    % CALCULATED FROM NEEDS TO BE REDUCED, OR YOU WILL END UP WITH A
-    % DEGENERATE PSF
-    if defocusFromLCA<1
-        wvfP.refSizeOfFieldMM = 12;
-    else
-        wvfP.refSizeOfFieldMM = 6;
-    end
+    % THE AREA OF THE PUPIL THE PSF IS CALCULATED FROM
+    wvfP.refSizeOfFieldMM = 6;
     
     % MAKE POINT-SPREAD FUNCTION (siPSFData) AND WAVEFRONT STRUCT
     [siPSFData, wvfP] = wvf2SiPsfARC(wvfP,'showBar',false,'nPSFSamples',size(I1,2),'umPerSample',1.1512); % 1.1512
