@@ -172,7 +172,6 @@ q3 = q3bestAll(subjNum==subjNumAll);
 
 % CONVERT TO WAVELENGTH-IN-FOCUS
 wvInFocusForStim = humanWaveDefocusInvertParameterizedARC(875,-defocusForStim,q1,q2,q3);
-wave2 = wave;
 
 parfor i = 1:length(defocusForStim)
     % FORMAT ACCORDING TO WHAT ISETBIO EXPECTS (WAVEFRONT SENSOR LEAVES OUT
@@ -194,36 +193,36 @@ parfor i = 1:length(defocusForStim)
         % THIS WILL ENSURE THAT THE MESH OVER THE PUPIL FUNCTION SPANS
         % A SUFFICIENT RANGE (refSizeOfFieldMM). IF DEFOCUS IS LARGE
         % ENOUGH, THE RANGE NEEDS TO BE REDUCED. 
-        defocusFromLCA = max(abs([humanWaveDefocusS10(wave2(i),min(wave)) ...
-                                  humanWaveDefocusS10(wave2(i),max(wave))]));
+        defocusFromLCA = max(abs([humanWaveDefocusS10(wave(i),min(wave)) ...
+                                  humanWaveDefocusS10(wave(i),max(wave))]));
         wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS10);
     elseif subjNum==3
-        defocusFromLCA = max(abs([humanWaveDefocusS3(wave2(i),min(wave)) ...
-                                  humanWaveDefocusS3(wave2(i),max(wave))]));        
+        defocusFromLCA = max(abs([humanWaveDefocusS3(wave(i),min(wave)) ...
+                                  humanWaveDefocusS3(wave(i),max(wave))]));        
         wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS3);
     elseif subjNum==5
-        defocusFromLCA = max(abs([humanWaveDefocusS5(wave2(i),min(wave)) ...
-                                  humanWaveDefocusS5(wave2(i),max(wave))]));        
+        defocusFromLCA = max(abs([humanWaveDefocusS5(wave(i),min(wave)) ...
+                                  humanWaveDefocusS5(wave(i),max(wave))]));        
         wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS5);
     elseif subjNum==1
-        defocusFromLCA = max(abs([humanWaveDefocusS1(wave2(i),min(wave)) ...
-                                  humanWaveDefocusS1(wave2(i),max(wave))]));        
+        defocusFromLCA = max(abs([humanWaveDefocusS1(wave(i),min(wave)) ...
+                                  humanWaveDefocusS1(wave(i),max(wave))]));        
         wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS1);
     elseif subjNum==16
-        defocusFromLCA = max(abs([humanWaveDefocusS16(wave2(i),min(wave)) ...
-                                  humanWaveDefocusS16(wave2(i),max(wave))]));        
+        defocusFromLCA = max(abs([humanWaveDefocusS16(wave(i),min(wave)) ...
+                                  humanWaveDefocusS16(wave(i),max(wave))]));        
         wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS16);
     elseif subjNum==17
-        defocusFromLCA = max(abs([humanWaveDefocusS17(wave2(i),min(wave)) ...
-                                  humanWaveDefocusS17(wave2(i),max(wave))]));        
+        defocusFromLCA = max(abs([humanWaveDefocusS17(wave(i),min(wave)) ...
+                                  humanWaveDefocusS17(wave(i),max(wave))]));        
         wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS17); 
     elseif subjNum==18
-        defocusFromLCA = max(abs([humanWaveDefocusS18(wave2(i),min(wave)) ...
-                                  humanWaveDefocusS18(wave2(i),max(wave))]));        
+        defocusFromLCA = max(abs([humanWaveDefocusS18(wave(i),min(wave)) ...
+                                  humanWaveDefocusS18(wave(i),max(wave))]));        
         wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS18); 
     elseif subjNum==20
-        defocusFromLCA = max(abs([humanWaveDefocusS20(wave2(i),min(wave)) ...
-                                  humanWaveDefocusS20(wave2(i),max(wave))]));        
+        defocusFromLCA = max(abs([humanWaveDefocusS20(wave(i),min(wave)) ...
+                                  humanWaveDefocusS20(wave(i),max(wave))]));        
         wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS20);         
     end
     % IF DEFOCUS IS LARGE ENOUGH, THE AREA OF THE PUPIL THE PSF IS

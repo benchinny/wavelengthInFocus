@@ -1,4 +1,4 @@
-function [defocus875,rgbAll,optDistAll,PupilSize,meanC,q1,q2,q3] = ARCnlzLoadDefocusAbb(subjNum,dataPath)
+function [defocus875,rgbAll,optDistAll,PupilSize,meanCall,q1,q2,q3] = ARCnlzLoadDefocusAbb(subjNum,dataPath)
 
 % function for loading relevant wavefront data from a subject and
 % processing it for analysis by other functions (e.g. modeling, weight
@@ -12,7 +12,7 @@ function [defocus875,rgbAll,optDistAll,PupilSize,meanC,q1,q2,q3] = ARCnlzLoadDef
 % rgbAll: color conditions
 % optDistAll: stimulus distances
 % PupilSize: pupil size (for ARC experiment, should always be 4mm)
-% meanC    : mean of all Zernike coefficients
+% meanCall : mean of all Zernike coefficients
 
 % LIST OF ALL SUBJECTS
 subjNumListAll = [1 3 5 10 16 17 18 20];
@@ -59,6 +59,8 @@ trialNumAll = 1:36; % ALL SUBJECTS HAVE SAME NUMBER OF TRIALS
 defocus875 = []; % DEFOCUS AT 875NM
 optDistAll = []; % STIMULUS DISTANCES
 rgbAll = []; % COLOR CONDITIONS
+cAll = []; % MATRIX FOR STORING ALL ZERNIKE COEFFICIENTS
+PupilSizeAll = []; % VECTOR FOR STORING PUPIL SIZES PER TRIAL
 
 % LOAD DATA TO FIT
 for k = 1:length(blockNumAll) % LOOP OVER BLOCKS
@@ -72,16 +74,30 @@ for k = 1:length(blockNumAll) % LOOP OVER BLOCKS
         NumCoeffs = width(ZernikeTable)-8; % determine how many coefficients are in the cvs file. 
         c=zeros(size(ZernikeTable,1),65); %this is the vector that contains the Zernike polynomial coefficients. We can work with up to 65. 
         indBadPupil = table2array(ZernikeTable(:,5))==0; % IDENTIFY BLINKS
-        PupilSize=mean(table2array(ZernikeTable(~indBadPupil,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)
+        PupilSizeAll(end+1)=mean(table2array(ZernikeTable(~indBadPupil,5))); %default setting is the pupil size that the Zernike coeffs define, PARAMS(3)
         % ALL ZERNIKE COEFFICIENTS
         c(:,3:NumCoeffs)=table2array(ZernikeTable(:,11:width(ZernikeTable)));
-        indBad = c(:,4)==0; % FIND BLINKS IN DEFOCUS VECTOR
-        meanC = mean(c(~indBad,:),1); % TAKE MEAN OF COEFFICIENTS WITHOUT BLINKS
+        % STACK UP ZERNIKE COEFFICIENTS
+        cAll = [cAll; c];
+        % FIND FAILURES TO FIT WAVEFRONT IN DEFOCUS VECTOR. NOTE THAT WE
+        % ARE DOING THIS FOR A SINGLE TRIAL BECAUSE WE ARE STORING MEAN
+        % DEFOCUS SEPARATELY FOR EACH TRIAL. LATER, WE WILL ALSO STORE THE
+        % OVERALL AVERAGED WAVEFRONT, SO WE WILL DO THE SAME STEP AGAIN,
+        % JUST ACROSS ALL TRIALS.
+        indBad = c(:,4)==0;
+        meanC = mean(c(~indBad,:),1); % TAKE MEAN OF COEFFICIENTS WITHOUT FAILURES
         % STANDARD CORRECTION TO CONVERT TO EQUIVALENT DEFOCUS
-        defocusCorrectionFactor = (1e6/(4*sqrt(3)))*((PupilSize/2000)^2);
+        defocusCorrectionFactor = (1e6/(4*sqrt(3)))*((PupilSizeAll(end)/2000)^2);
         defocus875(end+1,:) = meanC(4)./defocusCorrectionFactor;
     end
 end
+
+PupilSize = mean(PupilSizeAll); % MEAN PUPIL SIZE (SHOULD BE 4)
+% TAKE MEAN OF COEFFICIENTS WITHOUT FAILURES TO FIT WAVEFRONT. NOTE THAT WE
+% ARE DOING THIS ACROSS ALL TRIALS, UNLIKE FOR THE VARIABLE 'indBad'
+% EARLIER
+indBadAll = cAll(:,4)==0; 
+meanCall = mean(cAll(~indBadAll,:),1);
 
 % EXCLUDE DATA FOR WHICH PARTICIPANT WAS ACCOMMODATING OUTSIDE OF
 % VISIBLE RANGE
