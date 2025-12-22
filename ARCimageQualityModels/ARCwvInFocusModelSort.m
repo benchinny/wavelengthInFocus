@@ -138,7 +138,7 @@ for l = 1:length(wL)
     for k = 1:length(wM)
         % IMPORTANT THINGS HAPPENING IN HELPER FUNCTION: GENERATE
         % PREDICTIONS OF DEFOCUS FOR EACH CONDITION
-        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL(l) wM(k) wS],dataPath);
+        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelHelper(subjNum,defocus875,rgbAll,optDistAll,[wL(l) wM(k) wS],dataPath);
         % VECTOR OF OPTICAL DISTANCES FOR TAGGING FOR FITTING LAGS AND
         % LEADS
         optDistTag = imresize(optDistUnq',size(defocus875mean),'nearest');

@@ -110,7 +110,7 @@ for l = 1:length(wLM) % LOOP OVER TOTAL L AND M WEIGHT
         wM = -(wLM(l)-wL);
         wS = 0;
         % USE HELPER FUNCTION TO GENERATE PREDICTIONS OF DEFOCUS
-        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL wM wS],dataPath);
+        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelHelper(subjNum,defocus875,rgbAll,optDistAll,[wL wM wS],dataPath);
         % TAG OPTICAL DISTANCES FOR FITTING LAG AND LEAD PARAMETERS
         optDistTag = imresize(optDistUnq',size(defocus875mean),'nearest');
         % FIT LAGS AND LEADS FREE PARAMETERS

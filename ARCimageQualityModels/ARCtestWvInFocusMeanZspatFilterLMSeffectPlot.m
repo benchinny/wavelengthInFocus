@@ -131,7 +131,7 @@ RMSEall = zeros([length(wL) length(wM)]);
 
 for l = 1:length(wL)
     for k = 1:length(wM)
-        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelPlotHelper(subjNum,defocus875,rgbAll,optDistAll,[wL(l) wM(k) wS]);
+        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelHelper(subjNum,defocus875,rgbAll,optDistAll,[wL(l) wM(k) wS]);
         optDistTag = imresize(optDistUnq',size(defocus875mean),'nearest');
         [pFit,RMSE(k)] = ARCfitLagLead(defocus875predTmp(:),defocus875mean(:),optDistTag(:),true,objFunc);
         
