@@ -12,8 +12,9 @@ function [dprimeMetric, dprime, dprimeCI] = ARCacuityModelPrediction(subjNum,Lum
 % dprime      : empirical d-primes
 % dprimeCI    : confidence intervals on empirical d-primes
 
-% MAKE SURE LENS TRANSMITTANCE IN ISETBIO IS SET TO 1 EVERYWHERE! TO DO
-% THIS, GO INTO THE FUNCTION 'oiCalculateIrradiance' AND ADD THE LINE
+% FOR THIS FUNCTION TO GIVE CORRECT OUTPUT, MAKE SURE LENS TRANSMITTANCE 
+% IN ISETBIO IS SET TO 1 EVERYWHERE! TO DO THIS, GO INTO THE FUNCTION 
+% 'oiCalculateIrradiance' AND ADD THE LINE
 % 'transmittance = ones(size(transmittance));' RIGHT BEFORE LINE 87. 
 
 %% Initialize and clear
@@ -197,6 +198,8 @@ parfor i = 1:length(defocusForStim)
         'name', sprintf('human-%d', PupilSize),'spatial samples',size(I1,2));
     % MAKE SURE THIS VARIABLE IS SET TO THE ACTUAL PUPIL SIZE
     wvfP.calcpupilMM = PupilSize;
+    % THE AREA OF THE PUPIL THE PSF IS CALCULATED FROM
+    wvfP.refSizeOfFieldMM = 6;    
     % SET ZERNIKE COEFFICIENT ACCORDING TO STIMULUS DISTANCE
     wvfP = wvfSet(wvfP, 'zcoeff', -defocusForStim(i)*defocusScaleFactor, 'defocus');
     % SET CUSTOM LCA FUNCTION PER SUBJECT--ISETBIO WANTS IT TO BE SET
@@ -218,8 +221,6 @@ parfor i = 1:length(defocusForStim)
     elseif subjNum==20
         wvfP = wvfSet(wvfP, 'customlca', @humanWaveDefocusS20);         
     end
-    % THE AREA OF THE PUPIL THE PSF IS CALCULATED FROM
-    wvfP.refSizeOfFieldMM = 6;
     
     % MAKE POINT-SPREAD FUNCTION (siPSFData) AND WAVEFRONT STRUCT
     [siPSFData, wvfP] = wvf2SiPsfARC(wvfP,'showBar',false,'nPSFSamples',size(I1,2),'umPerSample',1.1512); % 1.1512
@@ -242,6 +243,8 @@ parfor i = 1:length(defocusForStim)
         % SIGNAL ORIGIN TO BE IN THIS LOCATION.        
         oi.optics.OTF.OTF(:,:,j) = fft2(fftshift(squeeze(siPSFData.psf(indNotPadded{1},indNotPadded{2},j))));
     end
+    % THESE TWO STEPS WILL YIELD INCORRECT OUTPUT IF LENS TRANSMITTANCE IS
+    % NOT SET TO 1 THROUGHOUT (SEE COMMENTS AT TOP OF FUNCTION)
     oig1 = oiCompute(oi, s1); % compute optical image of stimulus
     oig2 = oiCompute(oi, s2); % compute optical image of stimulus
     
@@ -284,8 +287,8 @@ parfor i = 1:length(defocusForStim)
     end
     display(['D-prime iteration ' num2str(i)]);
 end
-%% PREDICTIONS WITHOUT THE FUDGE DEPTH-OF-FOCUS FREE PARAMETER
 
+% EMPIRICAL PERFORMANCE INCLUDING CALCULATED D-PRIME VALUES
 [unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport] = ARCacuityAnalyzeDataOnly(subjNum,0,dataPath);
 
 if bPLOT
