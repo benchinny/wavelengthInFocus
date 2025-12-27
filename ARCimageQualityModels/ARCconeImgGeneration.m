@@ -17,19 +17,6 @@ bSave = true;
 
 %% Set up display struct and build Ben's stimulus
 
-% Setting up display properties
-d = displayCreate('OLED-Samsung');
-d = displaySet(d, 'name', 'my display');
-% SIMULATED SCREEN DISTANCE--IT'S ARBITRARY SINCE THE BVAMS HAS
-% NON-STANDARD OPTICAL PROPERTIES
-d = displaySet(d,'ViewingDistance',1);
-% 378 DOTS PER INCH YIELDS APPROXIMATELY 260 PIXELS PER VISUAL DEGREE,
-% WHICH IS WHAT THE BVAMS HAS
-d = displaySet(d,'dpi',378); 
-% GET RID OF ALL UNNECESSARY FIELDS
-d.dixel = [];
-d.mainimage = [];
-
 % PATH TO CALIBRATION DATA
 calPath = fullfile(dataPath,'BVAMS_calibration_files','Ben_calibration_July_6_2024');
 % PATH TO STIMULUS SPATIAL PATTERN
@@ -37,23 +24,12 @@ stimPath = fullfile(dataPath,'stimuli');
 % PATH TO SAVE
 savePath = fullfile(dataPath,'data','coneImages');
 
-% LOAD BVAMS CALIBRATION DATA
-load(fullfile(calPath,'redPrimaryJuly0624_initialPositionFocus3_100.mat'));
-d.spd(:,1) = energy;
-load(fullfile(calPath,'greenPrimaryJuly0624_initialPositionFocus3_100.mat'));
-d.spd(:,2) = energy;
-load(fullfile(calPath,'bluePrimaryJuly0624_initialPositionFocus3_100.mat'));
-d.spd(:,3) = energy;
+% DEFINE LIGHT WAVELENGTHS TO SAMPLE STIMULUS AT
+wave = 380:4:780;
 
-% APPLY OUR EMPIRICALLY DERIVED GAMMA FROM CALIBRATION MEASUREMENTS
-d.gamma(:,1) = (linspace(0,1,1024)').^2.5;
-d.gamma(:,2) = (linspace(0,1,1024)').^2.7;
-d.gamma(:,3) = (linspace(0,1,1024)').^2.3;
-
-% COLOR MATCHING FUNCTIONS
-S = [380 4 101]; % weird convention used by Brainard lab for defining wavelengths
-% DEFINE WAVELENGTH VECTOR: 380 TO 780 WITH 4NM INCREMENTS
-wave = S(1):S(2):S(1)+S(2)*(S(3)-1);
+% SET UP DISPLAY PARAMETERS (COMMON TO ALL RETINAL IMAGE MODELNG FOR THIS 
+% PROJECT)
+d = ARCmodelDispSetup(calPath);
 
 % LOAD COLOR CONDITIONS, PUPIL SIZE, AND MEAN ABERRATIONS
 [~,rgbAll,~,PupilSize,meanC,~,~,~] = ARCnlzLoadDefocusAbb(subjNum,dataPath);

@@ -52,28 +52,12 @@ else
     error('LumOrChrom variable needs to either be the string ''Lum'' or ''Chrom'' ');
 end
 
-% Setting up display properties
-d = displayCreate('OLED-Samsung');
-d = displaySet(d, 'name', 'my display');
-d = displaySet(d,'ViewingDistance',1); % simulated screen distance
-d = displaySet(d,'dpi',378); % simulated screen distance
-% GET RID OF ALL UNNECESSARY FIELDS
-d.dixel = [];
-d.mainimage = [];
-
-% CALIBRATION DATA
+% CALIBRATION DATA FILE PATH
 calPath = fullfile(dataPath,'BVAMS_calibration_files','Ben_calibration_July_6_2024');
-load(fullfile(calPath,'redPrimaryJuly0624_initialPositionFocus3_100.mat'));
-d.spd(:,1) = energy;
-load(fullfile(calPath,'greenPrimaryJuly0624_initialPositionFocus3_100.mat'));
-d.spd(:,2) = energy;
-load(fullfile(calPath,'bluePrimaryJuly0624_initialPositionFocus3_100.mat'));
-d.spd(:,3) = energy;
 
-% APPLY OUR EMPIRICALLY DERIVED GAMMA FROM CALIBRATION MEASUREMENTS
-d.gamma(:,1) = (linspace(0,1,1024)').^2.5;
-d.gamma(:,2) = (linspace(0,1,1024)').^2.7;
-d.gamma(:,3) = (linspace(0,1,1024)').^2.3;
+% SET UP DISPLAY PARAMETERS (COMMON TO ALL RETINAL IMAGE MODELNG FOR THIS 
+% PROJECT)
+d = ARCmodelDispSetup(calPath);
 
 % RGB VALUES OF ACUITY STIMULUS IN ACUITY TASK
 rVal = 0.56;
