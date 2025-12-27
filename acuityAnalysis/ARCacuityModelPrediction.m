@@ -52,92 +52,12 @@ else
     error('LumOrChrom variable needs to either be the string ''Lum'' or ''Chrom'' ');
 end
 
-% CALIBRATION DATA FILE PATH
-calPath = fullfile(dataPath,'BVAMS_calibration_files','Ben_calibration_July_6_2024');
-
 % SET UP DISPLAY PARAMETERS (COMMON TO ALL RETINAL IMAGE MODELNG FOR THIS 
 % PROJECT)
-d = ARCmodelDispSetup(calPath);
+d = ARCmodelDispSetup(dataPath,0);
 
-% RGB VALUES OF ACUITY STIMULUS IN ACUITY TASK
-rVal = 0.56;
-bVal = 1.00;
-gVal = 0.00;
-
-% GET THRESHOLDS FROM CONTRAST CALIBRATION EXPERIMENT
-thresholds = ARCnlz_contrastThresholds(subjNum,0,dataPath);
-
-% GABOR PARAMETERS
-frqCpd = 15;
-contrast = thresholds(4);
-rgbAll = [rVal gVal bVal];
-% GAMMA (BASED ON BVAMS CALIBRATION)
-gammaR = 2.5;
-gammaG = 2.7;
-gammaB = 2.3;
-
-% STIMULUS PARAMETERS 
-stimPositionsX = smpPos(260,390); % SAMPLING FOR MAKING GABOR
-x0 = 0; % CENTER OF GABOR
-y0 = 0; % CENTER OF GABOR
-frqCpdAll = [frqCpd 3*frqCpd 5*frqCpd 7*frqCpd]; % ALL FREQUENCIES FOR SQUARE WAVE
-contrastAll = [contrast contrast/3 contrast/5 contrast/7]; % ALL CONTRASTS FOR SQUARE WAVE
-orientation1 = 15; % STIMULUS 1 ORIENTATION
-orientation2 = -15; % STIMULUS 2 ORIENTATION
-phs = 90; % PHASE
-sigmaX = 0.2; % STANDARD DEVIATION OF GAUSSIAN ENVELOPE IN X
-sigmaY = 0.2; % STANDARD DEVIATION OF GAUSSIAN ENVELOPE IN Y
-
-% MODEL ACUITY STIMULUS FOR +15 DEG ORIENTATION
-acuStimOrig1 = ARC2Dgabor(stimPositionsX,[],x0,y0,frqCpdAll, ...
-               contrastAll,orientation1,phs,sigmaX,sigmaY, ...
-               [rgbAll(1,1)^gammaR rgbAll(1,2)^gammaG rgbAll(1,3)^gammaB],1,1,0,0);
-
-% MAKE SURE TO GAMMA CORRECT STIMULUS FOR MODELING
-acuStimOrig1(:,:,1) = acuStimOrig1(:,:,1).^(1/gammaR);
-acuStimOrig1(:,:,2) = acuStimOrig1(:,:,2).^(1/gammaG);
-acuStimOrig1(:,:,3) = acuStimOrig1(:,:,3).^(1/gammaB);
-I1 = acuStimOrig1;
-
-% MODEL ACUITY STIMULUS FOR -15 DEG ORIENTATION
-acuStimOrig2 = ARC2Dgabor(stimPositionsX,[],x0,y0,frqCpdAll, ...
-               contrastAll,orientation2,phs,sigmaX,sigmaY, ...
-               [rgbAll(1,1)^gammaR rgbAll(1,2)^gammaG rgbAll(1,3)^gammaB],1,1,0,0);
-
-% MAKE SURE TO GAMMA CORRECT STIMULUS FOR MODELING
-acuStimOrig2(:,:,1) = acuStimOrig2(:,:,1).^(1/gammaR);
-acuStimOrig2(:,:,2) = acuStimOrig2(:,:,2).^(1/gammaG);
-acuStimOrig2(:,:,3) = acuStimOrig2(:,:,3).^(1/gammaB);
-I2 = acuStimOrig2;
-
-% Turn image into 'scene'
-s1 = sceneFromFile(I1, 'rgb', [], d);  % The display is included here
-s2 = sceneFromFile(I2, 'rgb', [], d);
-% I think this copies the struct into an object
-vcAddObject(s1); 
-vcAddObject(s2); 
-
-if bPLOT
-    figure; 
-    set(gcf,'Position',[289 428 1056 420]);
-    subplot(1,3,1);
-    plot(d.wave,d.spd(:,1),'r','LineWidth',1.5); hold on;
-    plot(d.wave,d.spd(:,2),'g','LineWidth',1.5);
-    plot(d.wave,d.spd(:,3),'b','LineWidth',1.5);
-    axis square;
-    formatFigure('Wavelength (\lambda)','Radiance');
-    subplot(1,3,2);
-    imagesc(I1);
-    set(gca,'XTick',[]);
-    set(gca,'YTick',[]);
-    axis square;
-    set(gca,'FontSize',15);
-    title('Original');
-    subplot(1,3,3);
-    plot(s1.spectrum.wave,squeeze(s1.data.photons(130,130,:)),'-k','LineWidth',1);
-    formatFigure('Wavelength (\lambda)','Photons');
-    axis square;
-end
+% SET UP STRUCTS FOR STIMULI
+[s1, s2] = ARCmodelStimSetup(dataPath,subjNum,'acuity',d,[0.56 0 1],bPLOT);
 
 % COLOR MATCHING FUNCTIONS
 S = [380 4 101]; % weird convention used by Brainard lab for specifying wavelengths
@@ -175,7 +95,7 @@ parfor i = 1:length(defocusForStim)
     wvfP = wvfCreate('calc wavelengths', wave, ...
         'measured wavelength', 875, ...
         'zcoeffs', zCoeffs, 'measured pupil', PupilSize, ...
-        'name', sprintf('human-%d', PupilSize),'spatial samples',size(I1,2));
+        'name', sprintf('human-%d', PupilSize),'spatial samples',size(s1.data.photons,2));
     % MAKE SURE THIS VARIABLE IS SET TO THE ACTUAL PUPIL SIZE
     wvfP.calcpupilMM = PupilSize;
     % THE AREA OF THE PUPIL THE PSF IS CALCULATED FROM
@@ -203,7 +123,7 @@ parfor i = 1:length(defocusForStim)
     end
     
     % MAKE POINT-SPREAD FUNCTION (siPSFData) AND WAVEFRONT STRUCT
-    [siPSFData, wvfP] = wvf2SiPsfARC(wvfP,'showBar',false,'nPSFSamples',size(I1,2),'umPerSample',1.1512); % 1.1512
+    [siPSFData, wvfP] = wvf2SiPsfARC(wvfP,'showBar',false,'nPSFSamples',size(s1.data.photons,2),'umPerSample',1.1512); % 1.1512
     oi = wvf2oi(wvfP); % CONVERT TO OPTICS OBJECT
     % NEED TO REMOVE PADDED ZEROS FROM PSF TO MAKE SAME SIZE AS
     % STIMULUS IMAGE. THE LINES BELOW IDENTIFY THE 'GOOD INDICES', I.E.

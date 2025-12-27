@@ -17,10 +17,6 @@ bSave = true;
 
 %% Set up display struct and build Ben's stimulus
 
-% PATH TO CALIBRATION DATA
-calPath = fullfile(dataPath,'BVAMS_calibration_files','Ben_calibration_July_6_2024');
-% PATH TO STIMULUS SPATIAL PATTERN
-stimPath = fullfile(dataPath,'stimuli');
 % PATH TO SAVE
 savePath = fullfile(dataPath,'data','coneImages');
 
@@ -29,7 +25,7 @@ wave = 380:4:780;
 
 % SET UP DISPLAY PARAMETERS (COMMON TO ALL RETINAL IMAGE MODELNG FOR THIS 
 % PROJECT)
-d = ARCmodelDispSetup(calPath);
+d = ARCmodelDispSetup(dataPath,0);
 
 % LOAD COLOR CONDITIONS, PUPIL SIZE, AND MEAN ABERRATIONS
 [~,rgbAll,~,PupilSize,meanC,~,~,~] = ARCnlzLoadDefocusAbb(subjNum,dataPath);
@@ -37,55 +33,8 @@ d = ARCmodelDispSetup(calPath);
 rgb00 = unique(rgbAll,'rows'); % GET UNIQUE COLOR CONDITIONS
 
 for k = 1:size(rgb00,1) % LOOP OVER COLOR CONDITIONS
-    % GET RGB VALUES FOR A PARTICULAR CONDITION
-    rVal = rgb00(k,1);
-    gVal = rgb00(k,2);
-    bVal = rgb00(k,3);
-    % READ IN STIMULUS SPATIAL PATTERN
-    im = imread(fullfile(stimPath,'word_image_01.png'));
-    im = double(im); % CONVERT TO DOUBLE FOR INCREASED PRECISION)
-    % IN THE IMAGE THE BLUE CHANNEL IS AT MAXIMUM VALUE, SO WE USE THIS
-    % PATTERN AS THE 'TEMPLATE'
-    imPattern = squeeze(im(:,:,3));
-    % ADD ZERO PADDING (TO AVOID ARTIFACTS IN LATER ANALYSES)
-    imPattern = [zeros([100 size(imPattern,2)]); imPattern; zeros([100 size(imPattern,2)])];
-    imPattern = [zeros([size(imPattern,1) 30]) imPattern zeros([size(imPattern,1) 30])];
-    % NOW FILL IN ALL CHANNELS WITH SPATIAL PATTERN SCALED BY RGB VALUES
-    I(:,:,3) = bVal.*imPattern;
-    I(:,:,2) = gVal.*imPattern;
-    I(:,:,1) = rVal.*imPattern;
-    % NORMALIZE TO 1 (WHAT ISETBIO EXPECTS)
-    I = I./255;
-    
-    % Turn image into 'scene'
-    s = sceneFromFile(I, 'rgb', [], d);  % The display is included here
-    % I think this copies the struct into an object
-    vcAddObject(s); 
-    
-    % SOMETIMES MIGHT WANT TO PLOT THE STIMULUS TO MAKE SURE NOTHING GOT
-    % MESSED UP DURING THE STIMULUS CREATION PROCESS
-    if bPlotStim 
-        figure; 
-        set(gcf,'Position',[289 428 1056 420]);
-        subplot(1,3,1);
-        plot(d.wave,d.spd(:,1),'r','LineWidth',1.5); hold on;
-        plot(d.wave,d.spd(:,2),'g','LineWidth',1.5);
-        plot(d.wave,d.spd(:,3),'b','LineWidth',1.5);
-        axis square;
-        formatFigure('Wavelength (\lambda)','Radiance');
-        subplot(1,3,2);
-        imagesc(I);
-        set(gca,'XTick',[]);
-        set(gca,'YTick',[]);
-        axis square;
-        set(gca,'FontSize',15);
-        title('Original');
-        subplot(1,3,3);
-        plot(s.spectrum.wave,squeeze(s.data.photons(160,160,:)),'-k','LineWidth',1);
-        formatFigure('Wavelength (\lambda)','Photons');
-        axis square;
-    end
-    
+    % MAKE STIMULUS USING COMMON HELPER FUNCTION
+    [s, ~] = ARCmodelStimSetup(dataPath,subjNum,'accommodation',d,rgb00(k,:),bPlotStim);
     % PEAK CORRELATION WILL BE COMPUTED FOR A RANGE OF 'WAVELENGTHS IN
     % FOCUS'. THIS IS A DISTINCT VARIABLE FROM 'wave', WHICH IS THE
     % WAVELENGTHS OVER WHICH THE STIMULUS IS DEFINED. I HAVE MADE THEM THE
@@ -104,7 +53,7 @@ for k = 1:size(rgb00,1) % LOOP OVER COLOR CONDITIONS
         wvfP = wvfCreate('calc wavelengths', wave, ...
             'measured wavelength', wave2(i), ...
             'zcoeffs', zCoeffs, 'measured pupil', PupilSize, ...
-            'name', sprintf('human-%d', PupilSize),'spatial samples',size(I,2));
+            'name', sprintf('human-%d', PupilSize),'spatial samples',size(s.data.photons,2));
         % MAKE SURE THE calcpupilMM FIELD MATCHES THE ACTUAL PUPIL SIZE IN
         % THE EXPERIMENT
         wvfP.calcpupilMM = PupilSize;
@@ -165,7 +114,7 @@ for k = 1:size(rgb00,1) % LOOP OVER COLOR CONDITIONS
         wvfP = wvfSet(wvfP, 'zcoeff', 0, 'defocus');
         
         % MAKE POINT-SPREAD FUNCTION (siPSFData) AND WAVEFRONT STRUCT
-        [siPSFData, wvfP] = wvf2SiPsfARC(wvfP,'showBar',false,'nPSFSamples',size(I,2),'umPerSample',1.1512); 
+        [siPSFData, wvfP] = wvf2SiPsfARC(wvfP,'showBar',false,'nPSFSamples',size(s.data.photons,2),'umPerSample',1.1512); 
         oi = wvf2oi(wvfP); % CONVERT WAVEFRONT STRUCT TO OPTICS OBJECT
         % NEED TO REMOVE PADDED ZEROS FROM PSF TO MAKE SAME SIZE AS
         % STIMULUS IMAGE. THE LINES BELOW IDENTIFY THE 'GOOD INDICES', I.E.
