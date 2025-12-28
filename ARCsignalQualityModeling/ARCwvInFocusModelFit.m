@@ -9,6 +9,8 @@ function ARCwvInFocusModelFit(subjNum,modelType,dataPath)
 %                   LminusM: RED-GREEN MODEL WITH FITTED WEIGHTS
 % dataPath: local directory for data
 
+rng(1); % INITIALIZE SAME RANDOM SEED
+
 objFunc = 'RMS'; % OBJECTIVE FUNCTION FOR FITTING
 
 % LOAD DEFOCUS VALUES, COLOR CONDITIONS, AND OPTICAL DISTANCES
