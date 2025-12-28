@@ -18,6 +18,7 @@ ieInit;
 % SET UP FOLDERS FOR SAVING AND LOADING MODEL PREDICTIONS FROM EXP1
 saveFolder = fullfile(dataPath,'data','acuityModeling');
 folderExp1 = fullfile(dataPath,'data','PresavedFigureData');
+helperFolder = fullfile(dataPath,'data','helperFiles');
 bPLOT = false;
 
 if strcmp(LumOrChrom,'Chrom') % IF GENERATING CHROMATIC PREDICTIONS
@@ -57,8 +58,13 @@ d = ARCmodelDispSetup(dataPath,0);
 % COLOR MATCHING FUNCTIONS
 S = [380 4 101]; % weird convention used by Brainard lab for specifying wavelengths
 load T_xyz1931; % load color matching functions
+% LOAD STANDARD LENS TRANSMITTANCE FUNCTION. WE WILL NEED TO FACTOR THIS OUT OF
+% V-LAMBDA TO AVOID APPLYING TRANSMITTANCE TWICE.
+load(fullfile(helperFolder,'transmittance.mat'));
 T_sensorXYZ = 683*SplineCmf(S_xyz1931,T_xyz1931,S); % interpolate and scale
 wave = S(1):S(2):S(1)+S(2)*(S(3)-1); % define wavelength vector
+% FACTOR OUT TRANSMITTANCE FROM STANDARD V-LAMBDA
+VlambdaNoTransmittance = T_sensorXYZ(2,:)./squeeze(transmittance)';
 
 % GET ZERNIKE COEFFICIENTS FOR PARTICIPANT
 [~, ~, ~, PupilSize, meanC] = ARCnlzLoadDefocusAbb(subjNum,dataPath);
@@ -102,7 +108,7 @@ parfor i = 1:length(defocusForStim)
     % CONVERT FROM QUANTA TO ENERGY
     energyXW1 = Quanta2Energy(wave,photonsXW1);
     % APPLY V LAMBDA AND RESHAPE TO XY IMAGE
-    lumImgXW1 = sum(bsxfun(@times,energyXW1,squeeze(T_sensorXYZ(2,:))),2);
+    lumImgXW1 = sum(bsxfun(@times,energyXW1,VlambdaNoTransmittance),2);
     lumImgXY1 = reshape(lumImgXW1,[size(oig1.data.photons,1) size(oig1.data.photons,2)]);
 
     % CONVERT FROM PHOTONS TO ENERGY TO LUMINANCE. FIRST, FORMAT TO XW
@@ -111,7 +117,7 @@ parfor i = 1:length(defocusForStim)
     % CONVERT FROM QUANTA TO ENERGY
     energyXW2 = Quanta2Energy(wave,photonsXW2);
     % APPLY V LAMBDA
-    lumImgXW2 = sum(bsxfun(@times,energyXW2,squeeze(T_sensorXYZ(2,:))),2);
+    lumImgXW2 = sum(bsxfun(@times,energyXW2,VlambdaNoTransmittance),2);
     % NO NEED TO PLOT STIMULUS IN BOTH ORIENTATIONS UNLESS YOU WANT TO
     % lumImgXY2 = reshape(lumImgXW2,[size(oig2.data.photons,1) size(oig2.data.photons,2)]);
     
