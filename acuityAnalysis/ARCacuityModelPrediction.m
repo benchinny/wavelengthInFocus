@@ -88,10 +88,10 @@ parfor i = 1:length(defocusForStim)
     % PISTON TERM, ISETBIO DOESN'T)
     zCoeffs = [0 meanC(1:end-1)];
     % NUMBER OF SPATIAL SAMPLES IN X AND Y (NOTE: NOT ROWS AND COLUMNS!)
-    spatialSamplesXY = fliplr(size(s.data.photons));    
+    spatialSamplesXY = [size(s1.data.photons,2) size(s1.data.photons,1)];    
     % SETTING DEFOCUS ACCORDING TO ACUITY STIMULUS DISTANCE
     defocusSet = -defocusForStim(i)*defocusScaleFactor;
-    oi = ARCmodelOpticsSetup(zCoeffs,wave,875,PupilSize,spatialSamplesXY,defocusSet);
+    oi = ARCmodelOpticsSetup(subjNum,zCoeffs,wave,875,PupilSize,spatialSamplesXY,defocusSet);
     
     oig1 = oiCompute(oi, s1); % compute optical image of stimulus
     oig2 = oiCompute(oi, s2); % compute optical image of stimulus

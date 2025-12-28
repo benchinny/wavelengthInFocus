@@ -50,12 +50,12 @@ for k = 1:size(rgb00,1) % LOOP OVER COLOR CONDITIONS
         % ZERNIKE TERM, WHICH IS ALWAYS 0)
         zCoeffs = [0 meanC(1:end-1)];
         % NUMBER OF SPATIAL SAMPLES IN X AND Y (NOTE: NOT ROWS AND COLUMNS!)
-        spatialSamplesXY = fliplr(size(s.data.photons));
+        spatialSamplesXY = [size(s.data.photons,2) size(s.data.photons,1)];
         % FIX DEFOCUS TERM TO 0 BECAUSE WE ARE MODELING WAVELENGTH IN FOCUS
         defocusSet = 0;
         % CALL HELPER FUNCTION FOR SETTING UP OPTICS STRUCT SPECIFIC TO
         % MODELING FOR THIS PROJECT
-        oi = ARCmodelOpticsSetup(zCoeffs,wave,wave2(i),PupilSize,spatialSamplesXY,defocusSet);
+        oi = ARCmodelOpticsSetup(subjNum,zCoeffs,wave,wave2(i),PupilSize,spatialSamplesXY,defocusSet);
 
         % MAIN STEP: COMPUTE OPTICAL IMAGE OF STIMULUS
         oi = oiCompute(oi, s); 

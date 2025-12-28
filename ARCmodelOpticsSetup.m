@@ -1,9 +1,17 @@
-function oi = ARCmodelOpticsSetup(zCoeffs,calcWavelengths,measuredWavelength,PupilSize,spatialSamplesXY,defocusSet)
+function oi = ARCmodelOpticsSetup(subjNum,zCoeffs,calcWavelengths,measuredWavelength,PupilSize,spatialSamplesXY,defocusSet)
 
 % This function generates an optics struct for ISETBIO to model the retinal
 % image in the accommodation and acuity tasks (Exp 1 and Exp 2
 % respectively). WARNING: the settings in this function are specific to the
 % BVAMS apparatus used at UC Berkeley.
+%
+% subjNum: subject number (valid numbers: 1, 3, 5, 10, 16, 17, 18, 20)
+% zCoeffs: Zernike coefficients
+% calcWavelengths: what wavelengths to model the retinal image at
+% measured wavelength: the wavelength in focus
+% PupilSize: pupil size
+% spatialSamplesXY: size of the stimulus in X and Y (not rows and columns!)
+% defocusSet: value to manually set the defocus coefficient at
 
 % MICROMETERS PER SAMPLE. FOR THE CHIN ET AL. (2026) MODEL, THIS WILL YIELD
 % 0.23 ARCMINS PER PIXEL. NOTE THAT THIS VALUE IS SPECIFIC TO THE CODE FOR
@@ -14,7 +22,7 @@ umPerSample = 1.1512;
 wvfP = wvfCreate('calc wavelengths', calcWavelengths, ...
     'measured wavelength', measuredWavelength, ...
     'zcoeffs', zCoeffs, 'measured pupil', PupilSize, ...
-    'name', sprintf('human-%d', PupilSize),'spatial samples',spatialSamplesXY);
+    'name', sprintf('human-%d', PupilSize),'spatial samples',spatialSamplesXY(1));
 % MAKE SURE THE calcpupilMM FIELD MATCHES THE ACTUAL PUPIL SIZE IN
 % THE EXPERIMENT
 wvfP.calcpupilMM = PupilSize;
