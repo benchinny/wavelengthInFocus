@@ -57,7 +57,8 @@ d = ARCmodelDispSetup(dataPath,0);
 
 % COLOR MATCHING FUNCTIONS
 S = [380 4 101]; % weird convention used by Brainard lab for specifying wavelengths
-load T_xyz1931; % load color matching functions
+% LOAD COLOR MATCHING FUNCTIONS--SECOND ROW IS V(LAMBDA)!
+load T_xyz1931; 
 % LOAD STANDARD LENS TRANSMITTANCE FUNCTION. WE WILL NEED TO FACTOR THIS OUT OF
 % V-LAMBDA TO AVOID APPLYING TRANSMITTANCE TWICE.
 load(fullfile(helperFolder,'transmittance.mat'));
@@ -97,6 +98,7 @@ parfor i = 1:length(defocusForStim)
     spatialSamplesXY = [size(s1.data.photons,2) size(s1.data.photons,1)];    
     % SETTING DEFOCUS ACCORDING TO ACUITY STIMULUS DISTANCE
     defocusSet = -defocusForStim(i)*defocusScaleFactor;
+    % SET UP OPTICS STRUCT
     oi = ARCmodelOpticsSetup(subjNum,zCoeffs,wave,875,PupilSize,spatialSamplesXY,defocusSet);
     
     oig1 = oiCompute(oi, s1); % compute optical image of stimulus
