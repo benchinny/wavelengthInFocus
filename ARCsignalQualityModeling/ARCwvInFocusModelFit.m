@@ -49,6 +49,7 @@ end
 coneWeightsFolder = fullfile(dataPath,'data','coneWeightsErrorSpatFilter','colorMechPredictions');
 
 RMSEall = zeros([length(wLM) length(wLprop)]); % INITIALIZE ERROR SURFACE
+pFitAll = zeros([length(wLM) length(wLprop) 2]);
 
 for l = 1:length(wLM) % LOOP OVER RATIO OF L+M TO S
     parfor k = 1:length(wLprop) % LOOP OVER L TO M RATIO
@@ -65,13 +66,14 @@ for l = 1:length(wLM) % LOOP OVER RATIO OF L+M TO S
         % TAG EVERY TRIAL BY OPTICAL DISTANCE FOR FITTING LAGS AND LEADS
         optDistTag = imresize(optDistUnq',size(defocus875mean),'nearest');
         % FIT LAGS AND LEADS
-        [pFit,RMSE(k)] = ARCfitLagLead(defocus875predTmp(:),defocus875mean(:),optDistTag(:),true,objFunc);
-        
+        [pFit(k,:),RMSE(k)] = ARCfitLagLead(defocus875predTmp(:),defocus875mean(:),optDistTag(:),true,objFunc);
+
         display(['Weights = [' num2str(wL) ' ' num2str(wM) ' ' num2str(wS)]);
     end
     RMSEall(l,:) = RMSE;
+    pFitAll(l,:,:) = pFit;
 end
 
-save(fullfile(coneWeightsFolder,['S' num2str(subjNum) modelResultsFilename num2str(round(-wS*10)) '.mat']),'RMSEall','wS','wLM','wLprop');
+save(fullfile(coneWeightsFolder,['S' num2str(subjNum) modelResultsFilename num2str(round(-wS*10)) '.mat']),'RMSEall','wS','wLM','wLprop','pFitAll');
 
 end
