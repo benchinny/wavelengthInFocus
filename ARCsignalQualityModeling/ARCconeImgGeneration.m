@@ -3,17 +3,15 @@ function ARCconeImgGeneration(subjNum,dataPath)
 % subjNum values for participants who passed screening: 1, 3, 5, 10, 16,
 % 17, 18, 20
 
-% MAKE SURE LENS TRANSMITTANCE IN ISETBIO IS DEFAULT! TO DO
-% THIS, GO INTO THE FUNCTION 'oiCalculateIrradiance' AND MAKE SURE THERE IS
-% NO LINE THAT SAYS 'transmittance = ones(size(transmittance));' RIGHT 
-% BEFORE LINE 87. 
-
 %% Initialize and clear
 ieInit;
 
 % WHETHER OR NOT TO PLOT STIMULUS
 bPlotStim = false;
+% WHETHER OR NOT TO SAVE CONE IMAGES
 bSave = true;
+% WHETHER OR NOT TO APPLY OPTICS
+bApplyOptics = true;
 
 %% Set up display struct and build Ben's stimulus
 
@@ -57,8 +55,18 @@ for k = 1:size(rgb00,1) % LOOP OVER COLOR CONDITIONS
         % MODELING FOR THIS PROJECT
         oi = ARCmodelOpticsSetup(subjNum,zCoeffs,wave,wave2(i),PupilSize,spatialSamplesXY,defocusSet);
 
-        % MAIN STEP: COMPUTE OPTICAL IMAGE OF STIMULUS
-        oi = oiCompute(oi, s); 
+        if bApplyOptics % IF APPLYING OPTICS
+           % MAIN STEP: COMPUTE OPTICAL IMAGE OF STIMULUS
+           oi = oiCompute(oi, s); 
+           % NO EXTRA TAGS IN FILE NAME
+           opticsNameTag = '';
+        else % IF NOT APPLYING OPTICS
+           % MAIN STEP: COMPUTE OPTICAL IMAGE OF STIMULUS
+           oi = oiComputeNoOptics(oi,s);
+           % TAG FILENAME TO INDICATE NO OPTICS WERE USED
+           opticsNameTag = 'noOptics';
+        end
+
         % Create the coneMosaic object
         cMosaic = coneMosaic;
         % Set size to show relevant portion of scene
@@ -74,7 +82,7 @@ for k = 1:size(rgb00,1) % LOOP OVER COLOR CONDITIONS
         S = struct;
         S.absorptions = absorptions;
         % NAME FOR SAVING
-        fnameCone = ['subj' num2str(subjNum) 'stimulus' num2str(k) 'focusInd' num2str(i)];
+        fnameCone = ['subj' num2str(subjNum) 'stimulus' num2str(k) 'focusInd' num2str(i) opticsNameTag];
         % UNCOMMENT LINE BELOW TO SAVE NEW CONE IMAGES
         if bSave
            save(fullfile(savePath,['S' num2str(subjNum)],[fnameCone '.mat']),"-fromstruct",S);
