@@ -2,20 +2,21 @@ function wvInFocus = ARCwvInFocusConesMeanZspatFilter(subjNum,stimNum,wLMS,dataP
 
 % FOLDER WITH PRE-GENERATED CONE IMAGES
 foldernameCones = fullfile(dataPath,'data','coneImages');
+% FOLDER NAME WITH HELPER FILES
+foldernameHelpers = fullfile(dataPath,'data','helperFiles');
 
 wave = 380:4:780; % SAMPLED WAVELENGTHS IN MODEL
 nFocus = length(wave); % NUMBER OF WAVELENGTHS MODELED
 
-% USE THE SAME ORIGINAL (PRE-OPTICS) IMAGE EACH TIME--THIS ONE HAPPENS TO
-% LIVE IN THE FOLDER FOR SUBJECT 10, BUT IT REALLY DOESN'T MATTER SINCE ALL
-% SUBJECTS SAW THE SAME ON-SCREEN STIMULUS
-fnameConeRspNoLCA = 'subj10block3stimulus1focusInd1noLCA';
-absorptionsOrig = load(fullfile(dataPath,'data','coneImages','S10',fnameConeRspNoLCA));
+% LOAD THE ORIGINAL (PRE-OPTICS) IMAGE 
+% fnameConeRspNoLCA = 'subj10block3stimulus1focusInd1noLCA';
+fnameConeRspNoLCA = 'coneImagesNoOptics';
+absorptionsOrig = load(fullfile(foldernameHelpers,fnameConeRspNoLCA));
 absorptionsOrig = absorptionsOrig.absorptions;
 coneImgOrig = sum(absorptionsOrig,3);
 
 % LOAD SPATIAL FILTER
-load(fullfile(dataPath,'data','modelParams','freqFilterARC.mat'));
+load(fullfile(foldernameHelpers,'freqFilterARC.mat'));
 
 % MASK FOR SIMULATING 'HOLE' IN S-CONE IMAGE. START OUT WITH SUPPORT.
 [SconeMaskSupportXX, SconeMaskSupportYY] = meshgrid(-90:91,-90:91);
