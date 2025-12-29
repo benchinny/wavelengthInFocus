@@ -10,7 +10,7 @@ function [defocusLCAmeasured, q1best, q2best, q3best,defocusLCAmeasuredBoots,Dgr
 rng(1); % INITIALIZE SAME RANDOM SEED
 
 % DATA DIRECTORY
-dataDirectory = fullfile(dataPath,'data','ARC');
+dataDirectory = fullfile(dataPath,'data','psychophysicalData');
 
 % DATA TO LOAD
 if subj==1

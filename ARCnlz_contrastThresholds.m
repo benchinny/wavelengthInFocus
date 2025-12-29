@@ -7,9 +7,8 @@ function thresholds = ARCnlz_contrastThresholds(subjNum,bPLOT,dataPath)
 %  dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 
 rng(1); % FIX RANDOM SEED
-foldername = fullfile(dataPath,'data','ARC');
+foldername = fullfile(dataPath,'data','psychophysicalData');
 
-fitType = 'weibull';
 % CRITERION PERFORMANCE AT WHICH THRESHOLD IS DEFINED
 thresholdCriterion = 0.85;
 
@@ -132,37 +131,35 @@ rgbUnq = [0.569 0.000 0.000; ...
           0.000 0.000 1.000; ...
           0.569 0.000 1.000]; % THESE ARE ALL THE UNIQUE COLOR CONDITIONS
 
-if strcmp(fitType,'weibull')
+if bPLOT
+   figure;
+   set(gcf,'Position',[414 281 1013 660]);
+end
+thresholds = [];
+for i = 1:size(rgbUnq,1) % GET ALL DATA FROM A GIVEN COLOR
+    ind = abs(AFCpAll.rgb(:,1)-rgbUnq(i,1))<0.001 & ...
+          abs(AFCpAll.rgb(:,2)-rgbUnq(i,2))<0.001 & ...
+          abs(AFCpAll.rgb(:,3)-rgbUnq(i,3))<0.001;
+    % FIT PSYCHOMETRIC FUNCTION
+    [aFit,bFit,Tfit,PCdta] = psyfitWeibull(AFCpAll.contrast(ind),AFCpAll.rspAcu(ind)==AFCpAll.stimOrientation(ind),[],[],thresholdCriterion);
+    thresholds(i) = Tfit;
+    contrastIncr = 0.1:0.01:1;
+    % PLOT PSYCHOMETRIC FUNCTION
+    [PCplt,~]=psyfitWeibullfunc(contrastIncr,aFit,bFit,thresholdCriterion);
     if bPLOT
-       figure;
-       set(gcf,'Position',[414 281 1013 660]);
-    end
-    thresholds = [];
-    for i = 1:size(rgbUnq,1) % GET ALL DATA FROM A GIVEN COLOR
-        ind = abs(AFCpAll.rgb(:,1)-rgbUnq(i,1))<0.001 & ...
-              abs(AFCpAll.rgb(:,2)-rgbUnq(i,2))<0.001 & ...
-              abs(AFCpAll.rgb(:,3)-rgbUnq(i,3))<0.001;
-        % FIT PSYCHOMETRIC FUNCTION
-        [aFit,bFit,Tfit,PCdta] = psyfitWeibull(AFCpAll.contrast(ind),AFCpAll.rspAcu(ind)==AFCpAll.stimOrientation(ind),[],[],thresholdCriterion);
-        thresholds(i) = Tfit;
-        contrastIncr = 0.1:0.01:1;
-        % PLOT PSYCHOMETRIC FUNCTION
-        [PCplt,~]=psyfitWeibullfunc(contrastIncr,aFit,bFit,thresholdCriterion);
-        if bPLOT
-            subplot(2,2,i);
-            hold on;
-            plot([1 1].*(Tfit),[min(contrastIncr) 1].*thresholdCriterion,'k--','LineWidth',1);
-            plot([min(contrastIncr) 1].*(Tfit),[1 1].*thresholdCriterion,'k--','LineWidth',1);
-            plot(contrastIncr,PCplt,'-','Color',rgbUnq(i,:),'LineWidth',1);
-            plot(unique(AFCpAll.contrast(ind)),PCdta,'o','Color',rgbUnq(i,:),'LineWidth',1,'MarkerSize',10,'MarkerFaceColor','w');
-            axis square;
-            xlabel('Contrast');
-            ylabel('Proportion correct');
-            title(['Subj ' num2str(subjNum) ', Threshold = ' num2str(Tfit,2)]);
-            set(gca,'FontSize',15);
-            xlim([min(contrastIncr) 1]);
-            ylim([0.3 1]);
-        end
+        subplot(2,2,i);
+        hold on;
+        plot([1 1].*(Tfit),[min(contrastIncr) 1].*thresholdCriterion,'k--','LineWidth',1);
+        plot([min(contrastIncr) 1].*(Tfit),[1 1].*thresholdCriterion,'k--','LineWidth',1);
+        plot(contrastIncr,PCplt,'-','Color',rgbUnq(i,:),'LineWidth',1);
+        plot(unique(AFCpAll.contrast(ind)),PCdta,'o','Color',rgbUnq(i,:),'LineWidth',1,'MarkerSize',10,'MarkerFaceColor','w');
+        axis square;
+        xlabel('Contrast');
+        ylabel('Proportion correct');
+        title(['Subj ' num2str(subjNum) ', Threshold = ' num2str(Tfit,2)]);
+        set(gca,'FontSize',15);
+        xlim([min(contrastIncr) 1]);
+        ylim([0.3 1]);
     end
 end
 
