@@ -27,6 +27,13 @@ rng(1); % FIX RANDOM SEED
 % WHERE THE PRE-FIT CONE WEIGHTS ARE STORED
 coneWeightsFolder = fullfile(dataPath,'data','coneWeightsErrorSpatFilter','colorMechPredictions');
 
+% THIS IS FOR DETERMINING WHICH FILE OF PRESAVED WEIGHTS TO LOAD
+if strcmp(sigQualType,'xcorr')
+    metricName = '';
+elseif strcmp(sigQualType,'strehl')
+    metricName = 'strehl';
+end
+
 % LOAD CONE WEIGHTS
 if strcmp(modelType,'LMS') % IF BLUE-YELLOW OPPONENT MODEL
     % THIS VALUE WAS GOOD TO SEARCH OVER A WIDE RANGE OF (W_L+W_M)/W_S
@@ -42,7 +49,7 @@ if strcmp(modelType,'LMS') % IF BLUE-YELLOW OPPONENT MODEL
         wS = -0.5;
     end
     % LOAD PRE-FIT CONE WEIGHTS
-    load(fullfile(coneWeightsFolder,['S' num2str(subjNum) 'wvInFocusModelResultsDonutx2' num2str(round(-wS*10)) '.mat']),'RMSEall','wS','wLM','wLprop','pFitAll');
+    load(fullfile(coneWeightsFolder,['S' num2str(subjNum) 'wvInFocusModelResultsDonutx2' metricName num2str(round(-wS*10)) '.mat']),'RMSEall','wS','wLM','wLprop','pFitAll');
     
     % MAKE A MESHGRID FOR EASILY FINDING THE BEST FIT PRE-GENERATED PARAMETERS
     [wLpropGrid,wLMgrid] = meshgrid(wLprop,wLM);
@@ -65,7 +72,7 @@ end
 if strcmp(modelType,'LM') % IF LUMINANCE MODEL WITH FREE WEIGHTS
     wS = 0; % ALWAYS 0 BY DEFINITION
     % LOAD PRE-FIT CONE WEIGHTS
-    load(fullfile(coneWeightsFolder,['S' num2str(subjNum) 'wvInFocusModelResults' num2str(round(-wS*10)) '.mat']),'RMSEall','wS','wLM','wLprop','pFitAll');
+    load(fullfile(coneWeightsFolder,['S' num2str(subjNum) 'wvInFocusModelResults' metricName num2str(round(-wS*10)) '.mat']),'RMSEall','wS','wLM','wLprop','pFitAll');
     
     % MAKE A MESHGRID FOR EASILY FINDING THE BEST FIT PRE-GENERATED PARAMETERS
     [wLpropGrid,wLMgrid] = meshgrid(wLprop,wLM);
@@ -88,7 +95,7 @@ end
 if strcmp(modelType,'LminusM') % IF RED-GREEN OPPONENT MODEL
     wS = 0; % ALWAYS 0 BY DEFINITION
     % LOAD PRE-FIT WEIGHTS
-    load(fullfile(coneWeightsFolder,['S' num2str(subjNum) 'wvInFocusModelResultsLminusM' num2str(round(-wS*10)) '.mat']),'RMSEall','wLM','wLprop','pFitAll');
+    load(fullfile(coneWeightsFolder,['S' num2str(subjNum) 'wvInFocusModelResultsLminusM' metricName num2str(round(-wS*10)) '.mat']),'RMSEall','wLM','wLprop','pFitAll');
     
     % MAKE A MESHGRID FOR EASILY FINDING THE BEST FIT PRE-GENERATED PARAMETERS
     [wLpropGrid,wLMgrid] = meshgrid(wLprop,wLM);
