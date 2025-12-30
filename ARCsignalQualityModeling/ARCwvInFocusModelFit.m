@@ -51,6 +51,14 @@ else
     error('Specify valid model type!');
 end
 
+if strcmp(sigQualType,'xcorr')
+    metricName = '';
+elseif strcmp(sigQualType,'strehl')
+    metricName = 'strehl';
+else
+    error('Specify valid string for sigQualType: either xcorr or strehl');
+end
+
 coneWeightsFolder = fullfile(dataPath,'data','coneWeightsErrorSpatFilter','colorMechPredictions');
 
 RMSEall = zeros([length(wLM) length(wLprop)]); % INITIALIZE ERROR SURFACE
@@ -79,6 +87,6 @@ for l = 1:length(wLM) % LOOP OVER RATIO OF L+M TO S
     pFitAll(l,:,:) = pFit;
 end
 
-save(fullfile(coneWeightsFolder,['S' num2str(subjNum) modelResultsFilename num2str(round(-wS*10)) '.mat']),'RMSEall','wS','wLM','wLprop','pFitAll');
+save(fullfile(coneWeightsFolder,['S' num2str(subjNum) modelResultsFilename metricName num2str(round(-wS*10)) '.mat']),'RMSEall','wS','wLM','wLprop','pFitAll');
 
 end

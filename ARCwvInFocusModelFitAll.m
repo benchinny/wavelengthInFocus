@@ -1,26 +1,23 @@
-%% WRAPPER SCRIPT FOR FITTING MAIN MODEL TO DATA
+function ARCwvInFocusModelFitAll(subjNumAll,modelType,sigQualType,dataPath)
 
-dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
-% OPTIONS: 'LMS': blue-yellow model.
+% wrapper function for fitting main model to data
+%
+% subjNumAll: all subject numbers. Valid numbers: 1, 3, 5, 10, 16, 17, 18,
+%                                                 20
+% modelType: which color model to use
+%           'LMS': blue-yellow model.
 %           'LM': luminance model
-%          'LminusM': red-green model
-modelType = 'LMS';
-% OPTIONS: 'xcorr': cross-correlation metric.
+%           'LminusM': red-green model
+% sigQualType: which signal quality metric to use
+%           'xcorr': cross-correlation metric.
 %           'strehl': Strehl ratio
-sigQualType = 'xcorr';
+% dataPath: path to folder with all data. Example below.
+%           dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 
-ARCwvInFocusModelFit(1,modelType,sigQualType,dataPath);
+for i = 1:length(subjNumAll)
+    ARCwvInFocusModelFit(subjNumAll(i),modelType,sigQualType,dataPath);
+end
 
-ARCwvInFocusModelFit(3,modelType,sigQualType,dataPath);
+end
 
-ARCwvInFocusModelFit(5,modelType,sigQualType,dataPath);
 
-ARCwvInFocusModelFit(10,modelType,sigQualType,dataPath);
-
-ARCwvInFocusModelFit(16,modelType,sigQualType,dataPath);
-
-ARCwvInFocusModelFit(17,modelType,sigQualType,dataPath);
-
-ARCwvInFocusModelFit(18,modelType,sigQualType,dataPath);
-
-ARCwvInFocusModelFit(20,modelType,sigQualType,dataPath);
