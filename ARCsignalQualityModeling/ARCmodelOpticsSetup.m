@@ -1,4 +1,4 @@
-function oi = ARCmodelOpticsSetup(subjNum,zCoeffs,calcWavelengths,measuredWavelength,PupilSize,spatialSamplesXY,defocusSet)
+function [oi, siPSFData]= ARCmodelOpticsSetup(subjNum,zCoeffs,calcWavelengths,measuredWavelength,PupilSize,spatialSamplesXY,defocusSet)
 
 % This function generates an optics struct for ISETBIO to model the retinal
 % image in the accommodation and acuity tasks (Exp 1 and Exp 2

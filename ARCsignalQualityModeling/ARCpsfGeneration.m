@@ -53,7 +53,7 @@ parfor i = 1:length(wave2) % LOOP OVER WAVELENGTHS IN FOCUS
     defocusSet = 0;
     % CALL HELPER FUNCTION FOR SETTING UP OPTICS STRUCT SPECIFIC TO
     % MODELING FOR THIS PROJECT
-    oi = ARCmodelOpticsSetup(subjNum,zCoeffs,wave,wave2(i),PupilSize,spatialSamplesXY,defocusSet);
+    [oi, siPSFData] = ARCmodelOpticsSetup(subjNum,zCoeffs,wave,wave2(i),PupilSize,spatialSamplesXY,defocusSet);
     
     display(['Peak correlation loop ' num2str(i)]);
 
