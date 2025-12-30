@@ -25,7 +25,7 @@ gammaB = 2.3;
 
 if strcmp(accommodationORacuity,'accommodation')
     % PATH TO STIMULUS SPATIAL PATTERN
-    stimPath = fullfile(dataPath,'stimuli');
+    stimPath = fullfile(dataPath,'data','helperFiles');
     % READ IN STIMULUS SPATIAL PATTERN
     im = imread(fullfile(stimPath,'word_image_01.png'));
     im = double(im); % CONVERT TO DOUBLE FOR INCREASED PRECISION)

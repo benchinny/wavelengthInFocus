@@ -23,7 +23,7 @@ d.dixel = [];
 d.mainimage = [];
 
 % PATH TO CALIBRATION DATA
-calPath = fullfile(dataPath,'BVAMS_calibration_files','Ben_calibration_July_6_2024');
+calPath = fullfile(dataPath,'data','helperFiles','BVAMS_calibration_files','Ben_calibration_July_6_2024');
 
 % LOAD BVAMS CALIBRATION DATA
 load(fullfile(calPath,'redPrimaryJuly0624_initialPositionFocus3_100.mat'));
