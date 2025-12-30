@@ -7,7 +7,7 @@ nFocus = length(wave);
 % PATH TO PSFs
 foldernameCones = fullfile(dataPath,'data','psfs');
 % PATH TO DISPLAY CALIBRATION FILES (TO GET PRIMARIES)
-calPath = fullfile(dataPath,'helperFiles','BVAMS_calibration_files','Ben_calibration_July_6_2024');
+calPath = fullfile(dataPath,'data','helperFiles','BVAMS_calibration_files','Ben_calibration_July_6_2024');
 
 % LOAD CALIBRATION FILES
 load(fullfile(calPath,'redPrimaryJuly0624_initialPositionFocus3_100.mat'));
@@ -36,8 +36,8 @@ strehlNorm = [];
 
 for i = 1:nFocus % FOR EACH WAVELENGTH
     % LOAD POINT SPREAD FUNCTIONS
-    fnameConeRsp = ['subj' num2str(subjNum) 'stimulus12focusInd' num2str(i) 'psf'];
-    S = load([foldernameCones 'S' num2str(subjNum) '/' fnameConeRsp]);
+    fnameConeRsp = ['subj' num2str(subjNum) 'PSFfocusInd' num2str(i)];
+    S = load(fullfile(foldernameCones,['S' num2str(subjNum)],fnameConeRsp));
     % SCALE EACH POINT SPREAD FUNCTION BY ENERGY GETTING PAST LENS
     psfIrradianceScaled = bsxfun(@times,S.psf,stimSPDtransmitted);
     % INITIALIZE MATRIX FOR STORING CONE IMAGES OF PSFS
