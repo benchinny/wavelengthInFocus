@@ -1,7 +1,8 @@
 %% GENERATE MODEL PREDICTIONS TOGETHER WITH ACTUAL DATA
 
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
-modelType = 'LMS';
+modelType = 'LminusM';
+sigQualType = 'xcorr';
 bSAVE = true;
 
 savePath = fullfile(dataPath,'data','PresavedFigureData/');
@@ -22,8 +23,12 @@ elseif strcmp(modelType,'LM')
     savename = 'wvMeanAndPredLM';
 end
 
+if strcmp(sigQualType,'strehl')
+    savename = [savename 'strehl'];
+end
+
 for i = 1:length(subjNum)
-    [aic, pFit, wvMean, wvPred, dfPredPurple, wLMmin, wLpropMin] = ARCwvInFocusModelSort(subjNum(i),modelType,dataPath);
+    [aic, pFit, wvMean, wvPred, dfPredPurple, wLMmin, wLpropMin] = ARCwvInFocusModelSort(subjNum(i),modelType,sigQualType,dataPath);
     wvMeanAll(:,:,i) = wvMean;
     wvPredAll(:,:,i) = wvPred;
     aicAll(i) = aic;
