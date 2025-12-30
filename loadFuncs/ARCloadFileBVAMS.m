@@ -7,7 +7,7 @@ function AFCp = ARCloadFileBVAMS(subjNum,blockNum,dataPath)
 % INITIALIZE SOMETHING TO RETURN EVEN IF NOTHING IS FOUND
 AFCp = []; 
 
-dataFolder = fullfile(dataPath,'data','ARC');
+dataFolder = fullfile(dataPath,'data','stimulusData');
 
 % LOAD 'MASTER FILE' SHOWING ALL FILE NAMES FOR EACH BLOCK AND CONDITION
 load(fullfile(dataFolder,'AFCflsR'));

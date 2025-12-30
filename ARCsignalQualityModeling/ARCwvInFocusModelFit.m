@@ -1,12 +1,15 @@
 %% LOADING DATA
 
-function ARCwvInFocusModelFit(subjNum,modelType,dataPath)
+function ARCwvInFocusModelFit(subjNum,modelType,sigQualType,dataPath)
 
 % subjNum: subject number. Valid numbers: 1, 3, 5, 10, 16, 17, 18, 20
 % modelType options
 %                   LM     : LUMINANCE MODEL WITH FITTED WEIGHTS
 %                   LMS    : BLUE-YELLOW MODEL WITH FITTED WEIGHTS
 %                   LminusM: RED-GREEN MODEL WITH FITTED WEIGHTS
+% sigQualType options
+%                   'xcorr' : cross-correlation metric (main paper)
+%                   'strehl': normalized Strehl (supplement)
 % dataPath: local directory for data
 
 rng(1); % INITIALIZE SAME RANDOM SEED
@@ -64,7 +67,7 @@ for l = 1:length(wLM) % LOOP OVER RATIO OF L+M TO S
             wM = -(wLM(l)-wL); 
         end
         % GENERATE PREDICTIONS OF DEFOCUS USING HELPER FUNCTION
-        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelHelper(subjNum,defocus875,rgbAll,optDistAll,[wL wM wS],dataPath);
+        [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelHelper(subjNum,defocus875,rgbAll,optDistAll,[wL wM wS],sigQualType,dataPath);
         % TAG EVERY TRIAL BY OPTICAL DISTANCE FOR FITTING LAGS AND LEADS
         optDistTag = imresize(optDistUnq',size(defocus875mean),'nearest');
         % FIT LAGS AND LEADS

@@ -1,4 +1,4 @@
-function [aic, pFit, wvMeanAll, wvPredAll, dfPredPurple, wLMmin, wLpropMin] = ARCwvInFocusModelSort(subjNum,modelType,dataPath)
+function [aic, pFit, wvMeanAll, wvPredAll, dfPredPurple, wLMmin, wLpropMin] = ARCwvInFocusModelSort(subjNum,modelType,sigQualType,dataPath)
 
 % This function sorts data for plotting fits of various models to data from the
 % accommodation experiment. Loads pre-fit parameters.
@@ -9,6 +9,9 @@ function [aic, pFit, wvMeanAll, wvPredAll, dfPredPurple, wLMmin, wLpropMin] = AR
 %            'LM' : luminance model with L-M ratio as free parameter
 %            'LminusM': red-green model
 %            'Lum': luminance model with V-lambda
+% sigQualType: signal quality metric. Valid strings:
+%             'xcorr'  : cross-correlation metric (main paper)
+%             'strehl' : normalized Strehl (supplement)
 %
 % aic: AIC from model fit
 % pFit: fit parameters
@@ -143,7 +146,7 @@ wvPredAll = zeros([10 3]);
 
 % IMPORTANT THINGS HAPPENING IN HELPER FUNCTION: GENERATE
 % PREDICTIONS OF DEFOCUS FOR EACH CONDITION
-[~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelHelper(subjNum,defocus875,rgbAll,optDistAll,[wL wM wS],dataPath);
+[~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelHelper(subjNum,defocus875,rgbAll,optDistAll,[wL wM wS],sigQualType,dataPath);
 
 % SORTING DATA FOR PLOTTING
 defocus875pred = [];

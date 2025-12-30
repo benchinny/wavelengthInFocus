@@ -1,4 +1,4 @@
-function [RMSE, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelHelper(subjNum,defocus875,rgbAll,optDistAll,w,dataPath)
+function [RMSE, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelHelper(subjNum,defocus875,rgbAll,optDistAll,w,sigQualType,dataPath)
 
 % LIST OF ALL SUBJECTS
 subjNumListAll = [1 3 5 10 16 17 18 20];
@@ -14,7 +14,13 @@ rgbUnq = unique(rgbAll,'rows'); % UNIQUE COLOR CONDITIONS
 wvInFocus = zeros([size(rgbUnq,1) 1]); % INITIALIZE WAVELENGTH IN FOCUS VECTOR
 for l = 1:size(rgbUnq,1) % FOR EACH COLOR CONDITION
     % GET THE WAVELENGTH THAT SHOULD BE IN FOCUS
-    wvInFocus(l,:) = ARCwvInFocusConesMeanZspatFilter(subjNum,l,w,dataPath);
+    if strcmp(sigQualType,'xcorr')
+       wvInFocus(l,:) = ARCwvInFocusConesMeanZspatFilter(subjNum,l,w,dataPath);
+    elseif strcmp(sigQualType,'strehl')
+       wvInFocus(l,:) = ARCwvInFocusConesMeanZstrehl(subjNum,rgbUnq(l),w,dataPath);
+    else
+        error('ARCwvInFocusModelHelper: invalid value of parameter sigQualType. Must be xcorr or strehl.');
+    end
     display(['stim ' num2str(l)]);
 end
 

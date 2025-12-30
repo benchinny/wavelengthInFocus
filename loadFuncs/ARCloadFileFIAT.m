@@ -6,7 +6,7 @@ function [trialData, defocus, TimeStamp] = ARCloadFileFIAT(subjName,blockNum,tri
 
 % FOLDER CONTAINING CSV FILES
 % dataFolder = [dataPath 'data' slash 'csvFiles' slash];
-dataFolder = fullfile(dataPath,'data','csvFiles');
+dataFolder = fullfile(dataPath,'data','wavefrontData');
 
 % GET ALL FILE NAMES IN FOLDER
 dirAll = dir(dataFolder);
