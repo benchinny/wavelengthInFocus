@@ -90,7 +90,7 @@ q3 = q3bestAll(subjNum==subjNumAll);
 % CONVERT TO WAVELENGTH-IN-FOCUS
 wvInFocusForStim = humanWaveDefocusInvertParameterizedARC(875,-defocusForStim,q1,q2,q3);
 
-for i = 14
+parfor i = 1:length(defocusForStim)
     % FORMAT ACCORDING TO WHAT ISETBIO EXPECTS (WAVEFRONT SENSOR LEAVES OUT
     % PISTON TERM, ISETBIO DOESN'T)
     zCoeffs = [0 meanC(1:end-1)];
