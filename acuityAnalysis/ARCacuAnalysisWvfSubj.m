@@ -6,7 +6,7 @@ else
     slash = '/';
 end
 
-dataFolder = [dataPath 'data' slash 'csvFiles' slash 'SUBJ' slash];
+dataFolder = [dataPath 'data' slash 'wavefrontData' slash 'SUBJ' slash];
 
 dirAll = dir(dataFolder);
 

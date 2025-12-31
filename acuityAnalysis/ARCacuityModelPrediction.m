@@ -1,10 +1,10 @@
-function [dprimeMetric, dprime, dprimeCI] = ARCacuityModelPrediction(subjNum,LumOrChrom,dataPath)
+function [dprimeMetric, dprime, dprimeCI] = ARCacuityModelPrediction(subjNum,LMOrChrom,dataPath)
 
 % function for generating model predictions for acuity data.
 %
 % subjNum: subject number
-% LumOrChrom: specify which model we are using to generate predictions.
-%             'Lum': luminance model.
+% LMOrChrom: specify which model we are using to generate predictions.
+%             'LM': luminance model.
 %             'Chrom': best chromatic model
 % dataPath  : path to folder where data lives
 %
@@ -21,7 +21,7 @@ folderExp1 = fullfile(dataPath,'data','PresavedFigureData');
 helperFolder = fullfile(dataPath,'data','helperFiles');
 bPLOT = false;
 
-if strcmp(LumOrChrom,'Chrom') % IF GENERATING CHROMATIC PREDICTIONS
+if strcmp(LMOrChrom,'Chrom') % IF GENERATING CHROMATIC PREDICTIONS
     % LOAD BLUE-YELLOW PREDICTIONS
     load(fullfile(folderExp1,'wvMeanAndPredDonutx2.mat'),'dfPredPurpleAll','aicAll');
     dfPredPurpleBYAll = dfPredPurpleAll;
@@ -38,14 +38,14 @@ if strcmp(LumOrChrom,'Chrom') % IF GENERATING CHROMATIC PREDICTIONS
     modelPrediction875nmPurpleAt2pt5all(~indBYbetter) = dfPredPurpleRGAll(~indBYbetter);
     % FOR SAVING FILE
     savePredName = 'acuityModelingPredictionS';
-elseif strcmp(LumOrChrom,'Lum') % IF USING LUMINANCE MODEL PREDICTIONS
+elseif strcmp(LMOrChrom,'LM') % IF USING LUMINANCE MODEL PREDICTIONS
     % LOAD THE LUMINANCE MODEL PREDICTIONS
     load(fullfile(folderExp1,'wvMeanAndPredLM.mat'),'dfPredPurpleAll','aicAll');
     modelPrediction875nmPurpleAt2pt5all = dfPredPurpleAll;
     % FOR SAVING FILE
-    savePredName = 'acuityModelingPredictionLumS';
+    savePredName = 'acuityModelingPredictionLMS';
 else
-    error('LumOrChrom variable needs to either be the string ''Lum'' or ''Chrom'' ');
+    error('LMOrChrom variable needs to either be the string ''LM'' or ''Chrom'' ');
 end
 
 % SET UP DISPLAY PARAMETERS (COMMON TO ALL RETINAL IMAGE MODELNG FOR THIS 
@@ -90,7 +90,7 @@ q3 = q3bestAll(subjNum==subjNumAll);
 % CONVERT TO WAVELENGTH-IN-FOCUS
 wvInFocusForStim = humanWaveDefocusInvertParameterizedARC(875,-defocusForStim,q1,q2,q3);
 
-parfor i = 1:length(defocusForStim)
+for i = 14
     % FORMAT ACCORDING TO WHAT ISETBIO EXPECTS (WAVEFRONT SENSOR LEAVES OUT
     % PISTON TERM, ISETBIO DOESN'T)
     zCoeffs = [0 meanC(1:end-1)];
