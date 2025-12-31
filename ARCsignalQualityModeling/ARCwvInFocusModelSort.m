@@ -124,8 +124,22 @@ end
 
 if strcmp(modelType,'Lum') % IF USING V(LAMBDA)
     wS = 0;
-    wL = 0.72;
-    wM = 0.28;
+    load(fullfile(coneWeightsFolder,['S' num2str(subjNum) 'wvInFocusModelResultsLum' metricName num2str(round(-wS*10)) '.mat']),'RMSEall','wLM','wLprop','pFitAll');
+    % MAKE A MESHGRID FOR EASILY FINDING THE BEST FIT PRE-GENERATED PARAMETERS
+    [wLpropGrid,wLMgrid] = meshgrid(wLprop,wLM);
+    % INDEX IN GRID FOR BEST PARAMETERS
+    indMin = RMSEall==min(RMSEall(:));
+    % BEST FIT PARAMETERS
+    wLMmin = wLMgrid(indMin);
+    wLpropMin = wLpropGrid(indMin);
+    % CONVERT BEST FIT PARAMETERS TO L AND M WEIGHTS
+    wL = wLMmin*wLpropMin;
+    wM = wLMmin-wL;
+    nParams = 2; % FOR CALCULATING AIC LATER    
+    pFit1all = squeeze(pFitAll(:,:,1));
+    pFit2all = squeeze(pFitAll(:,:,2));
+    pFit(1) = pFit1all(indMin);
+    pFit(2) = pFit2all(indMin);        
 end
 
 % LOAD DEFOCUS VALUES, COLOR CONDITIONS, AND OPTICAL DISTANCES

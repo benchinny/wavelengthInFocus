@@ -1,8 +1,8 @@
 %% GENERATE MODEL PREDICTIONS TOGETHER WITH ACTUAL DATA
 
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
-modelType = 'LminusM';
-sigQualType = 'xcorr';
+modelType = 'Lum';
+sigQualType = 'deltapass';
 bSAVE = true;
 
 savePath = fullfile(dataPath,'data','PresavedFigureData/');
@@ -21,10 +21,14 @@ elseif strcmp(modelType,'LminusM')
     savename = 'wvMeanAndPredLminusM';
 elseif strcmp(modelType,'LM')
     savename = 'wvMeanAndPredLM';
+elseif strcmp(modelType,'Lum')
+    savename = 'wvMeanAndPredLum';
 end
 
 if strcmp(sigQualType,'strehl')
     savename = [savename 'strehl'];
+elseif strcmp(sigQualType,'deltapass')
+    savename = [savename 'deltapass'];    
 end
 
 for i = 1:length(subjNum)

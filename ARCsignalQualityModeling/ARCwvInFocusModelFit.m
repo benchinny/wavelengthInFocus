@@ -53,6 +53,7 @@ elseif strcmp(modelType,'Lum')
     wLM = 1;
     wLprop = 0.72;
     wS = 0;
+    modelResultsFilename = 'wvInFocusModelResultsLum';
 else
     error('Specify valid model type!');
 end
@@ -61,8 +62,10 @@ if strcmp(sigQualType,'xcorr')
     metricName = '';
 elseif strcmp(sigQualType,'strehl')
     metricName = 'strehl';
+elseif strcmp(sigQualType,'deltapass')
+    metricName = 'deltapass';    
 else
-    error('Specify valid string for sigQualType: either xcorr or strehl');
+    error('Specify valid string for sigQualType: either xcorr, strehl, or deltapass');
 end
 
 coneWeightsFolder = fullfile(dataPath,'data','coneWeightsErrorSpatFilter','colorMechPredictions');

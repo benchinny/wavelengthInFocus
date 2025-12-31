@@ -18,11 +18,11 @@ calPath = fullfile(dataPath,'data','helperFiles','BVAMS_calibration_files','Ben_
 % Setting up display properties
 d = struct;
 % LOADING DISPLAY CALIBRATION DATA
-load([calPath 'redPrimaryJuly0624_initialPositionFocus3_100.mat']);
+load(fullfile(calPath,'redPrimaryJuly0624_initialPositionFocus3_100.mat'));
 d.spd(:,1) = energy;
-load([calPath 'greenPrimaryJuly0624_initialPositionFocus3_100.mat']);
+load(fullfile(calPath,'greenPrimaryJuly0624_initialPositionFocus3_100.mat'));
 d.spd(:,2) = energy;
-load([calPath 'bluePrimaryJuly0624_initialPositionFocus3_100.mat']);
+load(fullfile(calPath,'bluePrimaryJuly0624_initialPositionFocus3_100.mat'));
 d.spd(:,3) = energy;
 
 % CALCULATE STIMULUS ENERGY SPECTRUM FOR INPUT RGB VALUES
@@ -55,8 +55,8 @@ ycoord = frqCpStimSpace.*sind(angle2interp);
 
 for i = 1:nFocus % FOR EACH WAVELENGTH
     % LOAD POINT SPREAD FUNCTIONS
-    fnameConeRsp = ['subj' num2str(subjNum) 'stimulus12focusInd' num2str(i) 'psf'];
-    S = load([foldernameCones 'S' num2str(subjNum) '/' fnameConeRsp]);
+    fnameConeRsp = ['subj' num2str(subjNum) 'PSFfocusInd' num2str(i)];
+    S = load(fullfile(foldernameCones,['S' num2str(subjNum)],fnameConeRsp));
     % SCALE EACH POINT SPREAD FUNCTION BY ENERGY GETTING PAST LENS
     mtfIrradianceScaled = bsxfun(@times,abs(S.otf),stimSPDtransmitted);
     mtfCone = [];
