@@ -7,7 +7,7 @@ foldername = fullfile(dataPath,'data','PresavedFigureData');
 % wvMeanAndPredLminusM: RED-GREEN PREDICTIONS
 % wvMeanAndPredDonutx2: BLUE-YELLOW PREDICTIONS
 % wvMeanAndPredLM: LUMINANCE PREDICTIONS
-load(fullfile(foldername,'wvMeanAndPredDonutx2.mat'));
+load(fullfile(foldername,'allExp1DataRGB.mat'));
 
 symbDist = 'sod'; % SYMBOLS FOR PLOTTING
 % ORDER CONDITIONS FOR PLOTTING

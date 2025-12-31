@@ -3,8 +3,8 @@
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 % OPTIONS:
 % acuityModelingPrediction: FOR BEST-FITTING COLOR-OPPONENT MODEL
-% acuityModelingPredictionLum: FOR BEST-FITTING LUMINANCE MODEL
-fileStr = 'acuityModelingPrediction';
+% acuityModelingPredictionLM: FOR BEST-FITTING LUMINANCE MODEL
+fileStr = 'acuityModelingPredictionLM';
 
 subjNumAll = [1 3 5 10 16 17 18 20];
 peakLocModelPredictionAll = []; % PREDICTED 'BEST ACUITY' DISTANCES FROM MODEL
@@ -80,4 +80,4 @@ ylim([1.5 2.8]);
 plot([1.5 2.8],[1.5 2.8],'k--','LineWidth',1);
 xlabel(['Predicted Peak Location (D)']);
 ylabel(['Actual Peak Location (D)']);
-corrPredAndActual = corr(peakLocModelPredictionAll',peakLocActualAll(subjNumInclude)');
+[corrPredAndActual,p] = corr(peakLocModelPredictionAll',peakLocActualAll(subjNumInclude)');
