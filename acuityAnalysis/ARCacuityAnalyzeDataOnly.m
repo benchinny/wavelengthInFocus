@@ -8,7 +8,7 @@ function [unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport,best
 % dataPath: path to data on local machine
 
 % WHERE THE ACUITY DATA RESIDE
-dataDirectory = fullfile(dataPath,'data','ARC');
+dataDirectory = fullfile(dataPath,'data','psychophysicalData');
 % SPECIFY 95% CONFIDENCE INTERVALS
 confIntBounds = [0.025 0.975];
 
