@@ -57,13 +57,17 @@ parfor i = 1:length(wave2) % LOOP OVER WAVELENGTHS IN FOCUS
     
     display(['Peak correlation loop ' num2str(i)]);
 
-    % PLACE ABSORPTIONS IN STRUCT
+    % PLACE PSFS AND OTFS IN STRUCT
     S = struct;
+    % STORE PSF
     S.psf = single(siPSFData.psf(134:184,134:184,:));
+    % INITIALIZE MATRIX FOR STORING OTFS
     OTFzeroCentered = [];
-    for j = 1:size(siPSFData.psf,3)
+    for j = 1:size(siPSFData.psf,3) % LOOP OVER WAVELENGTHS
+        % STORE-ZERO-CENTERED OTF
         OTFzeroCentered(:,:,j) = ifftshift(squeeze(oi.optics.OTF.OTF(:,:,j)));
     end
+    % JUST GRAB THE FIRST 60 FREQUENCIES
     S.otf = single(OTFzeroCentered(116:175,130:189,:));    
     % NAME FOR SAVING
     fnameCone = ['subj' num2str(subjNum) 'PSFfocusInd' num2str(i)];

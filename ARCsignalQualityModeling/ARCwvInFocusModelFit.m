@@ -10,6 +10,8 @@ function ARCwvInFocusModelFit(subjNum,modelType,sigQualType,dataPath)
 % sigQualType options
 %                   'xcorr' : cross-correlation metric (main paper)
 %                   'strehl': normalized Strehl (supplement)
+%                   'deltapass': Finch et al. model, which is bandpass at a
+%                                single frequency (hence 'delta pass')
 % dataPath: local directory for data
 
 rng(1); % INITIALIZE SAME RANDOM SEED
@@ -47,6 +49,10 @@ elseif strcmp(modelType,'LminusM')
     wLprop = 0.25:(0.1/3):0.85; % ratio of L to M    
     wS = 0;
     modelResultsFilename = 'wvInFocusModelResultsLminusM';
+elseif strcmp(modelType,'Lum')
+    wLM = 1;
+    wLprop = 0.72;
+    wS = 0;
 else
     error('Specify valid model type!');
 end
@@ -67,12 +73,12 @@ pFitAll = zeros([length(wLM) length(wLprop) 2]);
 for l = 1:length(wLM) % LOOP OVER RATIO OF L+M TO S
     parfor k = 1:length(wLprop) % LOOP OVER L TO M RATIO
         % CONVERTING TO WEIGHTS ON L AND M
-        if strcmp(modelType,'LMS') || strcmp(modelType,'LM')
+        if strcmp(modelType,'LMS') || strcmp(modelType,'LM') || strcmp(modelType,'Lum')
             wL = wLM(l)*wLprop(k);
             wM = wLM(l)-wL;
         elseif strcmp(modelType,'LminusM')
             wL = wLM(l)*wLprop(k);
-            wM = -(wLM(l)-wL); 
+            wM = -(wLM(l)-wL);     
         end
         % GENERATE PREDICTIONS OF DEFOCUS USING HELPER FUNCTION
         [~, defocus875mean, defocus875predTmp, rgbUnq, optDistUnq] = ARCwvInFocusModelHelper(subjNum,defocus875,rgbAll,optDistAll,[wL wM wS],sigQualType,dataPath);

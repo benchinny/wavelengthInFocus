@@ -12,6 +12,8 @@ function [aic, pFit, wvMeanAll, wvPredAll, dfPredPurple, wLMmin, wLpropMin] = AR
 % sigQualType: signal quality metric. Valid strings:
 %             'xcorr'  : cross-correlation metric (main paper)
 %             'strehl' : normalized Strehl (supplement)
+%             'deltapass': Finch et al. model, which is bandpass at a
+%                          single frequency (hence 'delta pass')
 %
 % aic: AIC from model fit
 % pFit: fit parameters
@@ -32,6 +34,11 @@ if strcmp(sigQualType,'xcorr')
     metricName = '';
 elseif strcmp(sigQualType,'strehl')
     metricName = 'strehl';
+elseif strcmp(sigQualType,'deltapass')
+    metricName = 'deltapass';
+    if ~strcmp(modelType,'Lum')
+       error('ARCwvInFocusSort: sigQualType parameter can only be deltapass if the modelType parameter is Lum!'); 
+    end
 end
 
 % LOAD CONE WEIGHTS
@@ -113,6 +120,12 @@ if strcmp(modelType,'LminusM') % IF RED-GREEN OPPONENT MODEL
     pFit2all = squeeze(pFitAll(:,:,2));
     pFit(1) = pFit1all(indMin);
     pFit(2) = pFit2all(indMin);    
+end
+
+if strcmp(modelType,'Lum') % IF USING V(LAMBDA)
+    wS = 0;
+    wL = 0.72;
+    wM = 0.28;
 end
 
 % LOAD DEFOCUS VALUES, COLOR CONDITIONS, AND OPTICAL DISTANCES

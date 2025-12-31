@@ -18,6 +18,8 @@ for l = 1:size(rgbUnq,1) % FOR EACH COLOR CONDITION
        wvInFocus(l,:) = ARCwvInFocusConesMeanZspatFilter(subjNum,l,w,dataPath);
     elseif strcmp(sigQualType,'strehl')
        wvInFocus(l,:) = ARCwvInFocusConesMeanZstrehl(subjNum,rgbUnq(l,:),w,dataPath);
+    elseif strcmp(sigQualType,'deltapass')
+       wvInFocus(l,:) = ARCwvInFocusConesMeanZdeltaPass(subjNum,rgbUnq(l,:),w,dataPath);
     else
         error('ARCwvInFocusModelHelper: invalid value of parameter sigQualType. Must be xcorr or strehl.');
     end
