@@ -14,9 +14,9 @@ dfMean555avgColor = squeeze(mean(dfMean555all(1:10,:,:)));
 lagLead = bsxfun(@plus,dfMean555avgColor,optDistUnq);
 % COMPUTE DIFFERENCE BETWEEN LAG/LEAD AT 3.5D AND LAG/LEAD AT 1.5D
 lagLeadDiff = lagLead(3,:)-lagLead(1,:);
-% CALCULATE MEAN AND STD ERROR
+% CALCULATE MEAN AND 95% CIS
 meanLagLeadDiff = mean(lagLeadDiff);
-SElagLeadDiff = 1.96.*std(lagLeadDiff)./sqrt(8);
+CI95lagLeadDiff = 1.96.*std(lagLeadDiff)./sqrt(8);
 
 % CALCULATING AVERAGE RESPONSE GAIN
 for i = 1:size(dfMean555avgColor,2)
@@ -27,16 +27,16 @@ for i = 1:size(dfMean555avgColor,2)
     b(:,i) = X\(-dfMean555avgColor(:,i));
 end
 
-% MEAN AND SE OF GAIN
+% MEAN AND 95% CIS OF GAIN
 meanGain = mean(b(2,:));
-SEgain = 1.96.*std(b(2,:))./sqrt(8);
+CI95gain = 1.96.*std(b(2,:))./sqrt(8);
 
 % WAVELENGTHS IN FOCUS FOR THE CONDITIONS WITH EQUAL LUMINANCE ACROSS ALL
 % PRIMARIES
 wvMeanEqualLumAcross = squeeze(wvMeanAll(11,:,:));
-% COMPUTE MEAN AND SE
+% COMPUTE MEAN AND CI95
 wvMeanMeanEqualLumAcross = mean(wvMeanEqualLumAcross,2);
-wvMeanSEequalLumAcross = 1.96.*std(wvMeanEqualLumAcross,0,2)./sqrt(8);
+wvMeanCI95equalLumAcross = 1.96.*std(wvMeanEqualLumAcross,0,2)./sqrt(8);
 
 % GRAB CONTROL CONDITION AND ITS EQUIVALENT COMPARISON
 dfMean555LumComparison = dfMean555all([3 12],:,:);
@@ -44,12 +44,14 @@ dfMean555LumComparison = dfMean555all([3 12],:,:);
 dfMean555LumComparisonMean = squeeze(mean(dfMean555LumComparison,2));
 % AVERAGE ACROSS PARTICIPANTS
 dfMean555highLowMean = mean(dfMean555LumComparisonMean,2);
-% SE ACROSS PARTICIPANTS
-dfMean555highLowSE = 1.96.*std(dfMean555LumComparisonMean,0,2)./sqrt(8);
+% 95% CIS ACROSS PARTICIPANTS
+dfMean555highLowCI95 = 1.96.*std(dfMean555LumComparisonMean,0,2)./sqrt(8);
 % T-TEST
 [h,p,~,stats] = ttest(dfMean555LumComparisonMean(1,:)-dfMean555LumComparisonMean(2,:));
 
 %% STATISTICS FOR FIGURE 4
+
+clear all;
 
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 foldername = fullfile(dataPath,'data','PresavedFigureData');
@@ -62,17 +64,3 @@ subjNum = [1 3 5 10 16 17 18 20];
 % wvMeanAndPredDonutx2: BLUE-YELLOW PREDICTIONS
 % wvMeanAndPredLM: LUMINANCE PREDICTIONS
 load(fullfile(foldername,'wvMeanAndPredLM.mat'));
-
-symbDist = 'sod'; % SYMBOLS FOR PLOTTING
-% ORDER CONDITIONS FOR PLOTTING
-conditionsOrderedNorm = [0.25 0.00 1.00; ...
-                         0.50 0.00 1.00; ...
-                         1.00 0.00 1.00; ...
-                         1.00 0.00 0.50; ...
-                         1.00 0.00 0.25; ...
-                         0.25 0.50 1.00; ...
-                         0.50 0.50 1.00; ...
-                         1.00 0.50 1.00; ...
-                         1.00 0.50 0.50; ...
-                         1.00 0.50 0.25; ...
-                         1.00 1.00 1.00];
