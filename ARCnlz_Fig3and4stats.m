@@ -59,8 +59,22 @@ foldername = fullfile(dataPath,'data','PresavedFigureData');
 % ALL SUBJECT NUMBERS
 subjNum = [1 3 5 10 16 17 18 20];
 
-% PRESAVED DATA OPTIONS:
-% wvMeanAndPredLminusM: RED-GREEN PREDICTIONS
-% wvMeanAndPredDonutx2: BLUE-YELLOW PREDICTIONS
-% wvMeanAndPredLM: LUMINANCE PREDICTIONS
-load(fullfile(foldername,'wvMeanAndPredLM.mat'));
+% CELL CONTAINING PRESAVED DATA FILENAMES
+presavedFilenames = {'wvMeanAndPredLM' 'wvMeanAndPredLminusM' 'wvMeanAndPredDonutx2'};
+
+meanLagAll = []; % MEAN LAGS
+CI95lagAll = []; % 95% CIS FOR LAGS
+LtoMratioMeanAll = []; % MEAN L/M WEIGHT RATIO
+LtoMratioCI95All = []; % 95% CIS FOR L/M WEIGHT RATIO 
+StoLplusMratioMeanAll = []; % MEAN S/(L+M) WEIGHT RATIO
+StoLplusMratioCI95All = []; % 95% CI S/(L+M) WEIGHT RATIO
+
+for i = 1:length(presavedFilenames) % LOOP OVER PRESAVED FILENAMES
+    load(fullfile(foldername,presavedFilenames{i}));
+    % RUN HELPER FUNCTION
+    if strcmp(presavedFilenames{i},'wvMeanAndPredDonutx2')
+        [meanLagAll(i,:), CI95lagAll(i,:), LtoMratioMeanAll(i), LtoMratioCI95All(i), StoLplusMratioMeanAll, StoLplusMratioCI95All] = ARCnlz_Fig4statsHelper(pFitAll,wLpropMinAll,wLMminAll);
+    else
+        [meanLagAll(i,:), CI95lagAll(i,:), LtoMratioMeanAll(i), LtoMratioCI95All(i), StoLplusMratioMeanAll, StoLplusMratioCI95All] = ARCnlz_Fig4statsHelper(pFitAll,wLpropMinAll,[]);
+    end
+end

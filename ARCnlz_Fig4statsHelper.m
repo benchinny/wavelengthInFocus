@@ -1,4 +1,4 @@
-function [meanLag, CI95lag, LtoMratioMean, LtoMratioCI95, LplusMtoSratioMean, LplusMtoSratioCI95] = ARCnlz_Fig4statsHelper(pFitAll,wLpropMinAll,wLMminAll)
+function [meanLag, CI95lag, LtoMratioMean, LtoMratioCI95, StoLplusMratioMean, StoLplusMratioCI95] = ARCnlz_Fig4statsHelper(pFitAll,wLpropMinAll,wLMminAll)
 
 % helper function for calculating parameters stats reported in the
 % manuscript. 
@@ -12,21 +12,24 @@ function [meanLag, CI95lag, LtoMratioMean, LtoMratioCI95, LplusMtoSratioMean, Lp
 % CI95lag: 95% CIs for lags
 % LtoMratioMean: mean L to M weight ratio
 % LtoMratioCI95: 95% CI for L to M weight ratio
-% LplusMtoSratioMean: mean (L+M)/S ratio
-% LplusMtoSratioCI95: 95% CIs on (L+M)-S ratio
+% StoLplusMratioMean: mean S/(L+M) ratio
+% StoLplusMratioCI95: 95% CIs on (L+M)-S ratio
 
 % LIST OF SUBJECTS
 subjNumAll = [1 3 5 10 16 17 18 20];
 % WEIGHTS ON S-CONES USED TO FIT EACH OF THE SUBJECTS LISTED BELOW
 wS = [-1 -1 -0.5 -1 -1 -1 -1 -0.25];
+% INITIALIZE ARRAYS FOR STORING (L+M)/S WEIGHT RATIO (IN CASE NOT USING)
+StoLplusMratioMean = []; 
+StoLplusMratioCI95 = [];
 
 % CALCULATE MEAN AND 95% CIS FOR L/M WEIGHT RATIO
 LtoMratioMean = mean(wLpropMinAll);
 LtoMratioCI95 = 1.96.*std(wLpropMinAll)./sqrt(length(subjNumAll));
 % CALCULATE MEAN AND 95% CIS FOR (L+M)/S WEIGHT RATIO
 if ~isempty(wLMminAll)
-    LplusMtoSratioMean = mean(wLMminAll./wS);
-    LplusMtoSratioCI95 = 1.96.*std(wLMminAll./wS)./sqrt(length(subjNumAll));
+    StoLplusMratioMean = mean(wS./wLMminAll);
+    StoLplusMratioCI95 = 1.96.*std(wS./wLMminAll)./sqrt(length(subjNumAll));
 end
 
 % LIST OF OPTICAL DISTANCES USED IN EXPERIMENT
