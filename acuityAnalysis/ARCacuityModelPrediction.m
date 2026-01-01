@@ -23,7 +23,7 @@ bPLOT = false;
 
 if strcmp(LMOrChrom,'Chrom') % IF GENERATING CHROMATIC PREDICTIONS
     % LOAD BLUE-YELLOW PREDICTIONS
-    load(fullfile(folderExp1,'wvMeanAndPredDonutx2.mat'),'dfPredPurpleAll','aicAll');
+    load(fullfile(folderExp1,'wvMeanAndPredLMS.mat'),'dfPredPurpleAll','aicAll');
     dfPredPurpleBYAll = dfPredPurpleAll;
     aicBYall = aicAll;
     % LOAD RED-GREEN PREDICTIONS

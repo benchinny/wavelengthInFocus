@@ -60,7 +60,7 @@ foldername = fullfile(dataPath,'data','PresavedFigureData');
 subjNum = [1 3 5 10 16 17 18 20];
 
 % CELL CONTAINING PRESAVED DATA FILENAMES
-presavedFilenames = {'wvMeanAndPredLM' 'wvMeanAndPredLminusM' 'wvMeanAndPredDonutx2'};
+presavedFilenames = {'wvMeanAndPredLM' 'wvMeanAndPredLminusM' 'wvMeanAndPredLMS'};
 
 meanLagAll = []; % MEAN LAGS
 CI95lagAll = []; % 95% CIS FOR LAGS
@@ -72,7 +72,7 @@ StoLplusMratioCI95All = []; % 95% CI S/(L+M) WEIGHT RATIO
 for i = 1:length(presavedFilenames) % LOOP OVER PRESAVED FILENAMES
     load(fullfile(foldername,presavedFilenames{i}));
     % RUN HELPER FUNCTION
-    if strcmp(presavedFilenames{i},'wvMeanAndPredDonutx2')
+    if strcmp(presavedFilenames{i},'wvMeanAndPredLMS')
         [meanLagAll(i,:), CI95lagAll(i,:), LtoMratioMeanAll(i), LtoMratioCI95All(i), StoLplusMratioMeanAll, StoLplusMratioCI95All] = ARCnlz_Fig4statsHelper(pFitAll,wLpropMinAll,wLMminAll);
     else
         [meanLagAll(i,:), CI95lagAll(i,:), LtoMratioMeanAll(i), LtoMratioCI95All(i), StoLplusMratioMeanAll, StoLplusMratioCI95All] = ARCnlz_Fig4statsHelper(pFitAll,wLpropMinAll,[]);

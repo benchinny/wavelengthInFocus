@@ -56,7 +56,7 @@ if strcmp(modelType,'LMS') % IF BLUE-YELLOW OPPONENT MODEL
         wS = -0.5;
     end
     % LOAD PRE-FIT CONE WEIGHTS
-    load(fullfile(coneWeightsFolder,['S' num2str(subjNum) 'wvInFocusModelResultsDonutx2' metricName num2str(round(-wS*10)) '.mat']),'RMSEall','wS','wLM','wLprop','pFitAll');
+    load(fullfile(coneWeightsFolder,['S' num2str(subjNum) 'wvInFocusModelResultsLMS' metricName num2str(round(-wS*10)) '.mat']),'RMSEall','wS','wLM','wLprop','pFitAll');
     
     % MAKE A MESHGRID FOR EASILY FINDING THE BEST FIT PRE-GENERATED PARAMETERS
     [wLpropGrid,wLMgrid] = meshgrid(wLprop,wLM);

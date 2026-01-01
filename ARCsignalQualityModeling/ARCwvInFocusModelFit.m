@@ -36,7 +36,7 @@ if strcmp(modelType,'LMS')
     else
         wS = -1;
     end
-    modelResultsFilename = 'wvInFocusModelResultsDonutx2';
+    modelResultsFilename = 'wvInFocusModelResultsLMS';
 elseif strcmp(modelType,'LM')
     % WEIGHT VALUES FOR GRID SEARCH
     wLM = [0.5 1]; % ratio of (L+M) to S

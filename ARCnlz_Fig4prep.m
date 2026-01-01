@@ -16,7 +16,7 @@ wLpropMinAll = []; % RATIO OF L TO M CONE WEIGHTS
 pFitAll = []; % LAG AND LEAD PARAMETERS
 
 if strcmp(modelType,'LMS')
-    savename = 'wvMeanAndPredDonutx2';
+    savename = 'wvMeanAndPredLMS';
 elseif strcmp(modelType,'LminusM')
     savename = 'wvMeanAndPredLminusM';
 elseif strcmp(modelType,'LM')

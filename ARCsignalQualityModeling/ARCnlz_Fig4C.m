@@ -12,7 +12,7 @@ if strcmp(modelType,'normal')
     aicLM = aicAll;
     load(fullfile(foldername,'wvMeanAndPredLminusM.mat'));
     aicLminusM = aicAll;
-    load(fullfile(foldername,'wvMeanAndPredDonutx2.mat'));
+    load(fullfile(foldername,'wvMeanAndPredLMS.mat'));
     aicLMS = aicAll;
 elseif strcmp(modelType,'strehl')
     % LOAD PRE-SAVED DATA AND MODEL FITS
@@ -28,7 +28,7 @@ elseif strcmp(modelType,'finch')
     aicLM = aicAll;
     load(fullfile(foldername,'wvMeanAndPredLminusM.mat'));
     aicLminusM = aicAll;
-    load(fullfile(foldername,'wvMeanAndPredDonutx2.mat'));
+    load(fullfile(foldername,'wvMeanAndPredLMS.mat'));
     aicLMS = aicAll;    
 end
 

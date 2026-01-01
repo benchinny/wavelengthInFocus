@@ -5,7 +5,7 @@ foldername = fullfile(dataPath,'data','PresavedFigureData');
 
 % PRESAVED DATA OPTIONS:
 % wvMeanAndPredLminusM: RED-GREEN PREDICTIONS
-% wvMeanAndPredDonutx2: BLUE-YELLOW PREDICTIONS
+% wvMeanAndPredLMS: BLUE-YELLOW PREDICTIONS
 % wvMeanAndPredLM: LUMINANCE PREDICTIONS
 load(fullfile(foldername,'allExp1DataRGB.mat'));
 
