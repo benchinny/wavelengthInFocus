@@ -8,7 +8,7 @@ load(fullfile(foldername,'allExp1DataRGB.mat'));
 
 optDistUnq = [1.5; 2.5; 3.5];
 
-% REARRANGE DEFOCUS AT 555NM VECTOR
+% REARRANGE DEFOCUS AT 555NM VECTOR (GRAB NON-CONTROL CONDITIONS)
 dfMean555avgColor = squeeze(mean(dfMean555all(1:10,:,:)));
 % CALCULATE LAGS AND LEADS
 lagLead = bsxfun(@plus,dfMean555avgColor,optDistUnq);
@@ -30,6 +30,24 @@ end
 % MEAN AND SE OF GAIN
 meanGain = mean(b(2,:));
 SEgain = 1.96.*std(b(2,:))./sqrt(8);
+
+% WAVELENGTHS IN FOCUS FOR THE CONDITIONS WITH EQUAL LUMINANCE ACROSS ALL
+% PRIMARIES
+wvMeanEqualLumAcross = squeeze(wvMeanAll(11,:,:));
+% COMPUTE MEAN AND SE
+wvMeanMeanEqualLumAcross = mean(wvMeanEqualLumAcross,2);
+wvMeanSEequalLumAcross = 1.96.*std(wvMeanEqualLumAcross,0,2)./sqrt(8);
+
+% GRAB CONTROL CONDITION AND ITS EQUIVALENT COMPARISON
+dfMean555LumComparison = dfMean555all([3 12],:,:);
+% AVERAGE ACROSS OPTICAL DISTANCE
+dfMean555LumComparisonMean = squeeze(mean(dfMean555LumComparison,2));
+% AVERAGE ACROSS PARTICIPANTS
+dfMean555highLowMean = mean(dfMean555LumComparisonMean,2);
+% SE ACROSS PARTICIPANTS
+dfMean555highLowSE = 1.96.*std(dfMean555LumComparisonMean,0,2)./sqrt(8);
+% T-TEST
+[h,p,~,stats] = ttest(dfMean555LumComparisonMean(1,:)-dfMean555LumComparisonMean(2,:));
 
 %% STATISTICS FOR FIGURE 4
 
