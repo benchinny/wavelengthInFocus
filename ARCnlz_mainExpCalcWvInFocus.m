@@ -1,4 +1,4 @@
-function [wvMeanAll, optDistUnq, conditionsOrderedNorm] = ARCnlz_mainExpCalcWvInFocus(subjNum,dataPath)
+function [wvMeanAll, optDistUnq, conditionsOrderedNorm, dfMean555all] = ARCnlz_mainExpCalcWvInFocus(subjNum,dataPath)
 
 % This function sorts data for plotting  data from the accommodation 
 % experiment. 
@@ -9,11 +9,15 @@ function [wvMeanAll, optDistUnq, conditionsOrderedNorm] = ARCnlz_mainExpCalcWvIn
 % wvMeanAll: wavelength-in-focus from data
 % optDistUnq: unique stimulus distances
 % rgbUnq: unique rgb values for different conditions
+% dfMean555: estimated defocus at 555nm (to help compute lags and leads of
+%            accommodation according to the usual definition)
 
 rng(1); % FIX RANDOM SEED
 
 % LOAD DEFOCUS VALUES, COLOR CONDITIONS, AND OPTICAL DISTANCES
 [defocus875,rgbAll,optDistAll,~,~,q1,q2,q3] = ARCnlzLoadDefocusAbb(subjNum,dataPath);
+% USE LCA PARAMETERS TO ESTIMATE DEFOCUS AT 555NM
+defocus555 = defocus875+humanWaveDefocusParameterizedARC(555,875,q1,q2,q3);
 
 rgbUnq = unique(rgbAll,'rows'); % UNIQUE RGB VALUES
 
@@ -48,18 +52,23 @@ end
 
 % MATRIX FOR STORING MEAN WAVELENGTH-IN-FOCUS VALUES
 wvMeanAll = [];
+dfMean555all = [];
 
 % IMPORTANT THINGS HAPPENING IN HELPER FUNCTION: GENERATE
 % PREDICTIONS OF DEFOCUS FOR EACH CONDITION
 [defocus875mean, ~, optDistUnq] = ARCcalcWvInFocusHelper(defocus875,rgbAll,optDistAll);
+% SORT VALUES OF DEFOCUS AT 555NM
+[defocus555mean, ~, optDistUnq] = ARCcalcWvInFocusHelper(defocus555,rgbAll,optDistAll);
 
 % SORT DATA
 for i = 1:length(optDistUnq)
     % ACTUAL (NEED TO CONVERT FROM DEFOCUS TO WAVELENGTH)
     dfMean = -defocus875mean(ind,i);
+    dfMean555 = -defocus555mean(ind,i);
     wvMean = humanWaveDefocusInvertParameterizedARC(875,-(dfMean+optDistUnq(i)),q1,q2,q3);
     % STORE MEAN DATA AND PREDICTIONS
     wvMeanAll(:,i) = wvMean;
+    dfMean555all(:,i) = dfMean555;
 end
 
 end
