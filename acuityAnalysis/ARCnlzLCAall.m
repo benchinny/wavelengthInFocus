@@ -7,6 +7,7 @@ function [q1bestAll, q2bestAll, q3bestAll] = ARCnlzLCAall(dataPath,bPLOT)
 % q1best: best fitting LCA curve parameter q1 (c in paper)
 % q2best: best fitting LCA curve parameter q2 (a in paper)
 % q3best: best fitting LCA curve parameter q3 (b in paper)
+
 %% MAKE FIGURE 7E
 
 % LIST OF SUBJECTS TO ANALYZE
