@@ -1,12 +1,22 @@
 %% GENERATE MODEL PREDICTIONS TOGETHER WITH ACTUAL DATA
 
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
+% modelType can be:
+% 'LMS'    : for blue-yellow model
+% 'LM'     :for luminance model
+% 'LminusM': for red-green model
 modelType = 'LMS';
+% sigQualType can be:
+% 'xcorr'    : for the cross-correlation metric (default)
+% 'strehl'   : for Strehl (supplementary Fig S2)
+% 'deltapass': for the Finch et al. model (supplementary Fig S1). Note that
+%              for this option, modelType must be 'Lum' (just using 
+%              V(lambda), not fitting weights)
 sigQualType = 'xcorr';
 bSAVE = true;
 
 savePath = fullfile(dataPath,'data','PresavedFigureData/');
-subjNum = [1 3 5 10 16 17 18 20];
+subjNum = [1 3 5 10 16 17 18 20]; % ALL SUBJECT NUMBERS
 wvMeanAll = []; % MEASURED WAVELENGTH IN FOCUS
 wvPredAll = []; % PREDICTED WAVELENGTH IN FOCUS
 aicAll = []; % AIC VALUES FOR MODEL EVALUATION
@@ -16,6 +26,7 @@ wLpropMinAll = []; % RATIO OF L TO M CONE WEIGHTS
 pFitAll = []; % LAG AND LEAD PARAMETERS
 wSall = []; % FOR STORING WEIGHTS ON S-CONE IMAGE
 
+% SETTING UP NAMES FOR SAVING
 if strcmp(modelType,'LMS')
     savename = 'wvMeanAndPredLMS';
 elseif strcmp(modelType,'LminusM')
