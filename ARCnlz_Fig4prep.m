@@ -1,8 +1,8 @@
 %% GENERATE MODEL PREDICTIONS TOGETHER WITH ACTUAL DATA
 
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
-modelType = 'Lum';
-sigQualType = 'deltapass';
+modelType = 'LMS';
+sigQualType = 'xcorr';
 bSAVE = true;
 
 savePath = fullfile(dataPath,'data','PresavedFigureData/');
@@ -14,6 +14,7 @@ dfPredPurpleAll = []; % PREDICTION FOR THE ACUITY TASK (USED FOR FIG 5)
 wLMminAll = []; % FIT RATIO OF (L+M) TO S CONE WEIGHTS
 wLpropMinAll = []; % RATIO OF L TO M CONE WEIGHTS
 pFitAll = []; % LAG AND LEAD PARAMETERS
+wSall = []; % FOR STORING WEIGHTS ON S-CONE IMAGE
 
 if strcmp(modelType,'LMS')
     savename = 'wvMeanAndPredLMS';
@@ -32,7 +33,7 @@ elseif strcmp(sigQualType,'deltapass')
 end
 
 for i = 1:length(subjNum)
-    [aic, pFit, wvMean, wvPred, dfPredPurple, wLMmin, wLpropMin] = ARCwvInFocusModelSort(subjNum(i),modelType,sigQualType,dataPath);
+    [aic, pFit, wvMean, wvPred, dfPredPurple, wLMmin, wLpropMin, wS] = ARCwvInFocusModelSort(subjNum(i),modelType,sigQualType,dataPath);
     wvMeanAll(:,:,i) = wvMean;
     wvPredAll(:,:,i) = wvPred;
     aicAll(i) = aic;
@@ -40,6 +41,7 @@ for i = 1:length(subjNum)
     wLMminAll(i) = wLMmin;
     wLpropMinAll(i) = wLpropMin;
     pFitAll(:,i) = pFit;
+    wSall(i) = wS;
 end 
 
 if bSAVE

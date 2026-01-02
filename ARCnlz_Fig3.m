@@ -3,10 +3,7 @@
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 foldername = fullfile(dataPath,'data','PresavedFigureData');
 
-% PRESAVED DATA OPTIONS:
-% wvMeanAndPredLminusM: RED-GREEN PREDICTIONS
-% wvMeanAndPredLMS: BLUE-YELLOW PREDICTIONS
-% wvMeanAndPredLM: LUMINANCE PREDICTIONS
+% PRESAVED DATA:
 load(fullfile(foldername,'allExp1DataRGB.mat'));
 
 symbDist = 'sod'; % SYMBOLS FOR PLOTTING

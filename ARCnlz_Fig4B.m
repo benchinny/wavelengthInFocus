@@ -3,11 +3,22 @@
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 foldername = fullfile(dataPath,'data','PresavedFigureData');
 
-% PRESAVED DATA OPTIONS:
+% PRESAVED DATA OPTIONS IN COMMENTS BELOW--CHANGE THE FILENAME BELOW
+% DEPENDING ON WHICH MODEL PREDICTIONS YOU WANT TO LOOK AT
+
+% MAIN MODEL:
 % wvMeanAndPredLminusM: RED-GREEN PREDICTIONS
 % wvMeanAndPredLMS: BLUE-YELLOW PREDICTIONS
 % wvMeanAndPredLM: LUMINANCE PREDICTIONS
-load(fullfile(foldername,'wvMeanAndPredLM.mat'));
+
+% STREHL MODEL:
+% wvMeanAndPredLminusMstrehl: RED-GREEN PREDICTIONS
+% wvMeanAndPredLMSstrehl: BLUE-YELLOW PREDICTIONS
+% wvMeanAndPredLMstrehl: LUMINANCE PREDICTIONS
+
+% FINCH MODEL
+% wvMeanAndPredLumdeltapass
+load(fullfile(foldername,'wvMeanAndPredLMS.mat'));
 
 symbDist = 'sod'; % SYMBOLS FOR PLOTTING
 % ORDER CONDITIONS FOR PLOTTING

@@ -100,15 +100,15 @@ end
 
 display('----------------');
 display(['Mean lag parameters: ']);
-display(['L+M model: ' num2str(meanLagAll(1,1),3) ' ± ' num2str(CI95lagAll(1,1),3) ' for ' num2str(optDistUnq(1))]);
-display(['L+M model: ' num2str(meanLagAll(1,2),3) ' ± ' num2str(CI95lagAll(1,2),3) ' for ' num2str(optDistUnq(2))]);
-display(['L+M model: ' num2str(meanLagAll(1,3),3) ' ± ' num2str(CI95lagAll(1,3),3) ' for ' num2str(optDistUnq(3))]);
-display(['L-M model: ' num2str(meanLagAll(2,1),3) ' ± ' num2str(CI95lagAll(2,1),3) ' for ' num2str(optDistUnq(1))]);
-display(['L-M model: ' num2str(meanLagAll(2,2),3) ' ± ' num2str(CI95lagAll(2,2),3) ' for ' num2str(optDistUnq(2))]);
-display(['L-M model: ' num2str(meanLagAll(2,3),3) ' ± ' num2str(CI95lagAll(2,3),3) ' for ' num2str(optDistUnq(3))]);
-display(['(L+M)-S model: ' num2str(meanLagAll(3,1),3) ' ± ' num2str(CI95lagAll(3,1),3) ' for ' num2str(optDistUnq(1))]);
-display(['(L+M)-S model: ' num2str(meanLagAll(3,2),3) ' ± ' num2str(CI95lagAll(3,2),3) ' for ' num2str(optDistUnq(2))]);
-display(['(L+M)-S model: ' num2str(meanLagAll(3,3),3) ' ± ' num2str(CI95lagAll(3,3),3) ' for ' num2str(optDistUnq(3)) newline]);
+display(['L+M model: ' num2str(meanLagAll(1,1),3) ' ± ' num2str(CI95lagAll(1,1),3) ' for ' num2str(optDistUnq(1)) 'D']);
+display(['L+M model: ' num2str(meanLagAll(1,2),3) ' ± ' num2str(CI95lagAll(1,2),3) ' for ' num2str(optDistUnq(2)) 'D']);
+display(['L+M model: ' num2str(meanLagAll(1,3),3) ' ± ' num2str(CI95lagAll(1,3),3) ' for ' num2str(optDistUnq(3)) 'D']);
+display(['L-M model: ' num2str(meanLagAll(2,1),3) ' ± ' num2str(CI95lagAll(2,1),3) ' for ' num2str(optDistUnq(1)) 'D']);
+display(['L-M model: ' num2str(meanLagAll(2,2),3) ' ± ' num2str(CI95lagAll(2,2),3) ' for ' num2str(optDistUnq(2)) 'D']);
+display(['L-M model: ' num2str(meanLagAll(2,3),3) ' ± ' num2str(CI95lagAll(2,3),3) ' for ' num2str(optDistUnq(3)) 'D']);
+display(['(L+M)-S model: ' num2str(meanLagAll(3,1),3) ' ± ' num2str(CI95lagAll(3,1),3) ' for ' num2str(optDistUnq(1)) 'D']);
+display(['(L+M)-S model: ' num2str(meanLagAll(3,2),3) ' ± ' num2str(CI95lagAll(3,2),3) ' for ' num2str(optDistUnq(2)) 'D']);
+display(['(L+M)-S model: ' num2str(meanLagAll(3,3),3) ' ± ' num2str(CI95lagAll(3,3),3) ' for ' num2str(optDistUnq(3)) 'D' newline]);
 display(['L/M weight ratio: ']);
 display(['L+M model: ' num2str(LtoMratioMeanAll(1),3) ' ± ' num2str(LtoMratioCI95All(1),3)]);
 display(['L-M model: ' num2str(LtoMratioMeanAll(2),3) ' ± ' num2str(LtoMratioCI95All(2),3)]);
