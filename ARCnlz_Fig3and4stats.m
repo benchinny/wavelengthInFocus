@@ -67,11 +67,6 @@ display(['t(' num2str(stats.df) ')= ' num2str(stats.tstat,3) ', p = ' num2str(p,
 
 %% STATISTICS FOR FIGURE 4
 
-clear all;
-
-dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
-foldername = fullfile(dataPath,'data','PresavedFigureData');
-
 % ALL SUBJECT NUMBERS
 subjNum = [1 3 5 10 16 17 18 20];
 optDistUnq = [1.5; 2.5; 3.5]; % UNIQUE OPTICAL DISTANCES
