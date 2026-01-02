@@ -6,6 +6,18 @@ function [unqFocDst,PC,PCci,dprime,dprimeCI,PCfit,dprimeFitAll,PCfitSupport,best
 % subjNum: subject ID. Valid numbers: 1, 3, 5, 10, 16, 17, 18, 20.
 % bPLOT  : plot or not
 % dataPath: path to data on local machine
+%
+% unqFocDst: unique stimulus optical distances
+% PC: proportion correct
+% PCci: confidence intervals on proportion correct
+% dprime: d-prime values corresponding to PC
+% dprimeCI: d-prime confidence intervals corresponding to PCci
+% PCfit: spline fit to proportion correct
+% dprimeFitAll: d-prime values corresponding to PCfit
+% PCfitSupport: x-axis for PCfit
+% bestDist: distance yielding best performance
+% bestDistCI: confidence intervals on the best distance
+% PCboots: bootstrapped proportion correct values
 
 % WHERE THE ACUITY DATA RESIDE
 dataDirectory = fullfile(dataPath,'data','psychophysicalData');

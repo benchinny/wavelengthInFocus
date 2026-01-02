@@ -14,6 +14,7 @@ function [aic, pFit, wvMeanAll, wvPredAll, dfPredPurple, wLMmin, wLpropMin, wS] 
 %             'strehl' : normalized Strehl (supplement)
 %             'deltapass': Finch et al. model, which is bandpass at a
 %                          single frequency (hence 'delta pass')
+% dataPath: where the data is located locally
 %
 % aic: AIC from model fit
 % pFit: fit parameters
@@ -23,6 +24,7 @@ function [aic, pFit, wvMeanAll, wvPredAll, dfPredPurple, wLMmin, wLpropMin, wS] 
 %               luminance red and blue at 2.5D (for acuity modeling later)
 % wLMmin: best-fit weight on the sum of L and M
 % wLpropMin: best fit ratio of L to M
+% wS: best fit S-cone weight
 
 rng(1); % FIX RANDOM SEED
 
@@ -69,11 +71,6 @@ if strcmp(modelType,'LMS') % IF BLUE-YELLOW OPPONENT MODEL
     wL = wLMmin*wLpropMin;
     wM = wLMmin-wL;
     nParams = 4; % FOR CALCULATING AIC LATER
-    % FORMATTING LAG/LEAD PARAMETERS
-    pFit1all = squeeze(pFitAll(:,:,1));
-    pFit2all = squeeze(pFitAll(:,:,2));
-    pFit(1) = pFit1all(indMin);
-    pFit(2) = pFit2all(indMin); 
 end
 
 if strcmp(modelType,'LM') % IF LUMINANCE MODEL WITH FREE WEIGHTS
@@ -92,11 +89,6 @@ if strcmp(modelType,'LM') % IF LUMINANCE MODEL WITH FREE WEIGHTS
     wL = wLMmin*wLpropMin;
     wM = wLMmin-wL;
     nParams = 3; % FOR CALCULATING AIC LATER
-    % FORMATTING LAG/LEAD PARAMETERS
-    pFit1all = squeeze(pFitAll(:,:,1));
-    pFit2all = squeeze(pFitAll(:,:,2));
-    pFit(1) = pFit1all(indMin);
-    pFit(2) = pFit2all(indMin);
 end
 
 if strcmp(modelType,'LminusM') % IF RED-GREEN OPPONENT MODEL
@@ -115,11 +107,6 @@ if strcmp(modelType,'LminusM') % IF RED-GREEN OPPONENT MODEL
     wL = wLMmin*wLpropMin;
     wM = -(wLMmin-wL);    
     nParams = 3; % FOR CALCULATING AIC LATER
-    % FORMATTING LAG/LEAD PARAMETERS
-    pFit1all = squeeze(pFitAll(:,:,1));
-    pFit2all = squeeze(pFitAll(:,:,2));
-    pFit(1) = pFit1all(indMin);
-    pFit(2) = pFit2all(indMin);    
 end
 
 if strcmp(modelType,'Lum') % IF USING V(LAMBDA)
@@ -136,11 +123,13 @@ if strcmp(modelType,'Lum') % IF USING V(LAMBDA)
     wL = wLMmin*wLpropMin;
     wM = wLMmin-wL;
     nParams = 2; % FOR CALCULATING AIC LATER    
-    pFit1all = squeeze(pFitAll(:,:,1));
-    pFit2all = squeeze(pFitAll(:,:,2));
-    pFit(1) = pFit1all(indMin);
-    pFit(2) = pFit2all(indMin);        
 end
+
+% REARRANGE FIT LAG/LEAD PARAMETERS
+pFit1all = squeeze(pFitAll(:,:,1));
+pFit2all = squeeze(pFitAll(:,:,2));
+pFit(1) = pFit1all(indMin);
+pFit(2) = pFit2all(indMin);        
 
 % LOAD DEFOCUS VALUES, COLOR CONDITIONS, AND OPTICAL DISTANCES
 [defocus875,rgbAll,optDistAll,~,~,q1,q2,q3] = ARCnlzLoadDefocusAbb(subjNum,dataPath);

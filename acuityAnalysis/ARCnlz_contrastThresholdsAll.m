@@ -23,6 +23,6 @@ for i = 1:length(subjNumAll) % LOOP OVER EACH SUBJECT
     thresholdsAll(i,:) = thresholds;
 end
 
-save(fullfile([dataPath '\data\PresavedFigureData\thresholdsAll.mat']),'thresholdsAll');
+save(fullfile(dataPath,'data','PresavedFigureData','thresholdsAll.mat'),'thresholdsAll');
 
 end

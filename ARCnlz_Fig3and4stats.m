@@ -61,8 +61,8 @@ display([num2str(wvMeanMeanEqualLumAcross(1),3) 'nm ± ' num2str(wvMeanCI95equal
 display([num2str(wvMeanMeanEqualLumAcross(2),3) 'nm ± ' num2str(wvMeanCI95equalLumAcross(2),3) 'nm ' 'when stim distance = ' num2str(optDistUnq(2)) 'D']);
 display([num2str(wvMeanMeanEqualLumAcross(3),3) 'nm ± ' num2str(wvMeanCI95equalLumAcross(3),3) 'nm ' 'when stim distance = ' num2str(optDistUnq(3)) 'D' newline]);
 
-display(['mean accommodation for lower luminance = ' num2str(-dfMean555highLowMean(2),3) ' ± ' num2str(-dfMean555highLowCI95(2),3)]);
-display(['mean accommodation for higher luminance = ' num2str(-dfMean555highLowMean(1),3) ' ± ' num2str(-dfMean555highLowCI95(1),3) newline]);
+display(['mean accommodation for lower luminance = ' num2str(-dfMean555highLowMean(2),3) ' ± ' num2str(dfMean555highLowCI95(2),3)]);
+display(['mean accommodation for higher luminance = ' num2str(-dfMean555highLowMean(1),3) ' ± ' num2str(dfMean555highLowCI95(1),3) newline]);
 display(['t(' num2str(stats.df) ')= ' num2str(stats.tstat,3) ', p = ' num2str(p,3) newline]);
 
 %% STATISTICS FOR FIGURE 4

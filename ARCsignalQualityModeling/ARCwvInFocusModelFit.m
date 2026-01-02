@@ -58,6 +58,7 @@ else
     error('Specify valid model type!');
 end
 
+% SPECIFY STRING TO APPEND TO FILE NAME
 if strcmp(sigQualType,'xcorr')
     metricName = '';
 elseif strcmp(sigQualType,'strehl')
@@ -68,6 +69,7 @@ else
     error('Specify valid string for sigQualType: either xcorr, strehl, or deltapass');
 end
 
+% PATH TO CONE WEIGHTS
 coneWeightsFolder = fullfile(dataPath,'data','coneWeightsErrorSpatFilter','colorMechPredictions');
 
 RMSEall = zeros([length(wLM) length(wLprop)]); % INITIALIZE ERROR SURFACE

@@ -13,7 +13,7 @@ q3 = q3bestAll(indLCA);
 rgbUnq = unique(rgbAll,'rows'); % UNIQUE COLOR CONDITIONS
 wvInFocus = zeros([size(rgbUnq,1) 1]); % INITIALIZE WAVELENGTH IN FOCUS VECTOR
 for l = 1:size(rgbUnq,1) % FOR EACH COLOR CONDITION
-    % GET THE WAVELENGTH THAT SHOULD BE IN FOCUS
+    % GET THE WAVELENGTH THAT SHOULD BE IN FOCUS FOR EACH STIMULUS
     if strcmp(sigQualType,'xcorr')
        wvInFocus(l,:) = ARCwvInFocusConesMeanZspatFilter(subjNum,l,w,dataPath);
     elseif strcmp(sigQualType,'strehl')

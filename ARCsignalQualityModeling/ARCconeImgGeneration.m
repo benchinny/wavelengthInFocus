@@ -1,5 +1,7 @@
 function ARCconeImgGeneration(subjNum,dataPath)
 
+% function for generating cone images
+%
 % subjNum values for participants who passed screening: 1, 3, 5, 10, 16,
 % 17, 18, 20
 

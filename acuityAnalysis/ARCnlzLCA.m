@@ -6,6 +6,15 @@ function [defocusLCAmeasured, q1best, q2best, q3best,defocusLCAmeasuredBoots,Dgr
 % bPLOT: plot or not
 % nBoots: number of bootstraps
 % dataPath: data path
+%
+% defocusLCAmeasured: empirical defocus values for R, G, and B Gabors
+% q1best: best fitting LCA curve parameter q1 (c in paper)
+% q2best: best fitting LCA curve parameter q2 (a in paper)
+% q3best: best fitting LCA curve parameter q3 (b in paper)
+% defocusLCAmeasuredBoots: bootstrapped defocus values
+% Dgreen: defocus value at green
+% dprimeFitAll: d-prime values associated with fits
+% PCfitSupportAll: support over which to fit proportion correct
 
 rng(1); % INITIALIZE SAME RANDOM SEED
 
