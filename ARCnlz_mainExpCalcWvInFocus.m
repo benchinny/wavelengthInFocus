@@ -1,6 +1,6 @@
 function [wvMeanAll, optDistUnq, conditionsOrderedNorm, dfMean555all] = ARCnlz_mainExpCalcWvInFocus(subjNum,dataPath)
 
-% This function sorts data for plotting  data from the accommodation 
+% This function sorts data from the accommodation 
 % experiment. 
 %
 % subjNum: subject numbers. Valid numbers: 1, 3, 5, 10, 16, 17, 18, 20
