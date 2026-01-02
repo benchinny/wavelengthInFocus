@@ -24,3 +24,7 @@ for i = 1:length(dprimeRatioAll)
     end
 end
 ylabel('d''_{max}/d''_{0}');
+
+% CALCULATE, FOR EACH SUBJECT, PROBABILITY OF THE PEAK BEING AT 0 (STATS
+% REPORTED IN MANUSCRIPT)
+pPeakAt0 = ARCnlz_fig5Cstats(dataPath);

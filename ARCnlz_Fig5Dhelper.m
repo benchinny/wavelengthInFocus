@@ -1,4 +1,4 @@
-function [RMSE, corrPredAndActual, p, peakLocModelPredictionAll, peakLocActualAll] = ARCnlz_Fig5Dhelper(dataPath,fileStr)
+function [RMSE, corrPredActual, p, peakLocModelPredictionAll, peakLocActualAll] = ARCnlz_Fig5Dhelper(dataPath,fileStr)
 
 % helper function for making Figure 5D and computing stats
 %
@@ -63,4 +63,4 @@ end
 % CALCULATE RMSE
 RMSE = sqrt(mean((peakLocModelPredictionAll-peakLocActualAll(subjNumInclude)).^2));
 % CALCULATE CORRELATION
-[corrPredAndActual,p] = corr(peakLocModelPredictionAll',peakLocActualAll(subjNumInclude)');
+[corrPredActual,p] = corr(peakLocModelPredictionAll',peakLocActualAll(subjNumInclude)');
