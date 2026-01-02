@@ -4,12 +4,12 @@ First of all, some of the following code will require ISETBIO to run, so you wil
 
 Before running any analyses, navigate to the ‘wavelengthInFocus’ repository (after downloading it, of course) and add the various folders within it to the path. Some of these are folders within the wavelengthInFocus repository itself: 
 
-addpath(genpath('ARCsignalQualityModeling'))
-addpath(genpath('acuityAnalysis'))
-addpath(genpath('loadFuncs'))
-addpath(genpath('miscHelperFuncs'))
-addpath(genpath('plotHelperFuncs'))
-addpath(genpath('psyfuncs'))
+addpath(genpath('ARCsignalQualityModeling'))  
+addpath(genpath('acuityAnalysis'))  
+addpath(genpath('loadFuncs'))  
+addpath(genpath('miscHelperFuncs'))  
+addpath(genpath('plotHelperFuncs'))  
+addpath(genpath('psyfuncs'))  
 
 Then, add ISETBIO separately (use your own local path): 
 
