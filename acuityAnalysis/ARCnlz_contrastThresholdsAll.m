@@ -1,6 +1,6 @@
 function thresholdsAll = ARCnlz_contrastThresholdsAll(dataPath,bPLOT)
 
-% this is a wrapper function for ARCnlz_contrastThresholdsAll, which
+% this is a wrapper function for ARCnlz_contrastThresholds, which
 % calculates thresholds for each subject in the calibration task for the
 % LCA measurement and acuity tasks.
 %
