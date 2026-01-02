@@ -1,5 +1,15 @@
 function val = ARCfitLagLeadFunc(x,y,d,p,objFunc)
 
+% helper function for fitting lags and lead parameters in the context of the
+% signal quality model shown in Figure 4. What's going on conceptually is
+% described in the methods section of the manuscript.
+%
+% x: predicted accommodation from model (in diopters)
+% y: actual accommodation
+% d: accommodative demand
+% objFunc : whether or not to use RMSE or negative log-likelihood as the
+%           objective function (basically give same result)
+
 dUnq = unique(d);
 if length(dUnq)~=length(p)
     error('ARCfitLagLeadFunc: fewer lag/lead parameters than unique stimulus distances!');

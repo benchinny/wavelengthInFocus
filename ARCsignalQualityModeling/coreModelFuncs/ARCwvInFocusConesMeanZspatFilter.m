@@ -9,7 +9,6 @@ wave = 380:4:780; % SAMPLED WAVELENGTHS IN MODEL
 nFocus = length(wave); % NUMBER OF WAVELENGTHS MODELED
 
 % LOAD THE ORIGINAL (PRE-OPTICS) IMAGE 
-% fnameConeRspNoLCA = 'subj10block3stimulus1focusInd1noLCA';
 fnameConeRspNoLCA = 'coneImagesNoOptics';
 absorptionsOrig = load(fullfile(foldernameHelpers,fnameConeRspNoLCA));
 absorptionsOrig = absorptionsOrig.absorptions;

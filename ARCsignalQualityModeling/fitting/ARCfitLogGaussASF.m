@@ -1,5 +1,8 @@
 function [pFit,rms] = ARCfitLogGaussASF(x,y)
 
+% FITS AN ACCOMMODATION SENSITIVITY FUNCTION (ASF) TO DATA FROM THE OWENS
+% (1980) PAPER. x IS SPATIAL FREQUENCY, y IS SENSITIVITY.
+
 % SET FMINCON OPTIONS
 opts             = optimset('fmincon');
 opts.Algorithm   = 'active-set';

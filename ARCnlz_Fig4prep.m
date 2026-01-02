@@ -47,5 +47,5 @@ end
 if bSAVE
     save(fullfile(savePath,savename),'wvMeanAll', ...
         'wvPredAll','aicAll','dfPredPurpleAll', ...
-        'wLMminAll','wLpropMinAll','pFitAll');
+        'wLMminAll','wLpropMinAll','pFitAll','wSall');
 end

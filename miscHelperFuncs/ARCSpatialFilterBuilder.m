@@ -1,8 +1,13 @@
 %% LOADING OWENS (1980) RAW DATA
 
+% This function loads data-thieved data from Owens (1980) and uses it to
+% estimate accommodative sensitivity as a function of spatial frequency.
+% The function it creates is used as a filter for the signal quality model
+% shown in Figure 4. 
+
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 perfVsSFstr = 'Owens_1980_';
-folderName = fullfile(dataPath,'data','modelParams');
+folderName = fullfile(dataPath,'data','helperFiles');
 
 dataOwens1980 = [];
 for i = 1:4
@@ -90,4 +95,4 @@ freqFilterARC = 0.01.*a1.*exp(-0.5.*((log(SFdst) - log(m1))./s1).^2);
 %%
 
 % UNCOMMENT TO SAVE FILTER
-% save(fullfile(dataPath,'data','modelParams','freqFilterARC.mat'),'freqFilterARC');
+% save(fullfile(dataPath,'data','helperFiles','freqFilterARC.mat'),'freqFilterARC');

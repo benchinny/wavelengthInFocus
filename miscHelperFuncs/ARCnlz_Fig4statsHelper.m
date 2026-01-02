@@ -1,4 +1,4 @@
-function [meanLag, CI95lag, LtoMratioMean, LtoMratioCI95, StoLplusMratioMean, StoLplusMratioCI95] = ARCnlz_Fig4statsHelper(pFitAll,wLpropMinAll,wLMminAll)
+function [meanLag, CI95lag, LtoMratioMean, LtoMratioCI95, StoLplusMratioMean, StoLplusMratioCI95] = ARCnlz_Fig4statsHelper(pFitAll,wLpropMinAll,wLMminAll,wS)
 
 % helper function for calculating parameters stats reported in the
 % manuscript. 
@@ -17,8 +17,6 @@ function [meanLag, CI95lag, LtoMratioMean, LtoMratioCI95, StoLplusMratioMean, St
 
 % LIST OF SUBJECTS
 subjNumAll = [1 3 5 10 16 17 18 20];
-% WEIGHTS ON S-CONES USED TO FIT EACH OF THE SUBJECTS LISTED BELOW
-wS = [-1 -1 -0.5 -1 -1 -1 -1 -0.25];
 % INITIALIZE ARRAYS FOR STORING (L+M)/S WEIGHT RATIO (IN CASE NOT USING)
 StoLplusMratioMean = []; 
 StoLplusMratioCI95 = [];
@@ -27,7 +25,7 @@ StoLplusMratioCI95 = [];
 LtoMratioMean = mean(wLpropMinAll);
 LtoMratioCI95 = 1.96.*std(wLpropMinAll)./sqrt(length(subjNumAll));
 % CALCULATE MEAN AND 95% CIS FOR (L+M)/S WEIGHT RATIO
-if ~isempty(wLMminAll)
+if ~isempty(wLMminAll) && ~isempty(wS)
     StoLplusMratioMean = mean(wS./wLMminAll);
     StoLplusMratioCI95 = 1.96.*std(wS./wLMminAll)./sqrt(length(subjNumAll));
 end

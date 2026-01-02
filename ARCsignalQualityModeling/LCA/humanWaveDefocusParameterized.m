@@ -2,14 +2,11 @@ function D = humanWaveDefocusParameterized(wave,q1,q2,q3)
 % Defocus in diopters as a function of wavelength
 %
 % Syntax:
-%   D = humanWaveDefocus(wave)
+%   D = humanWaveDefocusParameterized(wave)
 %
 % Description:
 %    This is a function fit to the data from Bedford and Wyszecki and Wald
 %    on human chromatic aberration.
-%
-%    This function contains examples of usage inline. To access, type 'edit
-%    humanWaveDefocus.m' into the Command Window.
 %
 % Inputs:
 %    wave - Vector. Wavelength vector, in nanometers.
@@ -20,22 +17,6 @@ function D = humanWaveDefocusParameterized(wave,q1,q2,q3)
 % Optional key/value pairs:
 %    None.
 %
-
-% History:
-%    xx/xx/11       Copyright ImagEval Consultants, LLC, 2011.
-%    06/28/18  jnm  Formatting
-
-% Example:
-%{
-    wave = 400:10:700;
-    D = humanWaveDefocus(wave);
-    vcNewGraphWin;
-    plot(wave, D);
-    xlabel('Wave (nm)')
-    ylabel('Diopters');
-    grid on
-%}
-
 % Constants for formula to compute defocus in diopters (D) as a function of
 % wavelength for human eye. From 
 % Larry N. Thibos, Ming Ye, Xiaoxiao Zhang, and Arthur Bradley, 

@@ -7,8 +7,6 @@ foldername = fullfile(dataPath,'data','PresavedFigureData');
 
 % LIST OF ALL SUBJECTS
 subjNumAll = [1 3 5 10 16 17 18 20]; 
-% WEIGHTS ON S FOR EACH SUBJECT (REFLECTED IN OTHER CODE)
-wS = [-1 -1 -0.5 -1 -1 -1 -1 -0.25];
 
 % LOAD WEIGHTS FROM PRESAVED DATA
 
@@ -19,10 +17,10 @@ wM = wLMminAll(2)-wL;
 LMweights = [wL wM 0];
 
 % FOR BLUE-YELLOW
-load(fullfile(foldername,'wvMeanAndPredLMS.mat'),'wLpropMinAll','wLMminAll');
+load(fullfile(foldername,'wvMeanAndPredLMS.mat'),'wLpropMinAll','wLMminAll','wSall');
 wL = wLMminAll(2)*wLpropMinAll(2);
 wM = wLMminAll(2)-wL;
-LMSweights = [wL wM wS(subjNumInd)];
+LMSweights = [wL wM wSall(subjNumInd)];
 
 % FOR RED-GREEN
 load(fullfile(foldername,'wvMeanAndPredLminusM.mat'),'wLpropMinAll','wLMminAll');
