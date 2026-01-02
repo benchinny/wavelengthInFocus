@@ -6,7 +6,7 @@ foldername = fullfile(dataPath,'data','PresavedFigureData');
 % PRESAVED DATA OPTIONS:
 load(fullfile(foldername,'allExp1DataRGB.mat'));
 
-optDistUnq = [1.5; 2.5; 3.5];
+optDistUnq = [1.5; 2.5; 3.5]; % UNIQUE OPTICAL DISTANCES
 
 % REARRANGE DEFOCUS AT 555NM VECTOR (GRAB NON-CONTROL CONDITIONS)
 dfMean555avgColor = squeeze(mean(dfMean555all(1:10,:,:)));
@@ -49,6 +49,22 @@ dfMean555highLowCI95 = 1.96.*std(dfMean555LumComparisonMean,0,2)./sqrt(8);
 % T-TEST
 [h,p,~,stats] = ttest(dfMean555LumComparisonMean(1,:)-dfMean555LumComparisonMean(2,:));
 
+% DISPLAY STATEMENTS BELOW
+
+display('----------------');
+display(['mean lag difference between 3.5D and 1.5D = ' num2str(meanLagLeadDiff,3) ' ± ' num2str(CI95lagLeadDiff,3) newline]);
+
+display(['mean gain = ' num2str(meanGain,3) ' ± ' num2str(CI95gain,3) newline]);
+
+display(['wavelength in focus when luminance equal across all display primaries = ']);
+display([num2str(wvMeanMeanEqualLumAcross(1),3) 'nm ± ' num2str(wvMeanCI95equalLumAcross(1),3) 'nm ' 'when stim distance = ' num2str(optDistUnq(1)) 'D']);
+display([num2str(wvMeanMeanEqualLumAcross(2),3) 'nm ± ' num2str(wvMeanCI95equalLumAcross(2),3) 'nm ' 'when stim distance = ' num2str(optDistUnq(2)) 'D']);
+display([num2str(wvMeanMeanEqualLumAcross(3),3) 'nm ± ' num2str(wvMeanCI95equalLumAcross(3),3) 'nm ' 'when stim distance = ' num2str(optDistUnq(3)) 'D' newline]);
+
+display(['mean accommodation for lower luminance = ' num2str(-dfMean555highLowMean(2),3) ' ± ' num2str(-dfMean555highLowCI95(2),3)]);
+display(['mean accommodation for higher luminance = ' num2str(-dfMean555highLowMean(1),3) ' ± ' num2str(-dfMean555highLowCI95(1),3) newline]);
+display(['t(' num2str(stats.df) ')= ' num2str(stats.tstat,3) ', p = ' num2str(p,3) newline]);
+
 %% STATISTICS FOR FIGURE 4
 
 clear all;
@@ -58,6 +74,7 @@ foldername = fullfile(dataPath,'data','PresavedFigureData');
 
 % ALL SUBJECT NUMBERS
 subjNum = [1 3 5 10 16 17 18 20];
+optDistUnq = [1.5; 2.5; 3.5]; % UNIQUE OPTICAL DISTANCES
 
 % CELL CONTAINING PRESAVED DATA FILENAMES
 presavedFilenames = {'wvMeanAndPredLM' 'wvMeanAndPredLminusM' 'wvMeanAndPredLMS'};
@@ -78,3 +95,24 @@ for i = 1:length(presavedFilenames) % LOOP OVER PRESAVED FILENAMES
         [meanLagAll(i,:), CI95lagAll(i,:), LtoMratioMeanAll(i), LtoMratioCI95All(i), StoLplusMratioMeanAll, StoLplusMratioCI95All] = ARCnlz_Fig4statsHelper(pFitAll,wLpropMinAll,[]);
     end
 end
+
+% DISPLAY STATEMENTS BELOW
+
+display('----------------');
+display(['Mean lag parameters: ']);
+display(['L+M model: ' num2str(meanLagAll(1,1),3) ' ± ' num2str(CI95lagAll(1,1),3) ' for ' num2str(optDistUnq(1))]);
+display(['L+M model: ' num2str(meanLagAll(1,2),3) ' ± ' num2str(CI95lagAll(1,2),3) ' for ' num2str(optDistUnq(2))]);
+display(['L+M model: ' num2str(meanLagAll(1,3),3) ' ± ' num2str(CI95lagAll(1,3),3) ' for ' num2str(optDistUnq(3))]);
+display(['L-M model: ' num2str(meanLagAll(2,1),3) ' ± ' num2str(CI95lagAll(2,1),3) ' for ' num2str(optDistUnq(1))]);
+display(['L-M model: ' num2str(meanLagAll(2,2),3) ' ± ' num2str(CI95lagAll(2,2),3) ' for ' num2str(optDistUnq(2))]);
+display(['L-M model: ' num2str(meanLagAll(2,3),3) ' ± ' num2str(CI95lagAll(2,3),3) ' for ' num2str(optDistUnq(3))]);
+display(['(L+M)-S model: ' num2str(meanLagAll(3,1),3) ' ± ' num2str(CI95lagAll(3,1),3) ' for ' num2str(optDistUnq(1))]);
+display(['(L+M)-S model: ' num2str(meanLagAll(3,2),3) ' ± ' num2str(CI95lagAll(3,2),3) ' for ' num2str(optDistUnq(2))]);
+display(['(L+M)-S model: ' num2str(meanLagAll(3,3),3) ' ± ' num2str(CI95lagAll(3,3),3) ' for ' num2str(optDistUnq(3)) newline]);
+display(['L/M weight ratio: ']);
+display(['L+M model: ' num2str(LtoMratioMeanAll(1),3) ' ± ' num2str(LtoMratioCI95All(1),3)]);
+display(['L-M model: ' num2str(LtoMratioMeanAll(2),3) ' ± ' num2str(LtoMratioCI95All(2),3)]);
+display(['(L+M)-S model: ' num2str(LtoMratioMeanAll(3),3) ' ± ' num2str(LtoMratioCI95All(3),3) newline]);
+
+display(['S/(L+M) weight ratio: ']);
+display(['(L+M)-S model: ' num2str(StoLplusMratioMeanAll,3) ' ± ' num2str(StoLplusMratioCI95All,3) newline]);
