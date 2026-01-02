@@ -15,7 +15,7 @@ bSave = true;
 % WHETHER OR NOT TO APPLY OPTICS
 bApplyOptics = true;
 
-%% Set up display struct and build Ben's stimulus
+%% Set up display struct and build stimulus
 
 % PATH TO SAVE
 savePath = fullfile(dataPath,'data','coneImages');
@@ -85,7 +85,6 @@ for k = 1:size(rgb00,1) % LOOP OVER COLOR CONDITIONS
         S.absorptions = absorptions;
         % NAME FOR SAVING
         fnameCone = ['subj' num2str(subjNum) 'stimulus' num2str(k) 'focusInd' num2str(i) opticsNameTag];
-        % UNCOMMENT LINE BELOW TO SAVE NEW CONE IMAGES
         if bSave
            save(fullfile(savePath,['S' num2str(subjNum)],[fnameCone '.mat']),"-fromstruct",S);
         end
