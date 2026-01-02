@@ -4,6 +4,8 @@ function pNull = ARCnlz_fig5Cstats(dataPath)
 % bootstrapping to figure out the chances of the peak not being at 0
 % (pNull)
 
+rng(1); % SET RANDOM SEED
+
 % LIST OF ALL SUBJECTS
 subjNumAll = [1 3 5 10 16 17 18 20];
 

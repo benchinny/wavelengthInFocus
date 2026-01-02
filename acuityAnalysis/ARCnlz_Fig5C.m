@@ -28,3 +28,8 @@ ylabel('d''_{max}/d''_{0}');
 % CALCULATE, FOR EACH SUBJECT, PROBABILITY OF THE PEAK BEING AT 0 (STATS
 % REPORTED IN MANUSCRIPT)
 pPeakAt0 = ARCnlz_fig5Cstats(dataPath);
+
+% DISPLAY PROBABILITIES
+for i = 1:length(pPeakAt0)
+    display(['Subject S' num2str(subjNumAll(i)) ' probability of peaking at 0 = ' num2str(pPeakAt0(i),3)]);
+end

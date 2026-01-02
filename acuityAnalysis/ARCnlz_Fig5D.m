@@ -6,9 +6,9 @@ dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\'
 plotSymb = 'oooooooo'; % GIVING EACH INDIVIDUAL SAME SYMBOL
 
 % acuityModelingPredictionLM: FOR BEST-FITTING LUMINANCE MODEL
-[RMSELM, corrPredActualLM, pLM, peakLocModelPredictionAllLM, peakLocActualAllLM] = ARCnlz_Fig5Dhelper(dataPath,'acuityModelingPredictionLM');
+[RMSELM, corrPredLM, pLM, peakLocModelPredictionAllLM, peakLocActualAllLM] = ARCnlz_Fig5Dhelper(dataPath,'acuityModelingPredictionLM');
 % acuityModelingPrediction: FOR BEST-FITTING COLOR-OPPONENT MODEL
-[RMSE, corrPredActual, p, peakLocModelPredictionAll, peakLocActualAll] = ARCnlz_Fig5Dhelper(dataPath,'acuityModelingPrediction');
+[RMSE, corrPred, p, peakLocModelPredictionAll, peakLocActualAll] = ARCnlz_Fig5Dhelper(dataPath,'acuityModelingPrediction');
 
 % EXPLICITLY REPRESENT ERRORS OF EACH MODEL
 errorAll = abs(peakLocModelPredictionAll-peakLocActualAll);
@@ -34,4 +34,13 @@ ylim([1.5 2.8]);
 plot([1.5 2.8],[1.5 2.8],'k--','LineWidth',1);
 xlabel(['Predicted Peak Location (D)']);
 ylabel(['Actual Peak Location (D)']);
-legend({['\rho_c = ' num2str(corrPredActual,2)] ['\rho_l = ' num2str(corrPredActualLM,2)]},'Location','SouthEast');
+legend({['\rho_c = ' num2str(corrPred,2)] ['\rho_l = ' num2str(corrPredLM,2)]},'Location','SouthEast');
+
+% DISPLAY STATS
+
+display('--------------------------------');
+display(['Chromatic model correlation =  ' num2str(corrPred) ', p = ' num2str(p,3) newline]);
+display(['Luminance model correlation = ' num2str(corrPredLM) ', p = ' num2str(pLM,3) newline]);
+display(['Chromatic model RMSE =  ' num2str(RMSE,3) newline]);
+display(['Chromatic model RMSE =  ' num2str(RMSELM,3) newline]);
+display(['t(' num2str(stats.df) ') = ' num2str(stats.tstat,3) ', p = ' num2str(pError) newline]);
