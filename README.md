@@ -25,10 +25,10 @@ In the above file path, the folder ‘wavelengthInFocusData’ contains the ‘d
 
 A wrapper script called ‘ARCnlz_preprocess’ performs two preprocessing steps (fits LCA functions and contrast thresholds for each observer) that are described below. 
 
-Analyzing psychophysical calibration data for acuity and LCA experiments:
+Analyzing psychophysical calibration data for acuity and LCA experiments:  
 The script that loads data from the calibration measurements and determines contrast thresholds for all subjects is called: ARCnlz_contrastThresholdsAll. A function called ‘ARCnlz_contrastThresholds’ loads data from experiment blocks used to ‘calibrate’ the stimulus based on participants’ contrast detection thresholds. Both functions can be found in the folder ‘ARCacuityAnalysis.’ The results of this function were used to set up the stimuli during the experiment itself, and it will be called again when doing the retinal image modelling for the acuity task.
 
-Analyzing psychophysical data from LCA experiment (Experiment 2):
+Analyzing psychophysical data from LCA experiment (Experiment 2):  
 The script that loads data from the LCA experiment and fits LCA curves for all subjects is called: ARCnlzLCAall in the ‘acuityAnalysis’ folder. It calls on the function ARCnlzLCA that does the fitting per subject. 
 
 **Figure 3**
