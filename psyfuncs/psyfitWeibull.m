@@ -2,7 +2,8 @@ function [aFit,bFit,Tfit,PCdta,PCfit,negLL] = psyfitWeibull(X,RC,aFix,bFix,PCcrt
 
 % function [aFit,bFit,Tfit,PCdta,PCfit,negLL] = psyfitWeibull(X,RC,aFix,bFix,PCcrt,bPLOT,xLbl,yLbl,color,shape,figh)
 %
-% fit generalized weibull function to data
+% fit generalized weibull function to data (modification of
+% psyfitgengauss.m in Johannes Burge's lab toolbox by Ben Chin)
 %
 % X:         stimulus values                 [nTrl x 1]
 % RC:        subject responses (0 or 1)      [nTrl x 1]

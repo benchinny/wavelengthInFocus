@@ -59,3 +59,25 @@ set(gca,'FontSize',15);
 set(gca,'XTick',1:5);
 set(gca,'XTickLabel',{'0.25' '0.50' '1.00' '2.00' '4.00'});
 xlabel('Red-blue ratio');
+
+%% MAKE TABLE S1 IN SUPPLEMENT
+
+% INITIALIZE ARRAY TO STORE EVERYTHING
+wvMeanSuppTableArray = [];
+for i = 1:size(wvMeanAll,3) % LOOP OVER SUBJECTS
+    % GRAB CONDITION X DISTANCE MATRIX FOR EACH SUBJECT
+    wvMeanTmp = squeeze(wvMeanAll(1:10,:,i));
+    % CONVERT TO COLUMN AND STORE
+    wvMeanSuppTableArray(:,i) = wvMeanTmp(:);
+end
+% APPEND RED-BLUE RATIO
+wvMeanSuppTableArray = [repmat(conditionsOrderedNorm(:,1)./conditionsOrderedNorm(:,3),[3 1]) wvMeanSuppTableArray];
+% APPEND WHETHER OR NOT 'NO GREEN' OR 'GREEN'
+wvMeanSuppTableArray = [imresize([0 1 0 1 0 1]',[30 1],'nearest') wvMeanSuppTableArray];
+% APPEND STIMULUS DISTANCES
+wvMeanSuppTableArray = [imresize([1.5; 2.5; 3.5],[30 1],'nearest') wvMeanSuppTableArray];
+
+wvMeanSuppTable = array2table(wvMeanSuppTableArray,'VariableNames', ...
+                             {'Optical Distance (D)' 'With Green?' ...
+                              'Red / blue ratio' 'S1' 'S2' 'S3' 'S4' ...
+                              'S5' 'S6' 'S7' 'S8'});
