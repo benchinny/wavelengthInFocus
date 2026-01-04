@@ -72,6 +72,22 @@ for i = 1:length(stimInd) % LOOP OVER STIMULUS INDICES
     ARCwvInFocusConesMeanZsandbox(subjNumAll(subjNumInd),stimInd(i),LminusMweights,1:101,dataPath);
     peakCorrAll(:,end+1) = peakCorr;
 end
+%% PLOT SIGNAL QUALITY
+
+figure; 
+plot(wave,peakCorrAll(:,[1 4 7]),'LineWidth',1); 
+axis square; 
+xlim([400 700]); 
+ylim([0.4 1]);
+formatFigure('Wavelength (nm)','Signal quality');
+legend('1/4','1/1','4/1');
+figure; 
+plot(wave,peakCorrAll(:,[2 5 8]),'LineWidth',1);
+axis square; 
+xlim([400 700]); 
+ylim([0.4 1]);
+formatFigure('Wavelength (nm)','Signal quality');
+legend('1/4','1/1','4/1');
 
 %% PLOT DIFFERENT CONE IMAGES FOR BUILDING MODEL INTUITIONS
 
