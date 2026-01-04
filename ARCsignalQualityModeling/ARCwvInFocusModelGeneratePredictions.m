@@ -1,4 +1,4 @@
-function [aic, pFit, wvMeanAll, wvPredAll, dfPredPurple, wLMmin, wLpropMin, wS] = ARCwvInFocusModelSort(subjNum,modelType,sigQualType,dataPath)
+function [aic, pFit, wvMeanAll, wvPredAll, dfPredPurple, wLMmin, wLpropMin, wS] = ARCwvInFocusModelGeneratePredictions(subjNum,modelType,sigQualType,dataPath)
 
 % This function generates predictions of various models for the
 % accommodation experiment and sorts them together with the empirical data. 
@@ -44,7 +44,9 @@ elseif strcmp(sigQualType,'deltapass')
     end
 end
 
-% LOAD CONE WEIGHTS
+% LOAD RESULTS OF GRID SEARCH, AND FINDS THE COMBINATION OF PARAMETERS THAT
+% YIELDS THE LOWEST RMSE ERROR
+
 if strcmp(modelType,'LMS') % IF BLUE-YELLOW OPPONENT MODEL
     % THIS VALUE WAS GOOD TO SEARCH OVER A WIDE RANGE OF (W_L+W_M)/W_S
     % VALUES

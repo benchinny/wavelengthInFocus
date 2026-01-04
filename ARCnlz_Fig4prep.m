@@ -44,7 +44,7 @@ elseif strcmp(sigQualType,'deltapass')
 end
 
 for i = 1:length(subjNum)
-    [aic, pFit, wvMean, wvPred, dfPredPurple, wLMmin, wLpropMin, wS] = ARCwvInFocusModelSort(subjNum(i),modelType,sigQualType,dataPath);
+    [aic, pFit, wvMean, wvPred, dfPredPurple, wLMmin, wLpropMin, wS] = ARCwvInFocusModelGeneratePredictions(subjNum(i),modelType,sigQualType,dataPath);
     wvMeanAll(:,:,i) = wvMean;
     wvPredAll(:,:,i) = wvPred;
     aicAll(i) = aic;
