@@ -26,10 +26,11 @@ In the above file path, the folder ‘wavelengthInFocusData’ contains the ‘d
 A wrapper script called ‘ARCnlz_preprocess’ performs two preprocessing steps (fits LCA functions and contrast thresholds for each observer) that are described below. 
 
 Analyzing psychophysical calibration data for acuity and LCA experiments:  
+
 The script that loads data from the calibration measurements and determines contrast thresholds for all subjects is called: ARCnlz_contrastThresholdsAll. A function called ‘ARCnlz_contrastThresholds’ loads data from experiment blocks used to ‘calibrate’ the stimulus based on participants’ contrast detection thresholds. Both functions can be found in the folder ‘ARCacuityAnalysis.’ The results of this function were used to set up the stimuli during the experiment itself, and it will be called again when doing the retinal image modelling for the acuity task.
 
 Analyzing psychophysical data from LCA experiment (Experiment 2):  
-The script that loads data from the LCA experiment and fits LCA curves for all subjects is called: ARCnlzLCAall in the ‘acuityAnalysis’ folder. It calls on the function ARCnlzLCA that does the fitting per subject. 
+The script that loads data from the LCA experiment and fits LCA curves for all subjects is called: ARCnlzLCAall in the ‘acuityAnalysis’ folder. It calls on the function ARCnlzLCA that does the fitting per subject. The function also creates Figure 7E in the manuscript. 
 
 **Figure 3**
 
@@ -59,7 +60,7 @@ Note that for the image quality modeling code, I created a branch of ISETBIO in 
 
 The following functions are all found in the ‘ARCsignalQualityModeling’ folder.
 
-The main script for creating and saving the cone images is ARCconeImgGeneration. The images are already in the ‘data/coneImages’ folders, so there is no need to regenerate them for specific analyses unless that is the specific intention, since generating them takes many hours (~12 hours for all 8 subjects with a 16-core computer, ~24 hours with an 8-core computer). 
+The main function for creating and saving the cone images is ARCconeImgGeneration. The images are already in the ‘data/coneImages’ folders, so there is no need to regenerate them for specific analyses unless that is the specific intention, since generating them takes many hours (~12 hours for all 8 subjects with a 16-core computer, ~24 hours with an 8-core computer). A similar function, ARCpsfGeneration, generates and saves out point spread functions for the Strehl analyses.  
 
 For fitting cone weights to the accommodation data from Experiment 1, the function is: ‘ARCwvInFocusModelFit’. The fitted weights have already been pre-saved in the ‘data/coneWeightsErrorSpatFilter/colorMechPredictions/’ folder as .mat files containing the string ‘wvInFocusModelResults’. If you rerun this function to regenerate the weights, it takes about 1 hour per subject with an 8-core computer. It calls a subfunction called ARCwvInFocusModelHelper that takes in a set of weights and cone images and determines the wavelength in focus that maximizes retinal image quality. The function is also used to fit parameters for the Strehl and Finch models shown in the supplement. A wrapper function named 'ARCwvInFocusModelFitAll' can be used to run this the cone fitting procedure on multiple subjects' data.
 
