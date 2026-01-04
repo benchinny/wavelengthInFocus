@@ -30,7 +30,7 @@ function [aic, pFit, wvMeanAll, wvPredAll, dfPredPurple, wLMmin, wLpropMin, wS] 
 rng(1); % FIX RANDOM SEED
 
 % WHERE THE PRE-FIT CONE WEIGHTS ARE STORED
-coneWeightsFolder = fullfile(dataPath,'data','coneWeightsErrorSpatFilter','colorMechPredictions');
+coneWeightsFolder = fullfile(dataPath,'data','coneWeights');
 
 % THIS IS FOR DETERMINING WHICH FILE OF PRESAVED WEIGHTS TO LOAD
 if strcmp(sigQualType,'xcorr')

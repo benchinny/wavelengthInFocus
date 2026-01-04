@@ -70,7 +70,7 @@ else
 end
 
 % PATH TO CONE WEIGHTS
-coneWeightsFolder = fullfile(dataPath,'data','coneWeightsErrorSpatFilter','colorMechPredictions');
+coneWeightsFolder = fullfile(dataPath,'data','coneWeights');
 
 RMSEall = zeros([length(wLM) length(wLprop)]); % INITIALIZE ERROR SURFACE
 pFitAll = zeros([length(wLM) length(wLprop) 2]);
