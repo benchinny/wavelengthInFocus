@@ -68,7 +68,7 @@ for i = 1:size(wvMeanAll,3) % LOOP OVER SUBJECTS
     % GRAB CONDITION X DISTANCE MATRIX FOR EACH SUBJECT
     wvMeanTmp = squeeze(wvMeanAll(1:10,:,i));
     % CONVERT TO COLUMN AND STORE
-    wvMeanSuppTableArray(:,i) = wvMeanTmp(:);
+    wvMeanSuppTableArray(:,i) = round(wvMeanTmp(:),2);
 end
 % APPEND RED-BLUE RATIO
 wvMeanSuppTableArray = [repmat(conditionsOrderedNorm(:,1)./conditionsOrderedNorm(:,3),[3 1]) wvMeanSuppTableArray];

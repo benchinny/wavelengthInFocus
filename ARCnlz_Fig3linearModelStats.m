@@ -53,13 +53,13 @@ end
 
 %% CREATE TABLES
 
-dataTableGreen = array2table([optDistCndGreen wvInFocusMeanGreen], ...
+dataTableGreen = array2table([-optDistCndGreen wvInFocusMeanGreen], ...
                              'VariableNames',{'OpticalDistance' 'MeanD'});
 
 dataTableGreen.("Subject") = subjNumTagGreen;
 dataTableGreen.("ColorRatio") = rbRatioGreen;
 
-dataTableGreenless = array2table([optDistCndGreenless wvInFocusMeanGreenless], ...
+dataTableGreenless = array2table([-optDistCndGreenless wvInFocusMeanGreenless], ...
                              'VariableNames',{'OpticalDistance' 'MeanD'});
 
 dataTableGreenless.("Subject") = subjNumTagGreenless;
