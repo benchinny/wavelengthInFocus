@@ -55,7 +55,7 @@ set(gca,'XTick',1:5);
 set(gca,'XTickLabel',{'0.25' '0.50' '1.00' '2.00' '4.00'});
 set(gca,'Box','on');
 xlim([0.5 5.5]);
-ylim([450 680]);
+ylim([440 680]);
 xlabel('Red-blue ratio');
 ylabel('Wavelength in focus (nm)');
 % PLOT 'SOME GREEN' CONDITIONS
@@ -71,7 +71,7 @@ for i = 1:size(wvMeanAll,2)
 end
 axis square;
 xlim([0.5 5.5]);
-ylim([450 680]);
+ylim([440 680]);
 set(gca,'Box','on');
 set(gca,'FontSize',15);
 set(gca,'XTick',1:5);

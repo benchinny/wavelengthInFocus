@@ -24,6 +24,8 @@ for i = 1:length(dprimeRatioAll)
     end
 end
 ylabel('d''_{max}/d''_{0}');
+ylim([0.9 2.6]);
+set(gca,'YTick',[1 1.5 2 2.5]);
 
 % CALCULATE, FOR EACH SUBJECT, PROBABILITY OF THE PEAK BEING AT 0 (STATS
 % REPORTED IN MANUSCRIPT)
