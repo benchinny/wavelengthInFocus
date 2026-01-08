@@ -15,7 +15,7 @@ Then, add ISETBIO separately (use your own local path):
 
 addpath(genpath('\Users\bmccis\OneDrive - rit.edu\Documents\isetbioChinVersion\'))
 
-All functions in the code have been designed such that they take in, as an input parameter, the file path to the folder where you extracted all zipped data folders locally (IMPORTANT: the folder must be named 'data'). The variable is always called ‘dataPath’, and here’s an example of how it is defined for the local machine of one of the manuscript’s authors: 
+All functions in the code have been designed such that they take in, as an input parameter, the file path to the folder where you extracted all the data folders you downloaded from the OSF repository (IMPORTANT: the folder must be named 'data'). The variable is always called ‘dataPath’, and here’s an example of how it is defined for the local machine of one of the manuscript’s authors: 
 
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 
