@@ -15,11 +15,11 @@ Then, add ISETBIO separately (use your own local path):
 
 addpath(genpath('\Users\bmccis\OneDrive - rit.edu\Documents\isetbioChinVersion\'))
 
-All functions in the code have been designed such that they take in, as an input parameter, the file path to where you extracted the data locally. The variable is always called ‘dataPath’, and here’s an example of how it is defined for the local machine of one of the manuscript’s authors: 
+All functions in the code have been designed such that they take in, as an input parameter, the file path to the folder where you extracted all zipped data folders locally (IMPORTANT: the folder must be named 'data'). The variable is always called ‘dataPath’, and here’s an example of how it is defined for the local machine of one of the manuscript’s authors: 
 
 dataPath = 'C:\Users\bmccis\OneDrive - rit.edu\Documents\wavelengthInFocusData\';
 
-In the above file path, the folder ‘wavelengthInFocusData’ contains the ‘data’ folder that was downloaded from Zenodo. IMPORTANT: Make sure the folder is actually named ‘data’! To make things easiest for yourself, you could use the ‘Find Files’ functionality in MATLAB to replace the string above in all scripts with your local path.
+In the above file path, the folder ‘wavelengthInFocusData’ contains a folder called ‘data’ which in turn contains all folders downloaded and extracted from the OSF repository. Make sure the folder is actually named ‘data’! To make things easiest for yourself, you could use the ‘Find Files’ functionality in MATLAB to replace the string above in all scripts with your local path.
 
 **Data preprocessing (illustrated in Figure 7)**
 
